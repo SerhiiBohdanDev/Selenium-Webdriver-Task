@@ -10,13 +10,25 @@ namespace LocatorsForWebElements.TestLayer
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
+
         private DriverWrapper _driver;
+        private string _downloadFolderPath;
 
         [SetUp]
         public void Setup()
         {
+            // Create a unique download directory for each test run for best practice
+            _downloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(_downloadFolderPath);
+
             var options = new ChromeOptions();
             options.AddArgument("start-maximized");
+
+            options.AddUserProfilePreference("download.default_directory", _downloadFolderPath);
+            options.AddUserProfilePreference("download.prompt_for_download", false);
+            options.AddUserProfilePreference("download.directory_upgrade", true);
+            options.AddUserProfilePreference("safebrowsing.enabled", true); // Optional, helps with some security prompts
+
             _driver = new DriverWrapper(new ChromeDriver(options), TimeSpan.FromSeconds(3));
         }
 
@@ -88,9 +100,27 @@ namespace LocatorsForWebElements.TestLayer
             Assert.That(allTitlesContainTerm, Is.True);
         }
 
+        [TestCase("EPAM_Corporate_Overview_Sept_25.pdf")]
+        public async Task DownloadFileTest(string fileName)
+        {
+            new MainPage(_driver)
+                .Open()
+                .ClickAbout();
+
+            new AboutPage(_driver)
+                .ScrollToAndClickDownload();
+
+            string filePath = Path.Combine(_downloadFolderPath, fileName);
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
+
+            Assert.That(isFileDownloaded, Is.True);
+        }
+
         [TearDown]
         public void Teardown()
         {
+            Directory.Delete(_downloadFolderPath, true);
             _driver.Close();
         }
 

@@ -1,4 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
+using System.Reflection.Emit;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
@@ -9,6 +12,7 @@ namespace LocatorsForWebElements.CoreLayer;
 public class DriverWrapper
 {
     private const string JavascriptClickCommand = "arguments[0].click();";
+    private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);"; // passing true aligns top of the element with the top of the view
     private const int MaxRetries = 3;
     private readonly IWebDriver _driver;
     private readonly TimeSpan _timeout;
@@ -17,6 +21,35 @@ public class DriverWrapper
     {
         _driver = driver;
         _timeout = timeout;
+    }
+
+    public static string? GetElementText(IWebElement element)
+    {
+        return element.GetText();
+    }
+
+    public static async Task<bool> WaitForFileToFinishChangingContentAsync(string filePath, int pollingIntervalInSeconds, CancellationToken cancellationToken)
+    {
+        await WaitForFileToExistAsync(filePath, pollingIntervalInSeconds, cancellationToken);
+
+        var fileSize = new FileInfo(filePath).Length;
+        while (true)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(pollingIntervalInSeconds), cancellationToken);
+
+            var newFileSize = new FileInfo(filePath).Length;
+            if (newFileSize == fileSize)
+            {
+                return true;
+            }
+
+            fileSize = newFileSize;
+        }
     }
 
     public void GoToUrl(string url) => _driver.Navigate().GoToUrl(url);
@@ -52,9 +85,9 @@ public class DriverWrapper
                 .Perform();
     }
 
-    public string? GetElementText(IWebElement element)
+    public void ScrollToElement(IWebElement element)
     {
-        return element.GetText();
+        _driver.ExecuteJavaScript(JavascriptScrollCommand, element);
     }
 
     public IWebElement FindElement(By by, IWebElement? parent = default)
@@ -97,6 +130,24 @@ public class DriverWrapper
             // using ! because it will either return collection of elements or throw exception
             return CheckElementsCollectionValidity(FindManyElements(by, parent), GetClickableElement);
         });
+    }
+
+    private static async Task WaitForFileToExistAsync(string filePath, int timeoutInSeconds, CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+
+            if (File.Exists(filePath))
+            {
+                break;
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(timeoutInSeconds), cancellationToken);
+        }
     }
 
     private static IWebElement GetDisplayedElement(IWebElement element)

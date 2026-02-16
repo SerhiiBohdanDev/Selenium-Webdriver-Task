@@ -68,7 +68,7 @@ public class SearchJobsPage
         ReadOnlyCollection<IWebElement> sentences = _driver.FindElements(_descriptionSentences, lastResult);
         for (int i = 0; i < sentences.Count; i++)
         {
-            string? text = _driver.GetElementText(sentences[i]);
+            string? text = DriverWrapper.GetElementText(sentences[i]);
             if (text != null)
             {
                 results.Add(text);
