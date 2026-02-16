@@ -111,10 +111,34 @@ namespace LocatorsForWebElements.TestLayer
                 .ScrollToAndClickDownload();
 
             string filePath = Path.Combine(_downloadFolderPath, fileName);
+            LogInformation(filePath);
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
             bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
 
             Assert.That(isFileDownloaded, Is.True);
+        }
+
+        [Test]
+        public void SlideInformationTest()
+        {
+            new MainPage(_driver)
+                .Open()
+                .ClickInsights();
+
+            var insightsPage = new InsightsPage(_driver);
+            insightsPage
+                .ClickNextSlide()
+                .ClickNextSlide();
+
+            string slideTitle = insightsPage.GetActiveSlideTitle();
+            insightsPage.ClickMoreInfo();
+
+            var insightPage = new InsightBasePage(_driver);
+            string pageTitle = insightPage.GetTitle();
+
+            LogComparedTitles(slideTitle, pageTitle);
+
+            Assert.That(pageTitle, Does.Contain(slideTitle));
         }
 
         [TearDown]
@@ -179,6 +203,12 @@ namespace LocatorsForWebElements.TestLayer
             }
 
             LogInformation(builder.ToString());
+        }
+
+        private static void LogComparedTitles(string slideTitle, string pageTitle)
+        {
+            LogInformation($"Slide title = {slideTitle}\n" +
+                $"Page title = {pageTitle}");
         }
     }
 }

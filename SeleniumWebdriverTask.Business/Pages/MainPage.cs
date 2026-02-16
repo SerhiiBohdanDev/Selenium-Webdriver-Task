@@ -16,6 +16,7 @@ public class MainPage
     private readonly By _findButton = By.XPath("//form//child::button");
     private readonly By _searchResult = By.ClassName("search-results__title-link");
     private readonly By _about = By.LinkText("About");
+    private readonly By _insights = By.LinkText("Insights");
 
     public MainPage(DriverWrapper driver)
     {
@@ -37,6 +38,7 @@ public class MainPage
         _driver
             .FindClickableElement(_joinUs, topRow)
             .Click();
+
         return this;
     }
 
@@ -45,6 +47,16 @@ public class MainPage
         var topRow = _driver.FindElement(_topNavRow);
         _driver
             .FindClickableElement(_about, topRow)
+            .Click();
+
+        return this;
+    }
+
+    public MainPage ClickInsights()
+    {
+        var topRow = _driver.FindElement(_topNavRow);
+        _driver
+            .FindClickableElement(_insights, topRow)
             .Click();
 
         return this;
