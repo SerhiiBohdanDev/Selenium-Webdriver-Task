@@ -15,4 +15,9 @@ internal static class IWebElementExtensions
     {
         return element.GetAttribute("textContent");
     }
+
+    public static string? GetUrl(this IWebElement element)
+    {
+        return element.GetAttribute("href");
+    }
 }

@@ -1,7 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Reflection.Emit;
-using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
@@ -23,10 +20,13 @@ public class DriverWrapper
         _timeout = timeout;
     }
 
-    public static string? GetElementText(IWebElement element)
-    {
-        return element.GetText();
-    }
+    public string PageSource => _driver.PageSource;
+
+    public string Url => _driver.Url;
+
+    public ILogs Logs => _driver.Manage().Logs;
+
+    public static string? GetElementText(IWebElement element) => element.GetText();
 
     public static async Task<bool> WaitForFileToFinishChangingContentAsync(string filePath, int pollingIntervalInSeconds, CancellationToken cancellationToken)
     {
@@ -130,6 +130,12 @@ public class DriverWrapper
             // using ! because it will either return collection of elements or throw exception
             return CheckElementsCollectionValidity(FindManyElements(by, parent), GetClickableElement);
         });
+    }
+
+    public void WaitUntilLinkIsReady(IWebElement element)
+    {
+        var wait = new WebDriverWait(_driver, _timeout);
+        wait.Until(driver => element.GetAttribute("href") != null);
     }
 
     private static async Task WaitForFileToExistAsync(string filePath, int timeoutInSeconds, CancellationToken cancellationToken)

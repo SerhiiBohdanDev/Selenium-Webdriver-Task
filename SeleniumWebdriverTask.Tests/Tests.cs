@@ -2,17 +2,27 @@
 using LocatorsForWebElements.BusinessLayer.Pages;
 using LocatorsForWebElements.CoreLayer;
 using LocatorsForWebElements.TestLayer.Models;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.DevTools.V144.Page;
 
 namespace LocatorsForWebElements.TestLayer
 {
+    [TestFixtureSource(nameof(FixtureData))]
     internal class Tests
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
 
+        private readonly bool _headless;
         private DriverWrapper _driver;
         private string _downloadFolderPath;
+
+        public Tests(FixtureModel data)
+        {
+            _headless = data.IsHeadless;
+        }
 
         [SetUp]
         public void Setup()
@@ -20,16 +30,36 @@ namespace LocatorsForWebElements.TestLayer
             // Create a unique download directory for each test run for best practice
             _downloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_downloadFolderPath);
+            LogInformation(_downloadFolderPath);
 
             var options = new ChromeOptions();
             options.AddArgument("start-maximized");
+            if (_headless)
+            {
+                options.AddArgument("--headless=new");
+                options.AddArgument("--window-size=1920,1080");
+                options.AddArgument("--disable-blink-features=AutomationControlled");
+                options.AddExcludedArgument("enable-automation");
+                options.AddAdditionalOption("useAutomationExtension", false);
+                options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+            }
 
             options.AddUserProfilePreference("download.default_directory", _downloadFolderPath);
             options.AddUserProfilePreference("download.prompt_for_download", false);
             options.AddUserProfilePreference("download.directory_upgrade", true);
             options.AddUserProfilePreference("safebrowsing.enabled", true); // Optional, helps with some security prompts
+            options.AddUserProfilePreference("profile.default_content_settings.popups", 0);
 
-            _driver = new DriverWrapper(new ChromeDriver(options), TimeSpan.FromSeconds(3));
+            var driver = new ChromeDriver(options);
+            var devTools = driver as IDevTools;
+            var session = devTools.GetDevToolsSession();
+            session.SendCommand(new SetDownloadBehaviorCommandSettings
+            {
+                Behavior = "allow",
+                DownloadPath = _downloadFolderPath,
+            }).GetAwaiter().GetResult();
+            _driver = new DriverWrapper(driver, TimeSpan.FromSeconds(3));
         }
 
         [TestCaseSource(nameof(JobsSearchData))]
@@ -107,12 +137,15 @@ namespace LocatorsForWebElements.TestLayer
                 .Open()
                 .ClickAbout();
 
+            Console.WriteLine($"after clicking about I am on {_driver.Url}");
             new AboutPage(_driver)
                 .ScrollToAndClickDownload();
 
+            Console.WriteLine($"currently on {_driver.Url}");
+
             string filePath = Path.Combine(_downloadFolderPath, fileName);
             LogInformation(filePath);
-            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
             bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
 
             Assert.That(isFileDownloaded, Is.True);
@@ -168,6 +201,12 @@ namespace LocatorsForWebElements.TestLayer
                 yield return new TestCaseData(model)
                     .SetName($"SearchJobsTest(\"{model.Language[0]}\", \"{model.Location}\")");
             }
+        }
+
+        private static IEnumerable<FixtureModel> FixtureData()
+        {
+            yield return new FixtureModel(true, "Headless");
+            yield return new FixtureModel(false, "Not Headless");
         }
 
         private static bool ContainsText(string text, string target) => text.Contains(target, StringComparison.InvariantCulture);
