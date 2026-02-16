@@ -33,7 +33,7 @@ namespace LocatorsForWebElements.TestLayer
                 .ClickRemoteCheckbox()
                 .ClickSearch();
 
-            var jobInformation = searchPage.GetJobInformation();
+            List<string> jobInformation = searchPage.GetJobInformation();
             var isInformationContainsLanguage = false;
             for (int i = 0; i < jobInformation.Count; i++)
             {
@@ -54,17 +54,7 @@ namespace LocatorsForWebElements.TestLayer
 
             if (!isInformationContainsLanguage)
             {
-                var builder = new StringBuilder();
-                string keywords = string.Join(',', model.Language);
-
-                builder.AppendLine($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
-                builder.AppendLine();
-                for (int i = 0; i < jobInformation.Count; i++)
-                {
-                    builder.AppendLine(jobInformation[i]);
-                }
-
-                LogInformation(builder.ToString());
+                LogJobNotContainingLanguage(model.Language, jobInformation);
             }
 
             Assert.That(isInformationContainsLanguage, Is.True);
@@ -83,24 +73,16 @@ namespace LocatorsForWebElements.TestLayer
 
             List<string> titles = mainPage.GetSearchResultTitles();
             var allTitlesContainTerm = true;
-            List<string> titlesThatDoNoContainTerm = [];
+            List<string> titlesNotContainingTerm = [];
             foreach (var title in titles.Where(title => !title.Contains(term, StringComparison.InvariantCultureIgnoreCase)))
             {
                 allTitlesContainTerm = false;
-                titlesThatDoNoContainTerm.Add(title);
+                titlesNotContainingTerm.Add(title);
             }
 
             if (!allTitlesContainTerm)
             {
-                var builder = new StringBuilder();
-                builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
-                builder.AppendLine();
-                for (int i = 0; i < titlesThatDoNoContainTerm.Count; i++)
-                {
-                    builder.AppendLine(titlesThatDoNoContainTerm[i]);
-                }
-
-                LogInformation(builder.ToString());
+                LogTitlesNotContainingTerm(term, titlesNotContainingTerm);
             }
 
             Assert.That(allTitlesContainTerm, Is.True);
@@ -139,6 +121,34 @@ namespace LocatorsForWebElements.TestLayer
         private static void LogInformation(string text)
         {
             Console.WriteLine(text);
+        }
+
+        private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
+            builder.AppendLine();
+            for (int i = 0; i < titlesThatDoNoContainTerm.Count; i++)
+            {
+                builder.AppendLine(titlesThatDoNoContainTerm[i]);
+            }
+
+            LogInformation(builder.ToString());
+        }
+
+        private static void LogJobNotContainingLanguage(string[] languages, List<string> jobInformation)
+        {
+            var builder = new StringBuilder();
+            string keywords = string.Join(',', languages);
+
+            builder.AppendLine($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
+            builder.AppendLine();
+            for (int i = 0; i < jobInformation.Count; i++)
+            {
+                builder.AppendLine(jobInformation[i]);
+            }
+
+            LogInformation(builder.ToString());
         }
     }
 }
