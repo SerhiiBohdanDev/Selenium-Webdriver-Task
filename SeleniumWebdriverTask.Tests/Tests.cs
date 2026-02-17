@@ -30,7 +30,7 @@ namespace LocatorsForWebElements.TestLayer
             // Create a unique download directory for each test run for best practice
             _downloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_downloadFolderPath);
-            LogInformation(_downloadFolderPath);
+            LogInformation($"File save temporary directory: {_downloadFolderPath}");
 
             var options = new ChromeOptions();
             options.AddArgument("start-maximized");
@@ -43,6 +43,7 @@ namespace LocatorsForWebElements.TestLayer
                 options.AddAdditionalOption("useAutomationExtension", false);
                 options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
                 options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+                options.AddArgument("--disable-gpu");
             }
 
             options.AddUserProfilePreference("download.default_directory", _downloadFolderPath);
@@ -137,14 +138,11 @@ namespace LocatorsForWebElements.TestLayer
                 .Open()
                 .ClickAbout();
 
-            Console.WriteLine($"after clicking about I am on {_driver.Url}");
             new AboutPage(_driver)
                 .ScrollToAndClickDownload();
 
-            Console.WriteLine($"currently on {_driver.Url}");
-
             string filePath = Path.Combine(_downloadFolderPath, fileName);
-            LogInformation(filePath);
+            LogInformation($"File saved at: {filePath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
             bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
 
@@ -177,6 +175,7 @@ namespace LocatorsForWebElements.TestLayer
         [TearDown]
         public void Teardown()
         {
+            LogInformation($"Deleting directory: {_downloadFolderPath}");
             Directory.Delete(_downloadFolderPath, true);
             _driver.Close();
         }
