@@ -15,12 +15,8 @@ public class AboutPage
 
     public AboutPage ScrollToAndClickDownload()
     {
-        var downloadButton = _driver.FindClickableElement(_downloadButton);
-        _driver.WaitUntilLinkIsReady(downloadButton);
+        var downloadButton = _driver.FindClickableLinkElement(_downloadButton);
         _driver.ScrollToElement(downloadButton);
-
-        // without accessing these properties we're redirected to the main page when clicking button
-        var _ = downloadButton.Enabled && downloadButton.Displayed;
         _driver.JavascriptClick(downloadButton);
 
         return this;

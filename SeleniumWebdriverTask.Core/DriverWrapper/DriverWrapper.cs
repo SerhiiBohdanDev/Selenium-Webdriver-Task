@@ -8,8 +8,10 @@ namespace LocatorsForWebElements.CoreLayer;
 
 public class DriverWrapper
 {
+    // passing true aligns top of the element with the top of the view
+    private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);";
     private const string JavascriptClickCommand = "arguments[0].click();";
-    private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);"; // passing true aligns top of the element with the top of the view
+
     private const int MaxRetries = 3;
     private readonly IWebDriver _driver;
     private readonly TimeSpan _timeout;
@@ -102,7 +104,6 @@ public class DriverWrapper
     {
         return WaitForOneOrManyElements<ReadOnlyCollection<IWebElement>>(by, () =>
         {
-            // using ! because it will either return collection of elements or throw exception
             return CheckElementsCollectionValidity(FindManyElements(by, parent));
         });
     }
@@ -127,15 +128,16 @@ public class DriverWrapper
     {
         return WaitForOneOrManyElements<ReadOnlyCollection<IWebElement>>(by, () =>
         {
-            // using ! because it will either return collection of elements or throw exception
             return CheckElementsCollectionValidity(FindManyElements(by, parent), GetClickableElement);
         });
     }
 
-    public void WaitUntilLinkIsReady(IWebElement element)
+    public IWebElement FindClickableLinkElement(By by, IWebElement? parent = default)
     {
-        var wait = new WebDriverWait(_driver, _timeout);
-        wait.Until(driver => element.GetAttribute("href") != null);
+        return WaitForOneOrManyElements<IWebElement>(by, () =>
+        {
+            return CheckElementValidity(FindOneElement(by, parent), GetClickableLinkElement);
+        });
     }
 
     private static async Task WaitForFileToExistAsync(string filePath, int timeoutInSeconds, CancellationToken cancellationToken)
@@ -173,6 +175,14 @@ public class DriverWrapper
         return element;
     }
 
+    private static IWebElement GetClickableLinkElement(IWebElement element)
+    {
+        // accessing element's property forces check for stallness
+        // is not null because when finding it NoSuchElementException would be thrown by driver
+        bool _ = element.Displayed && element.Enabled && element.GetUrl() != null;
+        return element;
+    }
+
     private static IWebElement CheckElementValidity(
         IWebElement element,
         Func<IWebElement, IWebElement>? checkAction = null)
@@ -192,9 +202,11 @@ public class DriverWrapper
         // returning null allows running WebDriverWait until we receive the elements
         if (elements.Count == 0)
         {
+#pragma warning disable S1168 // Possible null reference return.
 #pragma warning disable CS8603 // Possible null reference return.
             return null;
 #pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore S1168 // Possible null reference return.
         }
 
         if (checkAction != null)
