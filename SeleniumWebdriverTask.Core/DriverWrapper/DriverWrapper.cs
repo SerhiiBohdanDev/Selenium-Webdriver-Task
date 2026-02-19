@@ -94,41 +94,41 @@ public class DriverWrapper
 
     public IWebElement FindElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<IWebElement>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
-            return CheckElementValidity(FindOneElement(by, parent));
+            return FindElementAndCheckCondition(() => FindOneElement(by, parent));
         });
     }
 
     public ReadOnlyCollection<IWebElement> FindElements(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<ReadOnlyCollection<IWebElement>>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
-            return CheckElementsCollectionValidity(FindManyElements(by, parent));
+            return FindElementsCollectionAndCheckCondition(() => FindManyElements(by, parent));
         });
     }
 
     public IWebElement FindDisplayedElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<IWebElement>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
-            return CheckElementValidity(FindOneElement(by, parent), GetDisplayedElement);
+            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsElementDisplayed);
         });
     }
 
     public IWebElement FindClickableElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<IWebElement>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
-            return CheckElementValidity(FindOneElement(by, parent), GetClickableElement);
+            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsElementClickable);
         });
     }
 
     public ReadOnlyCollection<IWebElement> FindClickableElements(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<ReadOnlyCollection<IWebElement>>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
-            return CheckElementsCollectionValidity(FindManyElements(by, parent), GetClickableElement);
+            return FindElementsCollectionAndCheckCondition(() => FindManyElements(by, parent), IsElementClickable);
         });
     }
 
@@ -136,7 +136,7 @@ public class DriverWrapper
     {
         return WaitForOneOrManyElements<IWebElement>(by, () =>
         {
-            return CheckElementValidity(FindOneElement(by, parent), GetClickableLinkElement);
+            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsLinkReady);
         });
     }
 
@@ -158,66 +158,52 @@ public class DriverWrapper
         }
     }
 
-    private static IWebElement GetDisplayedElement(IWebElement element)
-    {
-        // accessing element's property forces check for stallness
-        // is not null because when finding it NoSuchElementException would be thrown by driver
-        // without it last element in the list of found jobs would throw StaleElementReferenceException after all retries
-        bool _ = element!.Displayed;
-        return element;
-    }
+    private static bool IsElementDisplayed(IWebElement element) => element.Displayed;
 
-    private static IWebElement GetClickableElement(IWebElement element)
-    {
-        // accessing element's property forces check for stallness
-        // is not null because when finding it NoSuchElementException would be thrown by driver
-        bool _ = element.Displayed && element.Enabled;
-        return element;
-    }
+    private static bool IsElementClickable(IWebElement element) => element.Displayed && element.Enabled;
 
-    private static IWebElement GetClickableLinkElement(IWebElement element)
-    {
-        // accessing element's property forces check for stallness
-        // is not null because when finding it NoSuchElementException would be thrown by driver
-        bool _ = element.Displayed && element.Enabled && element.GetUrl() != null;
-        return element;
-    }
+    private static bool IsLinkReady(IWebElement element) => element.Displayed && element.Enabled && element.GetUrl() != null;
 
-    private static IWebElement CheckElementValidity(
-        IWebElement element,
-        Func<IWebElement, IWebElement>? checkAction = null)
+    private static IWebElement FindElementAndCheckCondition(Func<IWebElement> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
     {
-        if (checkAction != null)
+        var element = findAction.Invoke();
+        if (conditionCheckAction != null)
         {
-            return checkAction.Invoke(element);
+            bool conditionMet = conditionCheckAction.Invoke(element);
+#pragma warning disable CS8603 // Possible null reference return.
+            return conditionMet ? element : default;
+#pragma warning restore CS8603 // Possible null reference return.
         }
-
-        return element;
+        else
+        {
+            return element;
+        }
     }
 
-    private static ReadOnlyCollection<IWebElement> CheckElementsCollectionValidity(
-        ReadOnlyCollection<IWebElement> elements,
-        Func<IWebElement, IWebElement>? checkAction = null)
+    private static ReadOnlyCollection<IWebElement> FindElementsCollectionAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
     {
-        // returning null allows running WebDriverWait until we receive the elements
-        if (elements.Count == 0)
+        ReadOnlyCollection<IWebElement> elements = findAction.Invoke();
+        if (conditionCheckAction != null)
         {
+            bool conditionMet = true;
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (!conditionCheckAction.Invoke(elements[i]))
+                {
+                    conditionMet = false;
+                    break;
+                }
+            }
 #pragma warning disable S1168 // Possible null reference return.
 #pragma warning disable CS8603 // Possible null reference return.
-            return null;
+            return conditionMet ? elements : default;
 #pragma warning restore CS8603 // Possible null reference return.
 #pragma warning restore S1168 // Possible null reference return.
         }
-
-        if (checkAction != null)
+        else
         {
-            foreach (var item in elements)
-            {
-                checkAction.Invoke(item);
-            }
+            return elements;
         }
-
-        return elements;
     }
 
     /// <summary>
@@ -230,7 +216,7 @@ public class DriverWrapper
     /// <exception cref="ArgumentNullException">Thrown if locator is null.</exception>
     /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
     /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
-    private T WaitForOneOrManyElements<T>(By by, Func<T> validityCheckAction)
+    private T WaitForOneOrManyElements<T>(By by, Func<T> findAndCheckElementAction)
     {
         ArgumentNullException.ThrowIfNull(by);
 
@@ -245,7 +231,7 @@ public class DriverWrapper
                 {
                     try
                     {
-                        return validityCheckAction.Invoke();
+                        return findAndCheckElementAction.Invoke();
                     }
                     catch (StaleElementReferenceException)
                     {
