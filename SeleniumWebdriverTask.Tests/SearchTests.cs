@@ -72,10 +72,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 titlesNotContainingTerm.Add(title);
             }
 
-            if (!allTitlesContainTerm)
-            {
-                LogTitlesNotContainingTerm(term, titlesNotContainingTerm);
-            }
+            LogTitlesNotContainingTerm(term, titlesNotContainingTerm);
 
             Assert.That(allTitlesContainTerm, Is.True);
         }
@@ -128,6 +125,12 @@ namespace SeleniumWebdriverTask.TestLayer
 
         private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
         {
+            if (titlesThatDoNoContainTerm.Count == 0)
+            {
+                Logger.LogInformation($"All titles contained {term}");
+                return;
+            }
+
             var builder = new StringBuilder();
             builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
             builder.AppendLine();
@@ -136,7 +139,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 builder.AppendLine(titlesThatDoNoContainTerm[i]);
             }
 
-            LogInformation(builder.ToString());
+            Logger.LogWarning(builder.ToString());
         }
 
         private static void LogJobNotContainingLanguage(string[] languages, List<string> jobInformation)
@@ -151,13 +154,23 @@ namespace SeleniumWebdriverTask.TestLayer
                 builder.AppendLine(jobInformation[i]);
             }
 
-            LogInformation(builder.ToString());
+            Logger.LogWarning(builder.ToString());
         }
 
         private static void LogComparedTitles(string slideTitle, string pageTitle)
         {
-            LogInformation($"Slide title = {slideTitle}\n" +
-                $"Page title = {pageTitle}");
+            if (pageTitle.Contains(slideTitle))
+            {
+                Logger.LogInformation($"Titles match \n" +
+                    $"Slide title = {slideTitle}\n" +
+                    $"Page title = {pageTitle}");
+            }
+            else
+            {
+                Logger.LogInformation($"Titles DO NOT match \n" +
+                    $"Slide title = {slideTitle}\n" +
+                    $"Page title = {pageTitle}");
+            }
         }
     }
 }

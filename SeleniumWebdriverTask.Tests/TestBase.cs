@@ -15,12 +15,17 @@ namespace SeleniumWebdriverTask.TestLayer
             _headless = data.IsHeadless;
         }
 
+        protected static Logger Logger => TestSetup.Logger;
+
         protected DriverWrapper Driver { get; private set; }
 
         [SetUp]
         public virtual void Setup()
         {
-            var browserType = (BrowserType)Enum.Parse(typeof(BrowserType), Configuration.BrowserType);
+            TestSetup.Logger.LogInformation("Starting test");
+            var browserType = (BrowserType)Enum.Parse(typeof(BrowserType), TestSetup.AppConfiguration.BrowserType);
+            Console.WriteLine("----------");
+            Console.WriteLine(browserType);
             var options = WebDriverOptionsFactory.CreateOptions(browserType, _headless);
             AddWebDriverOptions(options);
 
@@ -31,12 +36,13 @@ namespace SeleniumWebdriverTask.TestLayer
 
             // because firefox does not have argument for options.AddArgument("start-maximized").
             Driver.Maximize();
-            Driver.GoToUrl(Configuration.AppUrl);
+            Driver.GoToUrl(TestSetup.AppConfiguration.ApplicationUrl);
         }
 
         [TearDown]
         public virtual void Teardown()
         {
+            TestSetup.Logger.LogInformation("Finishing test");
             Driver.Close();
         }
 

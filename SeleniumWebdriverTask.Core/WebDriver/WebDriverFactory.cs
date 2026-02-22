@@ -16,19 +16,13 @@ public static class WebDriverFactory
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        switch (browserType)
+        return browserType switch
         {
-            case BrowserType.Chrome:
-                var chromeDriver = new ChromeDriver((ChromeOptions)options);
-                return chromeDriver;
-            case BrowserType.Edge:
-                var edgeDriver = new EdgeDriver((EdgeOptions)options);
-                return edgeDriver;
-            case BrowserType.Firefox:
-                return new FirefoxDriver((FirefoxOptions)options);
-            default:
-                throw new ArgumentOutOfRangeException(nameof(browserType), browserType, null);
-        }
+            BrowserType.Chrome => new ChromeDriver((ChromeOptions)options),
+            BrowserType.Edge => new EdgeDriver((EdgeOptions)options),
+            BrowserType.Firefox => new FirefoxDriver((FirefoxOptions)options),
+            _ => throw new ArgumentOutOfRangeException(nameof(browserType), browserType, null),
+        };
     }
 
     public static void SetupChromiumDriverDownloadSettings(IWebDriver driver, string downloadFolderPath)

@@ -19,7 +19,7 @@ namespace SeleniumWebdriverTask.TestLayer
             // Create a unique download directory for each test run for best practice
             _downloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_downloadFolderPath);
-            LogInformation($"File save temporary directory: {_downloadFolderPath}");
+            Logger.LogInformation($"Createing temporary directory for file: {_downloadFolderPath}");
 
             base.Setup();
         }
@@ -34,7 +34,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ScrollToAndClickDownload();
 
             string filePath = Path.Combine(_downloadFolderPath, fileName);
-            LogInformation($"File saved at: {filePath}");
+            Logger.LogInformation($"File saved at: {filePath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
             bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
 
@@ -51,7 +51,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ScrollToAndClickDownload();
 
             string filePath = Path.Combine(_downloadFolderPath, fileName);
-            LogInformation($"File saved at: {filePath}");
+            Logger.LogInformation($"File saved at: {filePath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
             bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
 
@@ -60,7 +60,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
         public override void Teardown()
         {
-            LogInformation($"Deleting directory: {_downloadFolderPath}");
+            Logger.LogInformation($"Deleting directory: {_downloadFolderPath}");
             Directory.Delete(_downloadFolderPath, true);
             base.Teardown();
         }
