@@ -1,4 +1,4 @@
-﻿namespace LocatorsForWebElements.TestLayer.Models;
+﻿namespace SeleniumWebdriverTask.TestLayer.Models;
 
 /// <summary>
 /// Allows not having duplicate names for headless/normal mode in Test Explorer.

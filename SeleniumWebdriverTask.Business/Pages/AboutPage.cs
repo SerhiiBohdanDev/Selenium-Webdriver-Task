@@ -1,7 +1,7 @@
-﻿using LocatorsForWebElements.CoreLayer;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
+using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace LocatorsForWebElements.BusinessLayer.Pages;
+namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
 public class AboutPage
 {

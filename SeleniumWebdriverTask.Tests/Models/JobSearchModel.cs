@@ -1,4 +1,4 @@
-﻿namespace LocatorsForWebElements.TestLayer.Models;
+﻿namespace SeleniumWebdriverTask.TestLayer.Models;
 
 internal class JobSearchModel
 {

@@ -1,13 +1,13 @@
 ﻿using System.Text;
-using LocatorsForWebElements.BusinessLayer.Pages;
-using LocatorsForWebElements.CoreLayer;
-using LocatorsForWebElements.TestLayer.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.DevTools.V144.Page;
+using SeleniumWebdriverTask.BusinessLayer.Pages;
+using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.TestLayer.Models;
 
-namespace LocatorsForWebElements.TestLayer
+namespace SeleniumWebdriverTask.TestLayer
 {
     [TestFixtureSource(nameof(FixtureData))]
     internal class Tests

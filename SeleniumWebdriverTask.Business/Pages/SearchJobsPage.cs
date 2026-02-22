@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using LocatorsForWebElements.CoreLayer;
 using OpenQA.Selenium;
+using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace LocatorsForWebElements.BusinessLayer.Pages;
+namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
 public class SearchJobsPage
 {
@@ -65,7 +65,7 @@ public class SearchJobsPage
         var shortDescription = _driver.FindElement(_shortJobDescription, lastResult);
         results.Add(shortDescription.Text);
 
-        ReadOnlyCollection<IWebElement> sentences = _driver.FindElements(_descriptionSentences, lastResult);
+        var sentences = _driver.FindElements(_descriptionSentences, lastResult);
         for (int i = 0; i < sentences.Count; i++)
         {
             string? text = DriverWrapper.GetElementText(sentences[i]);

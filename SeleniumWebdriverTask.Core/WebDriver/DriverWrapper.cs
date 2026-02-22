@@ -4,7 +4,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 
-namespace LocatorsForWebElements.CoreLayer;
+namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 public class DriverWrapper
 {
@@ -134,7 +134,7 @@ public class DriverWrapper
 
     public IWebElement FindClickableLinkElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements<IWebElement>(by, () =>
+        return WaitForOneOrManyElements(by, () =>
         {
             return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsLinkReady);
         });
@@ -182,7 +182,7 @@ public class DriverWrapper
 
     private static ReadOnlyCollection<IWebElement> FindElementsCollectionAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
     {
-        ReadOnlyCollection<IWebElement> elements = findAction.Invoke();
+        var elements = findAction.Invoke();
         if (elements.Count == 0)
         {
 #pragma warning disable S1168 // Possible null reference return.
@@ -230,7 +230,7 @@ public class DriverWrapper
         ArgumentNullException.ThrowIfNull(by);
 
         int retries = 0;
-        Type exceptionCaught = typeof(NoSuchElementException);
+        var exceptionCaught = typeof(NoSuchElementException);
         while (retries < MaxRetries)
         {
             try
