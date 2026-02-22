@@ -17,6 +17,7 @@ public class MainPage
     private readonly By _searchResult = By.ClassName("search-results__title-link");
     private readonly By _about = By.LinkText("About");
     private readonly By _insights = By.LinkText("Insights");
+    private readonly By _corporateResponsibility = By.LinkText("Corporate Responsibility");
 
     public MainPage(DriverWrapper driver)
     {
@@ -82,6 +83,16 @@ public class MainPage
     {
         _driver
             .FindClickableElement(_findButton)
+            .Click();
+
+        return this;
+    }
+
+    public MainPage ClickCorporateResponsibility()
+    {
+        var topRow = _driver.FindElement(_topNavRow);
+        _driver.Hover(_driver.FindClickableElement(_about, topRow));
+        _driver.FindClickableElement(_corporateResponsibility, topRow)
             .Click();
 
         return this;

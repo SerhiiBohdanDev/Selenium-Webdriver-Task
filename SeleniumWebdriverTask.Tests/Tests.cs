@@ -64,7 +64,7 @@ namespace LocatorsForWebElements.TestLayer
         }
 
         [TestCaseSource(nameof(JobsSearchData))]
-        public void SearchJobsTest(JobSearchModel model)
+        public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {
             new MainPage(_driver)
                 .Open()
@@ -106,7 +106,7 @@ namespace LocatorsForWebElements.TestLayer
         [TestCase("BLOCKCHAIN")]
         [TestCase("Cloud")]
         [TestCase("Automation")]
-        public void GeneralSearchTest(string term)
+        public void ValidTerm_GeneralSearchInTitle_Sucess(string term)
         {
             var mainPage = new MainPage(_driver)
                 .Open()
@@ -132,7 +132,7 @@ namespace LocatorsForWebElements.TestLayer
         }
 
         [TestCase("EPAM_Corporate_Overview_Sept_25.pdf")]
-        public async Task DownloadFileTest(string fileName)
+        public async Task CorporateOverview_DownloadFile_Success(string fileName)
         {
             new MainPage(_driver)
                 .Open()
@@ -149,8 +149,26 @@ namespace LocatorsForWebElements.TestLayer
             Assert.That(isFileDownloaded, Is.True);
         }
 
+        [TestCase("EPAM_ESG_Quick_Facts.pdf")]
+        public async Task EPAMQuickFacts_DownloadFile_Success(string fileName)
+        {
+            new MainPage(_driver)
+                .Open()
+                .ClickCorporateResponsibility();
+
+            new CorporateResponsibilityPage(_driver)
+                .ScrollToAndClickDownload();
+
+            string filePath = Path.Combine(_downloadFolderPath, fileName);
+            LogInformation($"File saved at: {filePath}");
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
+
+            Assert.That(isFileDownloaded, Is.True);
+        }
+
         [Test]
-        public void SlideInformationTest()
+        public void CorrectTitle_CompareSlideTitles_Success()
         {
             new MainPage(_driver)
                 .Open()
