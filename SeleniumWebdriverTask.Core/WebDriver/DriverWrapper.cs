@@ -140,6 +140,8 @@ public class DriverWrapper
         });
     }
 
+    public void Maximize() => _driver.Manage().Window.Maximize();
+
     private static async Task WaitForFileToExistAsync(string filePath, int timeoutInSeconds, CancellationToken cancellationToken)
     {
         while (true)
