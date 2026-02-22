@@ -5,7 +5,6 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
 public class MainPage
 {
-    private const string PageUrl = "https://www.epam.com/";
     private readonly DriverWrapper _driver;
 
     private readonly By _topNavRow = By.ClassName("top-navigation__row");
@@ -22,12 +21,6 @@ public class MainPage
     public MainPage(DriverWrapper driver)
     {
         _driver = driver;
-    }
-
-    public MainPage Open()
-    {
-        _driver.GoToUrl(PageUrl);
-        return this;
     }
 
     public MainPage ClickJoinUs()

@@ -28,7 +28,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public async Task CorporateOverview_DownloadFile_Success(string fileName)
         {
             new MainPage(Driver)
-                .Open()
                 .ClickAbout();
 
             new AboutPage(Driver)
@@ -46,7 +45,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public async Task EPAMQuickFacts_DownloadFile_Success(string fileName)
         {
             new MainPage(Driver)
-                .Open()
                 .ClickCorporateResponsibility();
 
             new CorporateResponsibilityPage(Driver)

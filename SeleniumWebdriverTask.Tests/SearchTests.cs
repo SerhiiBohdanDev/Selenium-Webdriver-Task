@@ -18,7 +18,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {
             new MainPage(Driver)
-                .Open()
                 .ClickJoinUs();
 
             var searchPage = new SearchJobsPage(Driver)
@@ -60,7 +59,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public void ValidTerm_GeneralSearchInTitle_Sucess(string term)
         {
             var mainPage = new MainPage(Driver)
-                .Open()
                 .ClickMagnifyingGlass()
                 .EnterSearchTerm(term)
                 .ClickFind();
@@ -86,7 +84,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public void CorrectTitle_CompareSlideTitles_Success()
         {
             new MainPage(Driver)
-                .Open()
                 .ClickInsights();
 
             var insightsPage = new InsightsPage(Driver);

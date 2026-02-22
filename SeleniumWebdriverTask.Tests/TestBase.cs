@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 using SeleniumWebdriverTask.TestLayer.Models;
 
@@ -19,7 +20,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [SetUp]
         public virtual void Setup()
         {
-            var browserType = BrowserType.Chrome;
+            var browserType = (BrowserType)Enum.Parse(typeof(BrowserType), Configuration.BrowserType);
             var options = WebDriverOptionsFactory.CreateOptions(browserType, _headless);
             AddWebDriverOptions(options);
 
@@ -30,6 +31,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             // because firefox does not have argument for options.AddArgument("start-maximized").
             Driver.Maximize();
+            Driver.GoToUrl(Configuration.AppUrl);
         }
 
         [TearDown]
