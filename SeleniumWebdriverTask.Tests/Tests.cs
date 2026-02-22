@@ -216,7 +216,7 @@ namespace LocatorsForWebElements.TestLayer
             foreach (var model in cases)
             {
                 yield return new TestCaseData(model)
-                    .SetName($"SearchJobsTest(\"{model.Language[0]}\", \"{model.Location}\")");
+                    .SetName($"ValidKeyword_SearchLastJob_Success(\"{model.Language[0]}\", \"{model.Location}\")");
             }
         }
 
