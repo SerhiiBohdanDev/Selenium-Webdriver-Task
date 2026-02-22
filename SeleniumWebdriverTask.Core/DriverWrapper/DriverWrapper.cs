@@ -183,6 +183,15 @@ public class DriverWrapper
     private static ReadOnlyCollection<IWebElement> FindElementsCollectionAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
     {
         ReadOnlyCollection<IWebElement> elements = findAction.Invoke();
+        if (elements.Count == 0)
+        {
+#pragma warning disable S1168 // Possible null reference return.
+#pragma warning disable CS8603 // Possible null reference return.
+            return default;
+#pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore S1168 // Possible null reference return.
+        }
+
         if (conditionCheckAction != null)
         {
             bool conditionMet = true;
@@ -211,7 +220,7 @@ public class DriverWrapper
     /// </summary>
     /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
     /// <param name="by">Locator to reference in exception.</param>
-    /// <param name="validityCheckAction">Action to perform on element/elements to check if they fit the condition.</param>
+    /// <param name="findAndCheckElementAction">Action to find elements and check if they fit the required condition.</param>
     /// <returns>One IWebElement or ReadOnlyCollection of type IWebElement.</returns>
     /// <exception cref="ArgumentNullException">Thrown if locator is null.</exception>
     /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
