@@ -94,50 +94,32 @@ public class DriverWrapper
 
     public IWebElement FindElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementAndCheckCondition(() => FindOneElement(by, parent));
-        });
+        return WaitForOneElement(by, parent);
     }
 
     public ReadOnlyCollection<IWebElement> FindElements(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementsCollectionAndCheckCondition(() => FindManyElements(by, parent));
-        });
+        return WaitForManyElements(by, parent);
     }
 
     public IWebElement FindDisplayedElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsElementDisplayed);
-        });
+        return WaitForOneElement(by, parent, IsElementDisplayed);
     }
 
     public IWebElement FindClickableElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsElementClickable);
-        });
+        return WaitForOneElement(by, parent, IsElementClickable);
     }
 
     public ReadOnlyCollection<IWebElement> FindClickableElements(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementsCollectionAndCheckCondition(() => FindManyElements(by, parent), IsElementClickable);
-        });
+        return WaitForManyElements(by, parent, IsElementClickable);
     }
 
     public IWebElement FindClickableLinkElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneOrManyElements(by, () =>
-        {
-            return FindElementAndCheckCondition(() => FindOneElement(by, parent), IsLinkReady);
-        });
+        return WaitForOneElement(by, parent, IsLinkReady);
     }
 
     public void Maximize() => _driver.Manage().Window.Maximize();
@@ -173,7 +155,7 @@ public class DriverWrapper
         {
             bool conditionMet = conditionCheckAction.Invoke(element);
 #pragma warning disable CS8603 // Possible null reference return.
-            return conditionMet ? element : default;
+            return conditionMet ? element : null;
 #pragma warning restore CS8603 // Possible null reference return.
         }
         else
@@ -182,14 +164,14 @@ public class DriverWrapper
         }
     }
 
-    private static ReadOnlyCollection<IWebElement> FindElementsCollectionAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
+    private static ReadOnlyCollection<IWebElement> FindManyElementsAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
     {
         var elements = findAction.Invoke();
         if (elements.Count == 0)
         {
 #pragma warning disable S1168 // Possible null reference return.
 #pragma warning disable CS8603 // Possible null reference return.
-            return default;
+            return null;
 #pragma warning restore CS8603 // Possible null reference return.
 #pragma warning restore S1168 // Possible null reference return.
         }
@@ -207,7 +189,7 @@ public class DriverWrapper
             }
 #pragma warning disable S1168 // Possible null reference return.
 #pragma warning disable CS8603 // Possible null reference return.
-            return conditionMet ? elements : default;
+            return conditionMet ? elements : null;
 #pragma warning restore CS8603 // Possible null reference return.
 #pragma warning restore S1168 // Possible null reference return.
         }
@@ -217,20 +199,41 @@ public class DriverWrapper
         }
     }
 
+    private static IWebElement OneElementNotFound(By by, Type exceptionCaught)
+    {
+        if (exceptionCaught == typeof(NoSuchElementException))
+        {
+            throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
+        }
+        else
+        {
+            throw new StaleElementReferenceException($"Element located by {by} remained stale after {MaxRetries} attempts.");
+        }
+    }
+
+    private static ReadOnlyCollection<IWebElement> ManyElementsNotFound(By by, Type exceptionCaught)
+    {
+        if (exceptionCaught == typeof(NoSuchElementException))
+        {
+            return new ReadOnlyCollection<IWebElement>([]);
+        }
+        else
+        {
+            throw new StaleElementReferenceException($"Elements collection located by {by} remained stale after {MaxRetries} attempts.");
+        }
+    }
+
     /// <summary>
     /// A wrapper method to allow finding one IWebElement or ReadOnlyCollection of type IWebElement.
     /// </summary>
     /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
     /// <param name="by">Locator to reference in exception.</param>
     /// <param name="findAndCheckElementAction">Action to find elements and check if they fit the required condition.</param>
-    /// <returns>One IWebElement or ReadOnlyCollection of type IWebElement.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if locator is null.</exception>
+    /// <returns>One IWebElement or ReadOnlyCollection<IWebElement>.</returns>
     /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
     /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
-    private T WaitForOneOrManyElements<T>(By by, Func<T> findAndCheckElementAction)
+    private T WaitForOneOrManyElements<T>(By by, Func<T> findAndCheckElementAction, Func<By, Type, T> elementNotFoundAction)
     {
-        ArgumentNullException.ThrowIfNull(by);
-
         int retries = 0;
         var exceptionCaught = typeof(NoSuchElementException);
         while (retries < MaxRetries)
@@ -262,14 +265,29 @@ public class DriverWrapper
             }
         }
 
-        if (exceptionCaught == typeof(NoSuchElementException))
+        return elementNotFoundAction.Invoke(by, exceptionCaught);
+    }
+
+    private IWebElement WaitForOneElement(By by, IWebElement? parent = default, Func<IWebElement, bool>? conditionCheckAction = null)
+    {
+        return WaitForOneOrManyElements(
+        by,
+        () =>
         {
-            throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
-        }
-        else
+            return FindElementAndCheckCondition(() => FindOneElement(by, parent), conditionCheckAction);
+        },
+        OneElementNotFound);
+    }
+
+    private ReadOnlyCollection<IWebElement> WaitForManyElements(By by, IWebElement? parent = default, Func<IWebElement, bool>? conditionCheckAction = null)
+    {
+        return WaitForOneOrManyElements(
+        by,
+        () =>
         {
-            throw new StaleElementReferenceException($"Element located by {by} remained stale after {MaxRetries} attempts.");
-        }
+            return FindManyElementsAndCheckCondition(() => FindManyElements(by, parent), conditionCheckAction);
+        },
+        ManyElementsNotFound);
     }
 
     private IWebElement FindOneElement(By by, IWebElement? parent = default)

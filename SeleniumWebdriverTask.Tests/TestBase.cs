@@ -24,8 +24,6 @@ namespace SeleniumWebdriverTask.TestLayer
         {
             TestSetup.Logger.LogInformation("Starting test");
             var browserType = (BrowserType)Enum.Parse(typeof(BrowserType), TestSetup.AppConfiguration.BrowserType);
-            Console.WriteLine("----------");
-            Console.WriteLine(browserType);
             var options = WebDriverOptionsFactory.CreateOptions(browserType, _headless);
             AddWebDriverOptions(options);
 
