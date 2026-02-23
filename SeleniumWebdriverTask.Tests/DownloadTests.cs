@@ -1,18 +1,12 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.TestLayer.Models;
 
 namespace SeleniumWebdriverTask.TestLayer
 {
     internal class DownloadTests : TestBase
     {
         private string _downloadFolderPath;
-
-        public DownloadTests(FixtureModel data)
-            : base(data)
-        {
-        }
 
         public override void Setup()
         {
@@ -33,10 +27,9 @@ namespace SeleniumWebdriverTask.TestLayer
             new AboutPage(Driver)
                 .ScrollToAndClickDownload();
 
-            string filePath = Path.Combine(_downloadFolderPath, fileName);
-            Logger.LogInformation($"File saved at: {filePath}");
+            Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
+            var isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(_downloadFolderPath, fileName, 1, cancellationTokenSource.Token);
 
             Assert.That(isFileDownloaded, Is.True);
         }
@@ -50,10 +43,9 @@ namespace SeleniumWebdriverTask.TestLayer
             new CorporateResponsibilityPage(Driver)
                 .ScrollToAndClickDownload();
 
-            string filePath = Path.Combine(_downloadFolderPath, fileName);
-            Logger.LogInformation($"File saved at: {filePath}");
+            Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(filePath, 1, cancellationTokenSource.Token);
+            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(_downloadFolderPath, fileName, 1, cancellationTokenSource.Token);
 
             Assert.That(isFileDownloaded, Is.True);
         }

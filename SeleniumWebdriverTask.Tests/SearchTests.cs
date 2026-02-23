@@ -9,11 +9,6 @@ namespace SeleniumWebdriverTask.TestLayer
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
 
-        public SearchTests(FixtureModel data)
-            : base(data)
-        {
-        }
-
         [TestCaseSource(nameof(JobsSearchData))]
         public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {

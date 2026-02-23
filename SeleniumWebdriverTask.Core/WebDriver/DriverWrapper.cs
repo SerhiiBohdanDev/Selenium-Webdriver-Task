@@ -13,28 +13,26 @@ public class DriverWrapper
     private const string JavascriptClickCommand = "arguments[0].click();";
 
     private const int MaxRetries = 3;
-    private readonly IWebDriver _driver;
     private readonly TimeSpan _timeout;
 
     public DriverWrapper(IWebDriver driver, TimeSpan timeout)
     {
-        _driver = driver;
+        WebDriver = driver;
         _timeout = timeout;
     }
 
-    public string PageSource => _driver.PageSource;
+    public System.Drawing.Size WindowSize => WebDriver.Manage().Window.Size;
 
-    public string Url => _driver.Url;
-
-    public ILogs Logs => _driver.Manage().Logs;
+    public IWebDriver WebDriver { get; private set; }
 
     public static string? GetElementText(IWebElement element) => element.GetText();
 
-    public static async Task<bool> WaitForFileToFinishChangingContentAsync(string filePath, int pollingIntervalInSeconds, CancellationToken cancellationToken)
+    public static async Task<bool> WaitForFileToFinishChangingContentAsync(string filePath, string fileName, int pollingIntervalInSeconds, CancellationToken cancellationToken)
     {
-        await WaitForFileToExistAsync(filePath, pollingIntervalInSeconds, cancellationToken);
+        var fullFilePath = Path.Combine(filePath, fileName);
+        await WaitForFileToExistAsync(fullFilePath, pollingIntervalInSeconds, cancellationToken);
 
-        var fileSize = new FileInfo(filePath).Length;
+        var fileSize = new FileInfo(fullFilePath).Length;
         while (true)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -44,22 +42,27 @@ public class DriverWrapper
 
             await Task.Delay(TimeSpan.FromSeconds(pollingIntervalInSeconds), cancellationToken);
 
-            var newFileSize = new FileInfo(filePath).Length;
+            var newFileSize = new FileInfo(fullFilePath).Length;
             if (newFileSize == fileSize)
             {
-                return true;
+                // Firefox does not let go of part files in time which prevents directory from being deleted.
+                var partFile = Directory.GetFiles(filePath, "*.part").FirstOrDefault();
+                if (partFile == null)
+                {
+                    return true;
+                }
             }
 
             fileSize = newFileSize;
         }
     }
 
-    public void GoToUrl(string url) => _driver.Navigate().GoToUrl(url);
+    public void GoToUrl(string url) => WebDriver.Navigate().GoToUrl(url);
 
     public void Close()
     {
-        _driver.Quit();
-        _driver.Dispose();
+        WebDriver.Quit();
+        WebDriver.Dispose();
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ public class DriverWrapper
     /// <param name="element">Element we're trying to click.</param>
     public void SafeClick(IWebElement element)
     {
-        new Actions(_driver)
+        new Actions(WebDriver)
             .MoveToElement(element)
             .Click()
             .Build()
@@ -77,19 +80,19 @@ public class DriverWrapper
 
     public void JavascriptClick(IWebElement element)
     {
-        _driver.ExecuteJavaScript(JavascriptClickCommand, element);
+        WebDriver.ExecuteJavaScript(JavascriptClickCommand, element);
     }
 
     public void Hover(IWebElement element)
     {
-        new Actions(_driver)
+        new Actions(WebDriver)
                 .MoveToElement(element)
                 .Perform();
     }
 
     public void ScrollToElement(IWebElement element)
     {
-        _driver.ExecuteJavaScript(JavascriptScrollCommand, element);
+        WebDriver.ExecuteJavaScript(JavascriptScrollCommand, element);
     }
 
     public IWebElement FindElement(By by, IWebElement? parent = default)
@@ -122,7 +125,17 @@ public class DriverWrapper
         return WaitForOneElement(by, parent, IsLinkReady);
     }
 
-    public void Maximize() => _driver.Manage().Window.Maximize();
+    public void Maximize(bool headless)
+    {
+        if (headless)
+        {
+            WebDriver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
+        }
+        else
+        {
+            WebDriver.Manage().Window.Maximize();
+        }
+    }
 
     private static async Task WaitForFileToExistAsync(string filePath, int timeoutInSeconds, CancellationToken cancellationToken)
     {
@@ -229,7 +242,7 @@ public class DriverWrapper
     /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
     /// <param name="by">Locator to reference in exception.</param>
     /// <param name="findAndCheckElementAction">Action to find elements and check if they fit the required condition.</param>
-    /// <returns>One IWebElement or ReadOnlyCollection<IWebElement>.</returns>
+    /// <returns>One IWebElement or ReadOnlyCollection(IWebElement).</returns>
     /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
     /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
     private T WaitForOneOrManyElements<T>(By by, Func<T> findAndCheckElementAction, Func<By, Type, T> elementNotFoundAction)
@@ -240,7 +253,7 @@ public class DriverWrapper
         {
             try
             {
-                var wait = new WebDriverWait(_driver, _timeout);
+                var wait = new WebDriverWait(WebDriver, _timeout);
                 return wait.Until(driver =>
                 {
                     try
@@ -292,11 +305,11 @@ public class DriverWrapper
 
     private IWebElement FindOneElement(By by, IWebElement? parent = default)
     {
-        return parent == null ? _driver.FindElement(by) : parent.FindElement(by);
+        return parent == null ? WebDriver.FindElement(by) : parent.FindElement(by);
     }
 
     private ReadOnlyCollection<IWebElement> FindManyElements(By by, IWebElement? parent = default)
     {
-        return parent == null ? _driver.FindElements(by) : parent.FindElements(by);
+        return parent == null ? WebDriver.FindElements(by) : parent.FindElements(by);
     }
 }

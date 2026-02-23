@@ -9,7 +9,7 @@ namespace SeleniumWebdriverTask.TestLayer;
 [SetUpFixture]
 internal class TestSetup
 {
-    public static AppConfiguration AppConfiguration { get; private set; }
+    public static Configuration Configuration { get; private set; }
 
     public static Logger Logger { get; private set; }
 
@@ -21,9 +21,9 @@ internal class TestSetup
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
-        var config = configuration.GetSection("AppConfiguration").Get<AppConfiguration>();
+        var config = configuration.GetSection("Configuration").Get<Configuration>();
         ArgumentNullException.ThrowIfNull(config);
-        AppConfiguration = config;
+        Configuration = config;
         Logger = new Logger(configuration);
     }
 }
