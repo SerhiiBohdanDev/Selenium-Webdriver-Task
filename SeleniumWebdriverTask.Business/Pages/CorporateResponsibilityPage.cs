@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -16,7 +15,7 @@ public class CorporateResponsibilityPage
 
     public CorporateResponsibilityPage ScrollToAndClickDownload()
     {
-        var downloadButton = new WebElementWrapper(_driver, _driver.FindElement(_downloadLink));
+        var downloadButton = _driver.FindElement(_downloadLink);
         downloadButton
             .WaitUntilEnabled()
             .ScrollToElement();

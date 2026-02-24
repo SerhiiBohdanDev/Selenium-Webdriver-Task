@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
+using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
@@ -94,12 +95,12 @@ public class DriverWrapper
         WebDriver.ExecuteJavaScript(JavascriptScrollCommand, element);
     }
 
-    public IWebElement FindElement(By by, IWebElement? parent = default)
+    public WebElementWrapper FindElement(By by)
     {
-        return WaitForElements(by, () => WebDriver.FindElement(by));
+        return new WebElementWrapper(this, WaitForElements(by, () => WebDriver.FindElement(by)));
     }
 
-    public ReadOnlyCollection<IWebElement> FindElements(By by, IWebElement? parent = default)
+    public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
         var elements = new ReadOnlyCollection<IWebElement>([]);
         WaitForElements(by, () =>
@@ -110,10 +111,10 @@ public class DriverWrapper
                 return null;
             }
 
-            return elements;
+            return WrapElements(elements);
         });
 
-        return elements;
+        return WrapElements(elements);
     }
 
     public void Maximize(bool headless)
@@ -187,6 +188,24 @@ public class DriverWrapper
             }
         }
 
-        throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
+        if (exceptionCaught == typeof(NoSuchElementException))
+        {
+            throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
+        }
+        else
+        {
+            throw new StaleElementReferenceException($"Element located by {by} remained stale after {MaxRetries} attempts.");
+        }
+    }
+
+    private ReadOnlyCollection<WebElementWrapper> WrapElements(ReadOnlyCollection<IWebElement> elements)
+    {
+        var wrappedElements = new List<WebElementWrapper>();
+        for (int i = 0; i < elements.Count; i++)
+        {
+            wrappedElements.Add(new WebElementWrapper(this, elements[i]));
+        }
+
+        return wrappedElements.AsReadOnly();
     }
 }

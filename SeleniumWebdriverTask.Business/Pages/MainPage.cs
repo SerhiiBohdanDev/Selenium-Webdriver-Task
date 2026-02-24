@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -26,11 +25,11 @@ public class MainPage
 
     public MainPage ClickJoinUs()
     {
-        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
-        var careers = new WebElementWrapper(_driver, topRow.FindElement(_careersText));
+        var topRow = _driver.FindElement(_topNavRow);
+        var careers = topRow.FindElement(_careersText);
         careers.Hover();
 
-        var joinUsLink = new WebElementWrapper(_driver, topRow.FindElement(_joinUs));
+        var joinUsLink = topRow.FindElement(_joinUs);
         joinUsLink
             .WaitUntilEnabled()
             .SafeClick();
@@ -40,8 +39,8 @@ public class MainPage
 
     public MainPage ClickAbout()
     {
-        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
-        var about = new WebElementWrapper(_driver, topRow.FindElement(_about));
+        var topRow = _driver.FindElement(_topNavRow);
+        var about = topRow.FindElement(_about);
         about
             .WaitUntilEnabled()
             .SafeClick();
@@ -51,8 +50,8 @@ public class MainPage
 
     public MainPage ClickInsights()
     {
-        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
-        var insights = new WebElementWrapper(_driver, topRow.FindElement(_insights));
+        var topRow = _driver.FindElement(_topNavRow);
+        var insights = topRow.FindElement(_insights);
         insights
             .WaitUntilEnabled()
             .SafeClick();
@@ -62,7 +61,8 @@ public class MainPage
 
     public MainPage ClickMagnifyingGlass()
     {
-        new WebElementWrapper(_driver, _driver.FindElement(_magnifyingGlass))
+        _driver
+            .FindElement(_magnifyingGlass)
             .SafeClick();
 
         return this;
@@ -70,7 +70,7 @@ public class MainPage
 
     public MainPage EnterSearchTerm(string text)
     {
-        var searchField = new WebElementWrapper(_driver, _driver.FindElement(_searchField));
+        var searchField = _driver.FindElement(_searchField);
         searchField.EnterText(text);
 
         return this;
@@ -78,7 +78,7 @@ public class MainPage
 
     public MainPage ClickFind()
     {
-        var findButton = new WebElementWrapper(_driver, _driver.FindElement(_findButton));
+        var findButton = _driver.FindElement(_findButton);
         findButton
             .WaitUntilEnabled()
             .SafeClick();
@@ -88,10 +88,11 @@ public class MainPage
 
     public MainPage ClickCorporateResponsibility()
     {
-        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
-        var about = new WebElementWrapper(_driver, topRow.FindElement(_about));
+        var topRow = _driver.FindElement(_topNavRow);
+        var about = topRow.FindElement(_about);
         about.Hover();
-        new WebElementWrapper(_driver, topRow.FindElement(_corporateResponsibility))
+        topRow
+            .FindElement(_corporateResponsibility)
             .SafeClick();
 
         return this;

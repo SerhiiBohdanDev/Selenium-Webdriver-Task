@@ -26,7 +26,7 @@ public class SearchJobsPage
 
     public SearchJobsPage EnterLanguage(string language)
     {
-        var element = new WebElementWrapper(_driver, _driver.FindElement(_keywordSearchField));
+        var element = _driver.FindElement(_keywordSearchField);
         element
             .WaitUntilEnabled()
             .EnterText(language);
@@ -36,7 +36,7 @@ public class SearchJobsPage
 
     public SearchJobsPage EnterLocation(string location)
     {
-        var element = new WebElementWrapper(_driver, _driver.FindElement(_locationDropdown));
+        var element = _driver.FindElement(_locationDropdown);
         element
             .WaitUntilEnabled()
             .EnterText(location);
@@ -47,7 +47,7 @@ public class SearchJobsPage
 
     public SearchJobsPage ClickRemoteCheckbox()
     {
-        var checkbox = new WebElementWrapper(_driver, _driver.FindElement(_remoteCheckbox));
+        var checkbox = _driver.FindElement(_remoteCheckbox);
 
         // the checkbox has opacity at 0 which makes it Displayed property false, and so clicking is not allowed
         // so we use js to click
@@ -57,7 +57,7 @@ public class SearchJobsPage
 
     public SearchJobsPage ClickSearch()
     {
-        var search = new WebElementWrapper(_driver, _driver.FindElement(_searchButton));
+        var search = _driver.FindElement(_searchButton);
         search
             .WaitUntilEnabled()
             .SafeClick();
@@ -68,28 +68,22 @@ public class SearchJobsPage
     public List<string> GetJobInformation()
     {
         var results = new List<string>();
-        var containerStatic = new WebElementWrapper(_driver, _driver.FindElement(_resultsContainerFull));
+        var containerStatic = _driver.FindElement(_resultsContainerFull);
 
         // this element is deleted for a moment when search happens, using containerStatic seems to solve the problem
-        var containerDynamic = new WebElementWrapper(_driver, containerStatic.FindElement(_resultsContainer));
+        var containerDynamic = containerStatic.FindElement(_resultsContainer);
         containerDynamic.WaitUntilDisplayed();
-        var lastResult = new WebElementWrapper(_driver, containerDynamic.FindElement(_lastElement));
-        var title = new WebElementWrapper(_driver, lastResult.FindElement(_jobCardTitle));
+        var lastResult = containerDynamic.FindElement(_lastElement);
+        var title = lastResult.FindElement(_jobCardTitle);
         results.Add(title.Text);
 
-        var shortDescription = new WebElementWrapper(_driver, lastResult.FindElement(_shortJobDescription));
+        var shortDescription = lastResult.FindElement(_shortJobDescription);
         results.Add(shortDescription.Text);
 
-        var sentences = _driver.FindElements(_descriptionSentences);
-        var sentencesElements = new WebElementWrapper[sentences.Count];
+        var sentences = lastResult.FindElements(_descriptionSentences);
         for (int i = 0; i < sentences.Count; i++)
         {
-            sentencesElements[i] = new WebElementWrapper(_driver, sentences[i]);
-        }
-
-        for (int i = 0; i < sentencesElements.Length; i++)
-        {
-            var text = sentencesElements[i].TextContent;
+            var text = sentences[i].TextContent;
             if (text != null)
             {
                 results.Add(text);

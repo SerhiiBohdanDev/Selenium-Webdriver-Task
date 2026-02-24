@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -18,7 +17,7 @@ public class InsightsPage
 
     public InsightsPage ClickNextSlide()
     {
-        var button = new WebElementWrapper(_driver, _driver.FindElement(_nextSlideButton));
+        var button = _driver.FindElement(_nextSlideButton);
         button
             .WaitUntilEnabled()
             .JavascriptClick();
@@ -29,12 +28,12 @@ public class InsightsPage
     public string GetActiveSlideTitle()
     {
         var sentence = _driver.FindElement(_slideTitle);
-        return DriverWrapper.GetElementText(sentence) ?? string.Empty;
+        return sentence.TextContent ?? string.Empty;
     }
 
     public InsightsPage ClickMoreInfo()
     {
-        var nextSlideButton = new WebElementWrapper(_driver, _driver.FindElement(_readMoreLink));
+        var nextSlideButton = _driver.FindElement(_readMoreLink);
         nextSlideButton
             .WaitUntilEnabled()
             .JavascriptClick();

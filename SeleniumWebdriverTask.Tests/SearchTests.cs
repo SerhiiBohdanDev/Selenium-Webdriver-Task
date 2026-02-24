@@ -83,13 +83,19 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickNextSlide()
                 .ClickNextSlide();
 
-            string slideTitle = insightsPage.GetActiveSlideTitle();
+            var slideTitle = insightsPage.GetActiveSlideTitle();
             insightsPage.ClickMoreInfo();
 
             var insightPage = new InsightBasePage(Driver);
-            string pageTitle = insightPage.GetTitle();
+            var pageTitle = insightPage.GetTitle();
 
             LogComparedTitles(slideTitle, pageTitle);
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(pageTitle, Is.Not.Empty);
+                Assert.That(slideTitle, Is.Not.Empty);
+            }
 
             Assert.That(pageTitle, Does.Contain(slideTitle));
         }

@@ -67,11 +67,6 @@ public class WebElementWrapper
             .Perform();
     }
 
-    public IWebElement FindElement(By by)
-    {
-        return WaitForElements(by, () => _element.FindElement(by));
-    }
-
     public WebElementWrapper WaitUntilDisplayed()
     {
         WaitForCondition(() => _element.Displayed);
@@ -90,7 +85,12 @@ public class WebElementWrapper
         return this;
     }
 
-    public ReadOnlyCollection<IWebElement> FindElements(By by)
+    public WebElementWrapper FindElement(By by)
+    {
+        return new WebElementWrapper(_driverWrapper, WaitForElements(by, () => _element.FindElement(by)));
+    }
+
+    public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
         var elements = new ReadOnlyCollection<IWebElement>([]);
         WaitForElements(by, () =>
@@ -101,10 +101,21 @@ public class WebElementWrapper
                 return null;
             }
 
-            return elements;
+            return WrapElements(elements);
         });
 
-        return elements;
+        return WrapElements(elements);
+    }
+
+    private ReadOnlyCollection<WebElementWrapper> WrapElements(ReadOnlyCollection<IWebElement> elements)
+    {
+        var wrappedElements = new List<WebElementWrapper>();
+        for (int i = 0; i < elements.Count; i++)
+        {
+            wrappedElements.Add(new WebElementWrapper(_driverWrapper, elements[i]));
+        }
+
+        return wrappedElements.AsReadOnly();
     }
 
     private bool WaitForCondition(Func<bool> condition)
