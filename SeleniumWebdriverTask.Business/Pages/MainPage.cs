@@ -71,7 +71,9 @@ public class MainPage
     public MainPage EnterSearchTerm(string text)
     {
         var searchField = _driver.FindElement(_searchField);
-        searchField.EnterText(text);
+        searchField
+            .WaitUntilEnabled()
+            .EnterText(text);
 
         return this;
     }
