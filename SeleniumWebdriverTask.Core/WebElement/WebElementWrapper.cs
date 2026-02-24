@@ -118,14 +118,14 @@ public class WebElementWrapper
         return wrappedElements.AsReadOnly();
     }
 
-    private bool WaitForCondition(Func<bool> condition)
+    private void WaitForCondition(Func<bool> condition)
     {
         var retries = 0;
         while (retries < DriverWrapper.MaxRetries)
         {
             try
             {
-                return _driverWrapper.Wait.Until(driver =>
+                _driverWrapper.Wait.Until(driver =>
                 {
                     return condition.Invoke();
                 });
@@ -136,7 +136,7 @@ public class WebElementWrapper
             }
         }
 
-        return false;
+        throw new WebDriverTimeoutException($"Driver timed out after {DriverWrapper.MaxRetries} retries.");
     }
 
     /// <summary>
