@@ -17,7 +17,7 @@ public class CorporateResponsibilityPage
     {
         var downloadButton = _driver.FindElement(_downloadLink);
         downloadButton
-            .WaitUntilEnabled()
+            .WaitUntilLinkIsReady()
             .ScrollToElement();
         downloadButton.JavascriptClick();
 

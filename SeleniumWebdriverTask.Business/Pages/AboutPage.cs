@@ -17,7 +17,7 @@ public class AboutPage
     {
         var downloadButton = _driver.FindElement(_downloadButton);
         downloadButton
-            .WaitUntilEnabled()
+            .WaitUntilLinkIsReady()
             .ScrollToElement();
         downloadButton.JavascriptClick();
 
