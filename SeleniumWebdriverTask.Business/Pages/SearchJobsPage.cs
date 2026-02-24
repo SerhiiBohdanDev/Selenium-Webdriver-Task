@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
@@ -68,7 +67,7 @@ public class SearchJobsPage
         var sentences = _driver.FindElements(_descriptionSentences, lastResult);
         for (int i = 0; i < sentences.Count; i++)
         {
-            string? text = DriverWrapper.GetElementText(sentences[i]);
+            var text = DriverWrapper.GetElementText(sentences[i]);
             if (text != null)
             {
                 results.Add(text);

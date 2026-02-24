@@ -36,7 +36,6 @@ namespace SeleniumWebdriverTask.TestLayer
             TestSetup.Logger.LogInformation("Finishing test");
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
-                TestSetup.Logger.LogInformation($"window size = {Driver.WindowSize}");
                 var screenshotLocation = ScreenshotMaker.TakeBrowserScreenshot(Driver.WebDriver);
                 TestSetup.Logger.LogError($"Error screenshot:\n {screenshotLocation}");
             }
