@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
+using System.Collections.ObjectModel;
+using System.Xml.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
@@ -8,41 +10,39 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.CoreLayer.WebElement;
 
-internal class WebElementWrapper
+public class WebElementWrapper
 {
     // passing true aligns top of the element with the top of the view
     private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);";
     private const string JavascriptClickCommand = "arguments[0].click();";
 
-    private readonly IWebDriver _driver;
+    private readonly DriverWrapper _driverWrapper;
     private readonly IWebElement _element;
 
-    public WebElementWrapper(IWebDriver driver, IWebElement element)
+    public WebElementWrapper(DriverWrapper driverWrapper, IWebElement element)
     {
-        _driver = driver;
+        _driverWrapper = driverWrapper;
         _element = element;
     }
 
-    public bool IsDisplayed => _element.Displayed;
-
-    public bool IsEnabled => IsDisplayed && _element.Enabled;
-
-    public bool IsLinkReady => IsEnabled && _element.GetUrl() != null;
-
     public string? TextContent => _element.GetAttribute("textContent");
+
+    public string Text => _element.Text;
+
+    private IWebDriver WebDriver => _driverWrapper.WebDriver;
 
     public void SafeClick()
     {
-        new Actions(_driver)
+        new Actions(WebDriver)
             .MoveToElement(_element)
             .Click()
             .Build()
             .Perform();
     }
 
-    public void JavascriptClick(IWebElement element)
+    public void JavascriptClick()
     {
-        _driver.ExecuteJavaScript(JavascriptClickCommand, element);
+        WebDriver.ExecuteJavaScript(JavascriptClickCommand, _element);
     }
 
     public void EnterText(string text)
@@ -50,15 +50,125 @@ internal class WebElementWrapper
         _element.SendKeys(text);
     }
 
+    public void PressEnter()
+    {
+        _element.SendKeys(Keys.Enter);
+    }
+
     public void ScrollToElement()
     {
-        _driver.ExecuteJavaScript(JavascriptScrollCommand, _element);
+        WebDriver.ExecuteJavaScript(JavascriptScrollCommand, _element);
     }
 
     public void Hover()
     {
-        new Actions(_driver)
+        new Actions(WebDriver)
             .MoveToElement(_element)
             .Perform();
+    }
+
+    public IWebElement FindElement(By by)
+    {
+        return WaitForElements(by, () => _element.FindElement(by));
+    }
+
+    public WebElementWrapper WaitUntilDisplayed()
+    {
+        WaitForCondition(() => _element.Displayed);
+        return this;
+    }
+
+    public WebElementWrapper WaitUntilEnabled()
+    {
+        WaitForCondition(() => _element.Displayed && _element.Enabled);
+        return this;
+    }
+
+    public WebElementWrapper WaitUntilLinkIsReady()
+    {
+        WaitForCondition(() => _element.Displayed && _element.Enabled && _element.GetUrl() != null);
+        return this;
+    }
+
+    public ReadOnlyCollection<IWebElement> FindElements(By by)
+    {
+        var elements = new ReadOnlyCollection<IWebElement>([]);
+        WaitForElements(by, () =>
+        {
+            elements = _element.FindElements(by);
+            if (elements.Count == 0)
+            {
+                return null;
+            }
+
+            return elements;
+        });
+
+        return elements;
+    }
+
+    private bool WaitForCondition(Func<bool> condition)
+    {
+        var retries = 0;
+        while (retries < DriverWrapper.MaxRetries)
+        {
+            try
+            {
+                return _driverWrapper.Wait.Until(driver =>
+                {
+                    return condition.Invoke();
+                });
+            }
+            catch (WebDriverTimeoutException)
+            {
+                retries++;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// A wrapper method to allow finding one IWebElement or ReadOnlyCollection of type IWebElement.
+    /// </summary>
+    /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
+    /// <param name="by">Locator to reference in exception.</param>
+    /// <param name="findAction">Action to find elements and check if they fit the required condition.</param>
+    /// <returns>One IWebElement or ReadOnlyCollection(IWebElement).</returns>
+    /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
+    /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
+    private T WaitForElements<T>(By by, Func<T> findAction)
+    {
+        var retries = 0;
+        var exceptionCaught = typeof(NoSuchElementException);
+        while (retries < DriverWrapper.MaxRetries)
+        {
+            try
+            {
+                return _driverWrapper.Wait.Until(driver =>
+                {
+                    try
+                    {
+                        return findAction.Invoke();
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        exceptionCaught = typeof(StaleElementReferenceException);
+                        return default;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        exceptionCaught = typeof(NoSuchElementException);
+                        return default;
+                    }
+                });
+            }
+            catch (WebDriverTimeoutException)
+            {
+                retries++;
+            }
+        }
+
+        throw new NoSuchElementException($"Could not find element located by {by} after {DriverWrapper.MaxRetries} attempts.");
     }
 }

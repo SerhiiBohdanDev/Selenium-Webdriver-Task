@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -15,7 +16,7 @@ public class InsightBasePage
 
     public string GetTitle()
     {
-        var sentence = _driver.FindElement(_title);
-        return DriverWrapper.GetElementText(sentence) ?? string.Empty;
+        var sentence = new WebElementWrapper(_driver, _driver.FindElement(_title));
+        return sentence.Text ?? string.Empty;
     }
 }

@@ -8,22 +8,21 @@ namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 public class DriverWrapper
 {
+    public const int MaxRetries = 3;
+
     // passing true aligns top of the element with the top of the view
     private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);";
     private const string JavascriptClickCommand = "arguments[0].click();";
 
-    private const int MaxRetries = 3;
-    private readonly TimeSpan _timeout;
-
     public DriverWrapper(IWebDriver driver, TimeSpan timeout)
     {
         WebDriver = driver;
-        _timeout = timeout;
+        Wait = new WebDriverWait(WebDriver, timeout);
     }
 
-    public System.Drawing.Size WindowSize => WebDriver.Manage().Window.Size;
-
     public IWebDriver WebDriver { get; private set; }
+
+    public WebDriverWait Wait { get; private set; }
 
     public static string? GetElementText(IWebElement element) => element.GetText();
 
@@ -97,32 +96,24 @@ public class DriverWrapper
 
     public IWebElement FindElement(By by, IWebElement? parent = default)
     {
-        return WaitForOneElement(by, parent);
+        return WaitForElements(by, () => WebDriver.FindElement(by));
     }
 
     public ReadOnlyCollection<IWebElement> FindElements(By by, IWebElement? parent = default)
     {
-        return WaitForManyElements(by, parent);
-    }
+        var elements = new ReadOnlyCollection<IWebElement>([]);
+        WaitForElements(by, () =>
+        {
+            elements = WebDriver.FindElements(by);
+            if (elements.Count == 0)
+            {
+                return null;
+            }
 
-    public IWebElement FindDisplayedElement(By by, IWebElement? parent = default)
-    {
-        return WaitForOneElement(by, parent, IsElementDisplayed);
-    }
+            return elements;
+        });
 
-    public IWebElement FindClickableElement(By by, IWebElement? parent = default)
-    {
-        return WaitForOneElement(by, parent, IsElementClickable);
-    }
-
-    public ReadOnlyCollection<IWebElement> FindClickableElements(By by, IWebElement? parent = default)
-    {
-        return WaitForManyElements(by, parent, IsElementClickable);
-    }
-
-    public IWebElement FindClickableLinkElement(By by, IWebElement? parent = default)
-    {
-        return WaitForOneElement(by, parent, IsLinkReady);
+        return elements;
     }
 
     public void Maximize(bool headless)
@@ -155,110 +146,28 @@ public class DriverWrapper
         }
     }
 
-    private static bool IsElementDisplayed(IWebElement element) => element.Displayed;
-
-    private static bool IsElementClickable(IWebElement element) => element.Displayed && element.Enabled;
-
-    private static bool IsLinkReady(IWebElement element) => element.Displayed && element.Enabled && element.GetUrl() != null;
-
-    private static IWebElement FindElementAndCheckCondition(Func<IWebElement> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
-    {
-        var element = findAction.Invoke();
-        if (conditionCheckAction != null)
-        {
-            bool conditionMet = conditionCheckAction.Invoke(element);
-#pragma warning disable CS8603 // Possible null reference return.
-            return conditionMet ? element : null;
-#pragma warning restore CS8603 // Possible null reference return.
-        }
-        else
-        {
-            return element;
-        }
-    }
-
-    private static ReadOnlyCollection<IWebElement> FindManyElementsAndCheckCondition(Func<ReadOnlyCollection<IWebElement>> findAction, Func<IWebElement, bool>? conditionCheckAction = null)
-    {
-        var elements = findAction.Invoke();
-        if (elements.Count == 0)
-        {
-#pragma warning disable S1168 // Possible null reference return.
-#pragma warning disable CS8603 // Possible null reference return.
-            return null;
-#pragma warning restore CS8603 // Possible null reference return.
-#pragma warning restore S1168 // Possible null reference return.
-        }
-
-        if (conditionCheckAction != null)
-        {
-            bool conditionMet = true;
-            for (int i = 0; i < elements.Count; i++)
-            {
-                if (!conditionCheckAction.Invoke(elements[i]))
-                {
-                    conditionMet = false;
-                    break;
-                }
-            }
-#pragma warning disable S1168 // Possible null reference return.
-#pragma warning disable CS8603 // Possible null reference return.
-            return conditionMet ? elements : null;
-#pragma warning restore CS8603 // Possible null reference return.
-#pragma warning restore S1168 // Possible null reference return.
-        }
-        else
-        {
-            return elements;
-        }
-    }
-
-    private static IWebElement OneElementNotFound(By by, Type exceptionCaught)
-    {
-        if (exceptionCaught == typeof(NoSuchElementException))
-        {
-            throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
-        }
-        else
-        {
-            throw new StaleElementReferenceException($"Element located by {by} remained stale after {MaxRetries} attempts.");
-        }
-    }
-
-    private static ReadOnlyCollection<IWebElement> ManyElementsNotFound(By by, Type exceptionCaught)
-    {
-        if (exceptionCaught == typeof(NoSuchElementException))
-        {
-            return new ReadOnlyCollection<IWebElement>([]);
-        }
-        else
-        {
-            throw new StaleElementReferenceException($"Elements collection located by {by} remained stale after {MaxRetries} attempts.");
-        }
-    }
-
     /// <summary>
     /// A wrapper method to allow finding one IWebElement or ReadOnlyCollection of type IWebElement.
     /// </summary>
     /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
     /// <param name="by">Locator to reference in exception.</param>
-    /// <param name="findAndCheckElementAction">Action to find elements and check if they fit the required condition.</param>
+    /// <param name="findAction">Action to find elements and check if they fit the required condition.</param>
     /// <returns>One IWebElement or ReadOnlyCollection(IWebElement).</returns>
     /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
     /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
-    private T WaitForOneOrManyElements<T>(By by, Func<T> findAndCheckElementAction, Func<By, Type, T> elementNotFoundAction)
+    private T WaitForElements<T>(By by, Func<T> findAction)
     {
-        int retries = 0;
+        var retries = 0;
         var exceptionCaught = typeof(NoSuchElementException);
         while (retries < MaxRetries)
         {
             try
             {
-                var wait = new WebDriverWait(WebDriver, _timeout);
-                return wait.Until(driver =>
+                return Wait.Until(driver =>
                 {
                     try
                     {
-                        return findAndCheckElementAction.Invoke();
+                        return findAction.Invoke();
                     }
                     catch (StaleElementReferenceException)
                     {
@@ -278,38 +187,6 @@ public class DriverWrapper
             }
         }
 
-        return elementNotFoundAction.Invoke(by, exceptionCaught);
-    }
-
-    private IWebElement WaitForOneElement(By by, IWebElement? parent = default, Func<IWebElement, bool>? conditionCheckAction = null)
-    {
-        return WaitForOneOrManyElements(
-        by,
-        () =>
-        {
-            return FindElementAndCheckCondition(() => FindOneElement(by, parent), conditionCheckAction);
-        },
-        OneElementNotFound);
-    }
-
-    private ReadOnlyCollection<IWebElement> WaitForManyElements(By by, IWebElement? parent = default, Func<IWebElement, bool>? conditionCheckAction = null)
-    {
-        return WaitForOneOrManyElements(
-        by,
-        () =>
-        {
-            return FindManyElementsAndCheckCondition(() => FindManyElements(by, parent), conditionCheckAction);
-        },
-        ManyElementsNotFound);
-    }
-
-    private IWebElement FindOneElement(By by, IWebElement? parent = default)
-    {
-        return parent == null ? WebDriver.FindElement(by) : parent.FindElement(by);
-    }
-
-    private ReadOnlyCollection<IWebElement> FindManyElements(By by, IWebElement? parent = default)
-    {
-        return parent == null ? WebDriver.FindElements(by) : parent.FindElements(by);
+        throw new NoSuchElementException($"Could not find element located by {by} after {MaxRetries} attempts.");
     }
 }

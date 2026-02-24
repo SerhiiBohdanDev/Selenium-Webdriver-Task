@@ -16,7 +16,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickJoinUs();
 
             var searchPage = new SearchJobsPage(Driver)
-                .EnterLanguage(model.Language)
+                .EnterLanguage(model.Language[0])
                 .EnterLocation(model.Location)
                 .ClickRemoteCheckbox()
                 .ClickSearch();

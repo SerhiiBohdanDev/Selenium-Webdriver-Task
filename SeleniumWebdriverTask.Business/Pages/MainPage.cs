@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -25,68 +26,73 @@ public class MainPage
 
     public MainPage ClickJoinUs()
     {
-        var topRow = _driver.FindElement(_topNavRow);
-        var careers = _driver.FindClickableElement(_careersText, topRow);
-        _driver.Hover(careers);
+        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
+        var careers = new WebElementWrapper(_driver, topRow.FindElement(_careersText));
+        careers.Hover();
 
-        _driver
-            .FindClickableElement(_joinUs, topRow)
-            .Click();
+        var joinUsLink = new WebElementWrapper(_driver, topRow.FindElement(_joinUs));
+        joinUsLink
+            .WaitUntilEnabled()
+            .SafeClick();
 
         return this;
     }
 
     public MainPage ClickAbout()
     {
-        var topRow = _driver.FindElement(_topNavRow);
-        _driver
-            .FindClickableElement(_about, topRow)
-            .Click();
+        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
+        var about = new WebElementWrapper(_driver, topRow.FindElement(_about));
+        about
+            .WaitUntilEnabled()
+            .SafeClick();
 
         return this;
     }
 
     public MainPage ClickInsights()
     {
-        var topRow = _driver.FindElement(_topNavRow);
-        _driver
-            .FindClickableElement(_insights, topRow)
-            .Click();
+        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
+        var insights = new WebElementWrapper(_driver, topRow.FindElement(_insights));
+        insights
+            .WaitUntilEnabled()
+            .SafeClick();
 
         return this;
     }
 
     public MainPage ClickMagnifyingGlass()
     {
-        _driver
-            .FindClickableElement(_magnifyingGlass)
-            .Click();
+        new WebElementWrapper(_driver, _driver.FindElement(_magnifyingGlass))
+            .SafeClick();
+
         return this;
     }
 
     public MainPage EnterSearchTerm(string text)
     {
-        _driver
-            .FindClickableElement(_searchField)
-            .SendKeys(text);
+        var searchField = new WebElementWrapper(_driver, _driver.FindElement(_searchField));
+        searchField.EnterText(text);
+
         return this;
     }
 
     public MainPage ClickFind()
     {
-        _driver
-            .FindClickableElement(_findButton)
-            .Click();
+        var findButton = new WebElementWrapper(_driver, _driver.FindElement(_findButton));
+        findButton
+            .WaitUntilEnabled()
+            .SafeClick();
 
         return this;
     }
 
     public MainPage ClickCorporateResponsibility()
     {
-        var topRow = _driver.FindElement(_topNavRow);
-        _driver.Hover(_driver.FindClickableElement(_about, topRow));
-        _driver.FindClickableElement(_corporateResponsibility, topRow)
-            .Click();
+        var topRow = new WebElementWrapper(_driver, _driver.FindElement(_topNavRow));
+        var about = new WebElementWrapper(_driver, topRow.FindElement(_about));
+        about.Hover();
+        new WebElementWrapper(_driver, topRow.FindElement(_corporateResponsibility))
+            .SafeClick();
 
         return this;
     }
@@ -94,7 +100,7 @@ public class MainPage
     public List<string> GetSearchResultTitles()
     {
         var results = new List<string>();
-        var elements = _driver.FindClickableElements(_searchResult);
+        var elements = _driver.FindElements(_searchResult);
         foreach (var element in elements)
         {
             results.Add(element.Text);
