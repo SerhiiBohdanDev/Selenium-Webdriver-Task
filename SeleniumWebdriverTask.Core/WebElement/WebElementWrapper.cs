@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;

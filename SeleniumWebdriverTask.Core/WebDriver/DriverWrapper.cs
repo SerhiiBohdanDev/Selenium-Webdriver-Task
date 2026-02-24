@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumWebdriverTask.CoreLayer.WebElement;
 
@@ -10,10 +8,6 @@ namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 public class DriverWrapper
 {
     public const int MaxRetries = 3;
-
-    // passing true aligns top of the element with the top of the view
-    private const string JavascriptScrollCommand = "arguments[0].scrollIntoView(true);";
-    private const string JavascriptClickCommand = "arguments[0].click();";
 
     public DriverWrapper(IWebDriver driver, TimeSpan timeout)
     {
@@ -46,6 +40,7 @@ public class DriverWrapper
             if (newFileSize == fileSize)
             {
                 // Firefox does not let go of part files in time which prevents directory from being deleted.
+                // So we need to wait until they are deleted.
                 var partFile = Directory.GetFiles(filePath, "*.part").FirstOrDefault();
                 if (partFile == null)
                 {
