@@ -65,36 +65,6 @@ public class DriverWrapper
         WebDriver.Dispose();
     }
 
-    /// <summary>
-    /// Allows clicking an element safely in cases where it can be interrupted by animation or popups.
-    /// </summary>
-    /// <param name="element">Element we're trying to click.</param>
-    public void SafeClick(IWebElement element)
-    {
-        new Actions(WebDriver)
-            .MoveToElement(element)
-            .Click()
-            .Build()
-            .Perform();
-    }
-
-    public void JavascriptClick(IWebElement element)
-    {
-        WebDriver.ExecuteJavaScript(JavascriptClickCommand, element);
-    }
-
-    public void Hover(IWebElement element)
-    {
-        new Actions(WebDriver)
-                .MoveToElement(element)
-                .Perform();
-    }
-
-    public void ScrollToElement(IWebElement element)
-    {
-        WebDriver.ExecuteJavaScript(JavascriptScrollCommand, element);
-    }
-
     public WebElementWrapper FindElement(By by)
     {
         return new WebElementWrapper(this, WaitForElements(by, () => WebDriver.FindElement(by)));
