@@ -120,22 +120,32 @@ public class WebElementWrapper
     private void WaitForCondition(Func<bool> condition)
     {
         var retries = 0;
+        var result = false;
         while (retries < DriverWrapper.MaxRetries)
         {
             try
             {
                 _driverWrapper.Wait.Until(driver =>
                 {
-                    return condition.Invoke();
+                    result = condition.Invoke();
+                    return result;
                 });
             }
             catch (WebDriverTimeoutException)
             {
                 retries++;
             }
+
+            if (result)
+            {
+                break;
+            }
         }
 
-        throw new WebDriverTimeoutException($"Driver timed out after {DriverWrapper.MaxRetries} retries.");
+        if (!result)
+        {
+            throw new WebDriverTimeoutException($"Driver timed out after {DriverWrapper.MaxRetries} retries.");
+        }
     }
 
     /// <summary>
