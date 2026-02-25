@@ -74,50 +74,29 @@ public class WebElementWrapper
 
     public WebElementWrapper WaitUntilDisplayed()
     {
-        WaitForCondition(() => _element.Displayed);
+        Waiter.WaitForCondition(Wait, () => _element.Displayed);
         return this;
     }
 
     public WebElementWrapper WaitUntilEnabled()
     {
-        WaitForCondition(() => _element.Displayed && _element.Enabled);
+        Waiter.WaitForCondition(Wait, () => _element.Displayed && _element.Enabled);
         return this;
     }
 
     public WebElementWrapper WaitUntilLinkIsReady()
     {
-        WaitForCondition(() => _element.Displayed && _element.Enabled && Href != null);
+        Waiter.WaitForCondition(Wait, () => _element.Displayed && _element.Enabled && Href != null);
         return this;
     }
 
     public WebElementWrapper FindElement(By by)
     {
-        var element = Waiter.WaitForElements(by, () => _element.FindElement(by), Wait);
-        return element.WrapElement(_driverWrapper);
+        return ElementsFinder.FindAndWrapElement(by, _element, _driverWrapper);
     }
 
     public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
-        var elements = new ReadOnlyCollection<IWebElement>([]);
-        Waiter.WaitForElements(
-            by,
-            () =>
-            {
-                elements = _element.FindElements(by);
-                if (elements.Count == 0)
-                {
-                    return null;
-                }
-
-                return elements.WrapElements(_driverWrapper);
-            },
-            Wait);
-
-        return elements.WrapElements(_driverWrapper);
-    }
-
-    private void WaitForCondition(Func<bool> condition)
-    {
-        Waiter.WaitForCondition(Wait, condition);
+        return ElementsFinder.FindAndWrapElements(by, _element, _driverWrapper);
     }
 }

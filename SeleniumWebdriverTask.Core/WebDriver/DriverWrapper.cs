@@ -63,28 +63,12 @@ public class DriverWrapper
 
     public WebElementWrapper FindElement(By by)
     {
-        var element = Waiter.WaitForElements(by, () => WebDriver.FindElement(by), Wait);
-        return element.WrapElement(this);
+        return ElementsFinder.FindAndWrapElement(by, WebDriver, this);
     }
 
     public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
-        var elements = new ReadOnlyCollection<IWebElement>([]);
-        Waiter.WaitForElements(
-            by,
-            () =>
-            {
-                elements = WebDriver.FindElements(by);
-                if (elements.Count == 0)
-                {
-                    return null;
-                }
-
-                return elements.WrapElements(this);
-            },
-            Wait);
-
-        return elements.WrapElements(this);
+        return ElementsFinder.FindAndWrapElements(by, WebDriver, this);
     }
 
     public void Maximize(bool headless)
