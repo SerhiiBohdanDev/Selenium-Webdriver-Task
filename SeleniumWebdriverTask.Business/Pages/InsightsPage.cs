@@ -15,28 +15,36 @@ public class InsightsPage
         _driver = driver;
     }
 
+    public InsightsPage WaitUntilPageSwitched()
+    {
+        // Need to wait because firefox is not switching to this page in time
+        _driver.WaitForCondition(() => _driver.Url.Contains("insights"));
+        return this;
+    }
+
     public InsightsPage ClickNextSlide()
     {
         var button = _driver.FindElement(_nextSlideButton);
-        button
-            .WaitUntilEnabled()
-            .JavascriptClick();
+        button.WaitUntilEnabled();
+        var slideTitle = _driver.FindElement(_slideTitle);
+        slideTitle.WaitUntilDisplayed();
+        button.JavascriptClick();
 
         return this;
     }
 
     public string GetActiveSlideTitle()
     {
-        var sentence = _driver.FindElement(_slideTitle);
-        return sentence.TextContent ?? string.Empty;
+        var slideTitle = _driver.FindElement(_slideTitle);
+        slideTitle.WaitUntilDisplayed();
+        return slideTitle.TextContent ?? string.Empty;
     }
 
     public InsightsPage ClickMoreInfo()
     {
-        var nextSlideButton = _driver.FindElement(_readMoreLink);
-        nextSlideButton
-            .WaitUntilEnabled()
-            .JavascriptClick();
+        var readMoreButton = _driver.FindElement(_readMoreLink);
+        readMoreButton.WaitUntilEnabled();
+        readMoreButton.JavascriptClick();
 
         return this;
     }

@@ -17,9 +17,9 @@ public class DriverWrapper
 
     public IWebDriver WebDriver { get; private set; }
 
-    public WebDriverWait Wait { get; private set; }
+    public string Url => WebDriver.Url;
 
-    public static string? GetElementText(IWebElement element) => element.GetText();
+    public WebDriverWait Wait { get; private set; }
 
     public static async Task<bool> WaitForFileToFinishChangingContentAsync(string filePath, string fileName, int pollingIntervalInSeconds, CancellationToken cancellationToken)
     {
@@ -91,6 +91,37 @@ public class DriverWrapper
         else
         {
             WebDriver.Manage().Window.Maximize();
+        }
+    }
+
+    public void WaitForCondition(Func<bool> condition)
+    {
+        var retries = 0;
+        var result = false;
+        while (retries < MaxRetries)
+        {
+            try
+            {
+                Wait.Until(driver =>
+                {
+                    result = condition.Invoke();
+                    return result;
+                });
+            }
+            catch (WebDriverTimeoutException)
+            {
+                retries++;
+            }
+
+            if (result)
+            {
+                break;
+            }
+        }
+
+        if (!result)
+        {
+            throw new WebDriverTimeoutException($"Driver timed out after {MaxRetries} retries.");
         }
     }
 

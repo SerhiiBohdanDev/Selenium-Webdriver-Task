@@ -6,7 +6,7 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 public class InsightBasePage
 {
     private readonly DriverWrapper _driver;
-    private readonly By _title = By.XPath("//*[@class='detail-page23__section detail-page23__section--top no-link']//span[@class='font-size-80-33']");
+    private readonly By _title = By.XPath("//*[@class='header_and_download']//span[@class='font-size-80-33']");
 
     public InsightBasePage(DriverWrapper driver)
     {
@@ -16,6 +16,7 @@ public class InsightBasePage
     public string GetTitle()
     {
         var sentence = _driver.FindElement(_title);
+        sentence.WaitUntilDisplayed();
         return sentence.Text ?? string.Empty;
     }
 }

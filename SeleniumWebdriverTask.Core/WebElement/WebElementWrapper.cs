@@ -26,6 +26,8 @@ public class WebElementWrapper
 
     public string? TextContent => _element.GetAttribute("textContent");
 
+    public string? Href => _element.GetAttribute("href");
+
     public string Text => _element.Text;
 
     private IWebDriver WebDriver => _driverWrapper.WebDriver;
@@ -80,7 +82,7 @@ public class WebElementWrapper
 
     public WebElementWrapper WaitUntilLinkIsReady()
     {
-        WaitForCondition(() => _element.Displayed && _element.Enabled && _element.GetUrl() != null);
+        WaitForCondition(() => _element.Displayed && _element.Enabled && Href != null);
         return this;
     }
 
@@ -189,6 +191,13 @@ public class WebElementWrapper
             }
         }
 
-        throw new NoSuchElementException($"Could not find element located by {by} after {DriverWrapper.MaxRetries} attempts.");
+        if (exceptionCaught == typeof(NoSuchElementException))
+        {
+            throw new NoSuchElementException($"Could not find element located by {by} after {DriverWrapper.MaxRetries} attempts.");
+        }
+        else
+        {
+            throw new StaleElementReferenceException($"Element located by {by} remained stale after {DriverWrapper.MaxRetries} attempts.");
+        }
     }
 }

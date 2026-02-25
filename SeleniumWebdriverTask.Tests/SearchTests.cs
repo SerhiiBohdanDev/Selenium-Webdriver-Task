@@ -21,7 +21,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickRemoteCheckbox()
                 .ClickSearch();
 
-            List<string> jobInformation = searchPage.GetJobInformation();
+            var jobInformation = searchPage.GetJobInformation();
             var isInformationContainsLanguage = false;
             for (int i = 0; i < jobInformation.Count; i++)
             {
@@ -42,9 +42,10 @@ namespace SeleniumWebdriverTask.TestLayer
 
             if (!isInformationContainsLanguage)
             {
-                LogJobNotContainingLanguage(model.Language, jobInformation);
+                LogJobInformationError(model.Language);
             }
 
+            LogJobInformation(jobInformation);
             Assert.That(isInformationContainsLanguage, Is.True);
         }
 
@@ -58,7 +59,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 .EnterSearchTerm(term)
                 .ClickFind();
 
-            List<string> titles = mainPage.GetSearchResultTitles();
+            var titles = mainPage.GetSearchResultTitles();
             var allTitlesContainTerm = true;
             List<string> titlesNotContainingTerm = [];
             foreach (var title in titles.Where(title => !title.Contains(term, StringComparison.InvariantCultureIgnoreCase)))
@@ -70,34 +71,6 @@ namespace SeleniumWebdriverTask.TestLayer
             LogTitlesNotContainingTerm(term, titlesNotContainingTerm);
 
             Assert.That(allTitlesContainTerm, Is.True);
-        }
-
-        [Test]
-        public void CorrectTitle_CompareSlideTitles_Success()
-        {
-            new MainPage(Driver)
-                .ClickInsights();
-
-            var insightsPage = new InsightsPage(Driver);
-            insightsPage
-                .ClickNextSlide()
-                .ClickNextSlide();
-
-            var slideTitle = insightsPage.GetActiveSlideTitle();
-            insightsPage.ClickMoreInfo();
-
-            var insightPage = new InsightBasePage(Driver);
-            var pageTitle = insightPage.GetTitle();
-
-            LogComparedTitles(slideTitle, pageTitle);
-
-            using (Assert.EnterMultipleScope())
-            {
-                Assert.That(pageTitle, Is.Not.Empty);
-                Assert.That(slideTitle, Is.Not.Empty);
-            }
-
-            Assert.That(pageTitle, Does.Contain(slideTitle));
         }
 
         private static IEnumerable<TestCaseData> JobsSearchData()
@@ -133,45 +106,39 @@ namespace SeleniumWebdriverTask.TestLayer
             }
 
             var builder = new StringBuilder();
-            builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
             builder.AppendLine();
+            builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
             for (int i = 0; i < titlesThatDoNoContainTerm.Count; i++)
             {
                 builder.AppendLine(titlesThatDoNoContainTerm[i]);
             }
 
-            Logger.LogWarning(builder.ToString());
+            builder.AppendLine();
+            Logger.LogError(builder.ToString());
         }
 
-        private static void LogJobNotContainingLanguage(string[] languages, List<string> jobInformation)
+        private static void LogJobInformation(List<string> jobInformation)
         {
             var builder = new StringBuilder();
-            string keywords = string.Join(',', languages);
-
-            builder.AppendLine($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
             builder.AppendLine();
+            builder.AppendLine($"Job information:");
             for (int i = 0; i < jobInformation.Count; i++)
             {
                 builder.AppendLine(jobInformation[i]);
             }
 
-            Logger.LogWarning(builder.ToString());
+            builder.AppendLine();
+            Logger.LogInformation(builder.ToString());
         }
 
-        private static void LogComparedTitles(string slideTitle, string pageTitle)
+        private static void LogJobInformationError(string[] languages)
         {
-            if (pageTitle.Contains(slideTitle))
-            {
-                Logger.LogInformation($"Titles match \n" +
-                    $"Slide title = {slideTitle}\n" +
-                    $"Page title = {pageTitle}");
-            }
-            else
-            {
-                Logger.LogInformation($"Titles DO NOT match \n" +
-                    $"Slide title = {slideTitle}\n" +
-                    $"Page title = {pageTitle}");
-            }
+            var builder = new StringBuilder();
+            var keywords = string.Join(',', languages);
+            builder.AppendLine();
+            builder.AppendLine($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
+            builder.AppendLine();
+            Logger.LogError(builder.ToString());
         }
     }
 }
