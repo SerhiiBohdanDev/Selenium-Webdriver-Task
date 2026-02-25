@@ -63,7 +63,8 @@ public class DriverWrapper
 
     public WebElementWrapper FindElement(By by)
     {
-        return new WebElementWrapper(this, Waiter.WaitForElements(by, () => WebDriver.FindElement(by), Wait));
+        var element = Waiter.WaitForElements(by, () => WebDriver.FindElement(by), Wait);
+        return element.WrapElement(this);
     }
 
     public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
@@ -79,11 +80,11 @@ public class DriverWrapper
                     return null;
                 }
 
-                return WrapElements(elements);
+                return elements.WrapElements(this);
             },
             Wait);
 
-        return WrapElements(elements);
+        return elements.WrapElements(this);
     }
 
     public void Maximize(bool headless)
@@ -119,16 +120,5 @@ public class DriverWrapper
 
             await Task.Delay(TimeSpan.FromSeconds(timeoutInSeconds), cancellationToken);
         }
-    }
-
-    private ReadOnlyCollection<WebElementWrapper> WrapElements(ReadOnlyCollection<IWebElement> elements)
-    {
-        var wrappedElements = new List<WebElementWrapper>();
-        for (int i = 0; i < elements.Count; i++)
-        {
-            wrappedElements.Add(new WebElementWrapper(this, elements[i]));
-        }
-
-        return wrappedElements.AsReadOnly();
     }
 }
