@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Extensions;
+using OpenQA.Selenium.Support.UI;
+using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.CoreLayer.WebElement;
@@ -31,6 +33,8 @@ public class WebElementWrapper
     public string Text => _element.Text;
 
     private IWebDriver WebDriver => _driverWrapper.WebDriver;
+
+    private WebDriverWait Wait => _driverWrapper.Wait;
 
     public void SafeClick()
     {
@@ -88,22 +92,25 @@ public class WebElementWrapper
 
     public WebElementWrapper FindElement(By by)
     {
-        return new WebElementWrapper(_driverWrapper, WaitForElements(by, () => _element.FindElement(by)));
+        return new WebElementWrapper(_driverWrapper, Waiter.WaitForElements(by, () => _element.FindElement(by), Wait));
     }
 
     public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
         var elements = new ReadOnlyCollection<IWebElement>([]);
-        WaitForElements(by, () =>
-        {
-            elements = _element.FindElements(by);
-            if (elements.Count == 0)
+        Waiter.WaitForElements(
+            by,
+            () =>
             {
-                return null;
-            }
+                elements = _element.FindElements(by);
+                if (elements.Count == 0)
+                {
+                    return null;
+                }
 
-            return WrapElements(elements);
-        });
+                return WrapElements(elements);
+            },
+            Wait);
 
         return WrapElements(elements);
     }
@@ -121,83 +128,6 @@ public class WebElementWrapper
 
     private void WaitForCondition(Func<bool> condition)
     {
-        var retries = 0;
-        var result = false;
-        while (retries < DriverWrapper.MaxRetries)
-        {
-            try
-            {
-                _driverWrapper.Wait.Until(driver =>
-                {
-                    result = condition.Invoke();
-                    return result;
-                });
-            }
-            catch (WebDriverTimeoutException)
-            {
-                retries++;
-            }
-
-            if (result)
-            {
-                break;
-            }
-        }
-
-        if (!result)
-        {
-            throw new WebDriverTimeoutException($"Driver timed out after {DriverWrapper.MaxRetries} retries.");
-        }
-    }
-
-    /// <summary>
-    /// A wrapper method to allow finding one IWebElement or ReadOnlyCollection of type IWebElement.
-    /// </summary>
-    /// <typeparam name="T">IWebElement or ReadOnlyCollection of type IWebElement.</typeparam>
-    /// <param name="by">Locator to reference in exception.</param>
-    /// <param name="findAction">Action to find elements and check if they fit the required condition.</param>
-    /// <returns>One IWebElement or ReadOnlyCollection(IWebElement).</returns>
-    /// <exception cref="NoSuchElementException">Thrown if element was not found when looking for a single element.</exception>
-    /// <exception cref="StaleElementReferenceException">Thrown if an element or collection were stale.</exception>
-    private T WaitForElements<T>(By by, Func<T> findAction)
-    {
-        var retries = 0;
-        var exceptionCaught = typeof(NoSuchElementException);
-        while (retries < DriverWrapper.MaxRetries)
-        {
-            try
-            {
-                return _driverWrapper.Wait.Until(driver =>
-                {
-                    try
-                    {
-                        return findAction.Invoke();
-                    }
-                    catch (StaleElementReferenceException)
-                    {
-                        exceptionCaught = typeof(StaleElementReferenceException);
-                        return default;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        exceptionCaught = typeof(NoSuchElementException);
-                        return default;
-                    }
-                });
-            }
-            catch (WebDriverTimeoutException)
-            {
-                retries++;
-            }
-        }
-
-        if (exceptionCaught == typeof(NoSuchElementException))
-        {
-            throw new NoSuchElementException($"Could not find element located by {by} after {DriverWrapper.MaxRetries} attempts.");
-        }
-        else
-        {
-            throw new StaleElementReferenceException($"Element located by {by} remained stale after {DriverWrapper.MaxRetries} attempts.");
-        }
+        Waiter.WaitForCondition(Wait, condition);
     }
 }
