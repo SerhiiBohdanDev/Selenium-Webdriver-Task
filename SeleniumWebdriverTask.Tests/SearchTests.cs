@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.TestLayer.Models;
 
@@ -31,22 +32,16 @@ namespace SeleniumWebdriverTask.TestLayer
                 && Driver.Url.Contains("vacancy_type");
             });
 
-            var jobInformation = searchPage.GetJobInformation();
             Logger.LogInformation($"Current location:\n {Driver.Url}");
-            var isInformationContainsLanguage = false;
-            for (int i = 0; i < jobInformation.Count; i++)
-            {
-                for (int k = 0; k < model.Language.Length; k++)
-                {
-                    if (ContainsText(jobInformation[i], model.Language[k]))
-                    {
-                        isInformationContainsLanguage = true;
-                        break;
-                    }
-                }
 
-                if (isInformationContainsLanguage)
+            var jobInformation = searchPage.GetJobInformation();
+            var isInformationContainsLanguage = false;
+            for (int i = 0; i < model.Language.Length; i++)
+            {
+                var pattern = @$"\b{model.Language[i]}\b";
+                if (Regex.IsMatch(jobInformation, pattern, RegexOptions.IgnoreCase))
                 {
+                    isInformationContainsLanguage = true;
                     break;
                 }
             }
@@ -88,12 +83,12 @@ namespace SeleniumWebdriverTask.TestLayer
         {
             var cases = new JobSearchModel[]
             {
-                new() { Language = ["JavaScript", "JS", "Javascript"], Location = "Georgia" },
-                new() { Language = ["JavaScript", "JS", "Javascript"], Location = "Armenia" },
-                new() { Language = ["C#", "c#"], Location = "Georgia" },
-                new() { Language = ["C#", "c#"], Location = "Armenia" },
-                new() { Language = ["Python", "python"], Location = "Georgia" },
-                new() { Language = ["Python", "python"], Location = "Armenia" },
+                new() { Language = ["JavaScript", "js"], Location = "Georgia" },
+                new() { Language = ["JavaScript", "js"], Location = "Armenia" },
+                new() { Language = ["C#"], Location = "Georgia" },
+                new() { Language = ["C#"], Location = "Armenia" },
+                new() { Language = ["Python"], Location = "Georgia" },
+                new() { Language = ["Python"], Location = "Armenia" },
             };
 
             foreach (var model in cases)
@@ -102,8 +97,6 @@ namespace SeleniumWebdriverTask.TestLayer
                     .SetName($"ValidKeyword_SearchLastJob_Success(\"{model.Language[0]}\", \"{model.Location}\")");
             }
         }
-
-        private static bool ContainsText(string text, string target) => text.Contains(target, StringComparison.InvariantCulture);
 
         private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
         {
@@ -123,16 +116,9 @@ namespace SeleniumWebdriverTask.TestLayer
             Logger.LogError(builder.ToString());
         }
 
-        private static void LogJobInformation(List<string> jobInformation)
+        private static void LogJobInformation(string jobInformation)
         {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Job information:");
-            for (int i = 0; i < jobInformation.Count; i++)
-            {
-                builder.AppendLine(jobInformation[i]);
-            }
-
-            Logger.LogInformation(builder.ToString());
+            Logger.LogInformation("Job information:\n" + jobInformation);
         }
 
         private static void LogJobInformationError(string[] languages)

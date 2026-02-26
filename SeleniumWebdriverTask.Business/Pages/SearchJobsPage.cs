@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using System.Text;
+using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
@@ -80,7 +81,7 @@ public class SearchJobsPage
         return this;
     }
 
-    public List<string> GetJobInformation()
+    public string GetJobInformation()
     {
         /* Have to wait for this element because
          * Firefox in headless mode throws StaleElement exception when looking for resultsContainer.
@@ -111,6 +112,12 @@ public class SearchJobsPage
             }
         }
 
-        return jobDescriptionSentences;
+        var builder = new StringBuilder();
+        for (int i = 0; i < jobDescriptionSentences.Count; i++)
+        {
+            builder.AppendLine(jobDescriptionSentences[i]);
+        }
+
+        return builder.ToString();
     }
 }
