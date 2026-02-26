@@ -25,7 +25,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(5));
 
-            // because firefox does not have argument for options.AddArgument("start-maximized").
+            // Because firefox does not have argument for options.AddArgument("start-maximized"), so we maximize manually.
             Driver.Maximize(headless);
             Driver.GoToUrl(TestSetup.Configuration.ApplicationUrl);
         }
@@ -37,15 +37,10 @@ namespace SeleniumWebdriverTask.TestLayer
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 var screenshotLocation = ScreenshotMaker.TakeBrowserScreenshot(Driver.WebDriver);
-                Logger.LogError($"Error screenshot:\n {screenshotLocation}");
+                Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
             }
 
             Driver.Close();
-        }
-
-        protected static void LogInformation(string text)
-        {
-            Console.WriteLine(text);
         }
 
         protected virtual void AddWebDriverOptions(DriverOptions options)
