@@ -21,6 +21,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCase("EPAM_Corporate_Overview_Sept_25.pdf")]
         public async Task CorporateOverview_DownloadFile_Success(string fileName)
         {
+            Logger.LogInformation($"Starting download test for file '{fileName}'");
             new MainPage(Driver)
                 .ClickAbout();
 
@@ -37,6 +38,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCase("EPAM_ESG_Quick_Facts.pdf")]
         public async Task EPAMQuickFacts_DownloadFile_Success(string fileName)
         {
+            Logger.LogInformation($"Starting download test for file '{fileName}'");
             new MainPage(Driver)
                 .ClickCorporateResponsibility();
 

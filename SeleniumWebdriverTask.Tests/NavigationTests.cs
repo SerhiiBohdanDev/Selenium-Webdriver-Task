@@ -7,6 +7,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [Test]
         public void CorrectTitle_CompareSlideTitles_Success()
         {
+            Logger.LogInformation($"Starting slide title comparison test.");
             new MainPage(Driver)
                 .ClickInsights();
 
@@ -43,7 +44,7 @@ namespace SeleniumWebdriverTask.TestLayer
             }
             else
             {
-                Logger.LogInformation($"Titles DO NOT match \n" +
+                Logger.LogError($"Titles DO NOT match \n" +
                     $"Slide title = '{slideTitle}'\n" +
                     $"Page title = '{pageTitle}'");
             }

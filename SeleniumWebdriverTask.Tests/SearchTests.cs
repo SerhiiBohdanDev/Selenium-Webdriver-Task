@@ -13,6 +13,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCaseSource(nameof(JobsSearchData))]
         public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {
+            Logger.LogInformation($"Starting job search, keyword = {model.Language[0]}, location = {model.Location}");
             new MainPage(Driver)
                 .ClickJoinUs();
 
@@ -60,12 +61,15 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCase("Automation")]
         public void ValidTerm_GeneralSearchInTitle_Sucess(string term)
         {
+            Logger.LogInformation($"Starting main page search, searching for '{term}'");
             var mainPage = new MainPage(Driver)
                 .ClickMagnifyingGlass()
                 .EnterSearchTerm(term)
                 .ClickFind();
 
             var titles = mainPage.GetSearchResultTitles();
+            LogAllTitles(titles);
+
             var allTitlesContainTerm = true;
             List<string> titlesNotContainingTerm = [];
             foreach (var title in titles.Where(title => !title.Contains(term, StringComparison.InvariantCultureIgnoreCase)))
@@ -96,6 +100,18 @@ namespace SeleniumWebdriverTask.TestLayer
                 yield return new TestCaseData(model)
                     .SetName($"ValidKeyword_SearchLastJob_Success(\"{model.Language[0]}\", \"{model.Location}\")");
             }
+        }
+
+        private static void LogAllTitles(List<string> titles)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine($"Found titles:");
+            for (int i = 0; i < titles.Count; i++)
+            {
+                builder.AppendLine(titles[i]);
+            }
+
+            Logger.LogInformation(builder.ToString());
         }
 
         private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
