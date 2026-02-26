@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium;
-using SeleniumWebdriverTask.CoreLayer;
+using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
@@ -14,7 +14,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [SetUp]
         public virtual void Setup()
         {
-            TestSetup.Logger.LogInformation("Starting test");
+            Logger.LogInformation("Starting test");
             var browserType = TestSetup.Configuration.BrowserType;
             var headless = TestSetup.Configuration.Headless;
             var options = WebDriverOptionsFactory.CreateOptions(browserType, headless);
@@ -33,11 +33,11 @@ namespace SeleniumWebdriverTask.TestLayer
         [TearDown]
         public virtual void Teardown()
         {
-            TestSetup.Logger.LogInformation("Finishing test");
+            Logger.LogInformation("Finishing test");
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 var screenshotLocation = ScreenshotMaker.TakeBrowserScreenshot(Driver.WebDriver);
-                TestSetup.Logger.LogError($"Error screenshot:\n {screenshotLocation}");
+                Logger.LogError($"Error screenshot:\n {screenshotLocation}");
             }
 
             Driver.Close();

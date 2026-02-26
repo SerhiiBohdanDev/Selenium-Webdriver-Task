@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Configuration;
 using SeleniumWebdriverTask.CoreLayer;
+using SeleniumWebdriverTask.CoreLayer.Logging;
 
 namespace SeleniumWebdriverTask.TestLayer;
 

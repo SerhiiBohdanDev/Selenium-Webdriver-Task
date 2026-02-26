@@ -82,6 +82,12 @@ public class SearchJobsPage
 
     public List<string> GetJobInformation()
     {
+        /* Have to wait for this element because
+         * Firefox in headless mode throws StaleElement exception when looking for resultsContainer.
+         */
+        var search = _driver.FindElement(_searchButton);
+        search.WaitUntilEnabled();
+
         var resultsContainer = _driver.FindElement(_resultsContainer);
         resultsContainer.WaitUntilDisplayed();
         resultsContainer.ScrollToElement();

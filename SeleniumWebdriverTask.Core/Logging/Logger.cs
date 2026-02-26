@@ -4,7 +4,7 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
-namespace SeleniumWebdriverTask.CoreLayer;
+namespace SeleniumWebdriverTask.CoreLayer.Logging;
 
 public class Logger
 {
