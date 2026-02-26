@@ -92,11 +92,13 @@ public class WebElementWrapper
 
     public WebElementWrapper FindElement(By by)
     {
-        return ElementsFinder.FindAndWrapElement(by, _element, _driverWrapper);
+        var element = ElementsFinder.FindElement(by, _element, Wait);
+        return element.WrapElement(_driverWrapper);
     }
 
     public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
     {
-        return ElementsFinder.FindAndWrapElements(by, _element, _driverWrapper);
+        var elements = ElementsFinder.FindElements(by, _element, Wait);
+        return elements.WrapElements(_driverWrapper);
     }
 }

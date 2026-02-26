@@ -3,20 +3,18 @@
 
 using System.Collections.ObjectModel;
 using OpenQA.Selenium;
-using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.CoreLayer.WebElement;
+using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumWebdriverTask.CoreLayer.Utils;
 
 internal static class ElementsFinder
 {
-    public static WebElementWrapper FindAndWrapElement(By by, ISearchContext searchContext, DriverWrapper driverWrapper)
+    public static IWebElement FindElement(By by, ISearchContext searchContext, WebDriverWait wait)
     {
-        var element = Waiter.WaitForElements(by, () => searchContext.FindElement(by), driverWrapper.Wait);
-        return element.WrapElement(driverWrapper);
+        return Waiter.WaitForElements(by, () => searchContext.FindElement(by), wait);
     }
 
-    public static ReadOnlyCollection<WebElementWrapper> FindAndWrapElements(By by, ISearchContext searchContext, DriverWrapper driverWrapper)
+    public static ReadOnlyCollection<IWebElement> FindElements(By by, ISearchContext searchContext, WebDriverWait wait)
     {
         var elements = new ReadOnlyCollection<IWebElement>([]);
         Waiter.WaitForElements(
@@ -29,10 +27,10 @@ internal static class ElementsFinder
                     return null;
                 }
 
-                return elements.WrapElements(driverWrapper);
+                return elements;
             },
-            driverWrapper.Wait);
+            wait);
 
-        return elements.WrapElements(driverWrapper);
+        return elements;
     }
 }

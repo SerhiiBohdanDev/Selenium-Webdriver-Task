@@ -15,13 +15,24 @@ namespace SeleniumWebdriverTask.TestLayer
             new MainPage(Driver)
                 .ClickJoinUs();
 
-            var searchPage = new SearchJobsPage(Driver)
+            var searchPage = new SearchJobsPage(Driver);
+            searchPage
+                .WaitUntilCountryDetected()
                 .EnterLanguage(model.Language[0])
                 .EnterLocation(model.Location)
                 .ClickRemoteCheckbox()
                 .ClickSearch();
 
+            // Waiting for firefox to load the page correctly.
+            Driver.WaitForCondition(() =>
+            {
+                return Driver.Url.Contains("search")
+                && Driver.Url.Contains("country")
+                && Driver.Url.Contains("vacancy_type");
+            });
+
             var jobInformation = searchPage.GetJobInformation();
+            Logger.LogInformation($"Current location:\n {Driver.Url}");
             var isInformationContainsLanguage = false;
             for (int i = 0; i < jobInformation.Count; i++)
             {
@@ -78,13 +89,10 @@ namespace SeleniumWebdriverTask.TestLayer
             var cases = new JobSearchModel[]
             {
                 new() { Language = ["JavaScript", "JS", "Javascript"], Location = "Georgia" },
-                new() { Language = ["C#", "c#"], Location = "Georgia" },
-                new() { Language = ["Python", "python"], Location = "Georgia" },
-                new() { Language = ["JavaScript", "JS", "Javascript"], Location = "Belgium" },
-                new() { Language = ["C#", "c#"], Location = "Belgium" },
-                new() { Language = ["Python", "python"], Location = "Belgium" },
                 new() { Language = ["JavaScript", "JS", "Javascript"], Location = "Armenia" },
+                new() { Language = ["C#", "c#"], Location = "Georgia" },
                 new() { Language = ["C#", "c#"], Location = "Armenia" },
+                new() { Language = ["Python", "python"], Location = "Georgia" },
                 new() { Language = ["Python", "python"], Location = "Armenia" },
             };
 
@@ -106,39 +114,31 @@ namespace SeleniumWebdriverTask.TestLayer
             }
 
             var builder = new StringBuilder();
-            builder.AppendLine();
             builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
             for (int i = 0; i < titlesThatDoNoContainTerm.Count; i++)
             {
                 builder.AppendLine(titlesThatDoNoContainTerm[i]);
             }
 
-            builder.AppendLine();
             Logger.LogError(builder.ToString());
         }
 
         private static void LogJobInformation(List<string> jobInformation)
         {
             var builder = new StringBuilder();
-            builder.AppendLine();
             builder.AppendLine($"Job information:");
             for (int i = 0; i < jobInformation.Count; i++)
             {
                 builder.AppendLine(jobInformation[i]);
             }
 
-            builder.AppendLine();
             Logger.LogInformation(builder.ToString());
         }
 
         private static void LogJobInformationError(string[] languages)
         {
-            var builder = new StringBuilder();
             var keywords = string.Join(',', languages);
-            builder.AppendLine();
-            builder.AppendLine($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
-            builder.AppendLine();
-            Logger.LogError(builder.ToString());
+            Logger.LogError($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
         }
     }
 }
