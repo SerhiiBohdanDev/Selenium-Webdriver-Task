@@ -34,6 +34,7 @@ namespace SeleniumWebdriverTask.TestLayer
         public virtual void Teardown()
         {
             Logger.LogInformation("Finishing test");
+            Logger.LogInformation($"Test status: {TestContext.CurrentContext.Result.Outcome.Status}");
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 var screenshotLocation = ScreenshotMaker.TakeBrowserScreenshot(Driver.WebDriver);

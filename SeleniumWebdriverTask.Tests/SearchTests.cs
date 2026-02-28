@@ -89,8 +89,8 @@ namespace SeleniumWebdriverTask.TestLayer
             {
                 new() { Language = ["JavaScript", "js"], Location = "Georgia" },
                 new() { Language = ["JavaScript", "js"], Location = "Armenia" },
-                new() { Language = ["C#"], Location = "Georgia" },
-                new() { Language = ["C#"], Location = "Armenia" },
+                new() { Language = ["NET"], Location = "Georgia" },
+                new() { Language = ["NET"], Location = "Armenia" },
                 new() { Language = ["Python"], Location = "Georgia" },
                 new() { Language = ["Python"], Location = "Armenia" },
             };
