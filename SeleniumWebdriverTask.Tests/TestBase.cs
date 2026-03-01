@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium;
+using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
@@ -7,16 +9,32 @@ namespace SeleniumWebdriverTask.TestLayer
 {
     internal abstract class TestBase
     {
-        protected static Logger Logger => TestSetup.Logger;
+        private Configuration _configuration;
+
+        protected Logger Logger { get; private set; }
 
         protected DriverWrapper Driver { get; private set; }
+
+        [OneTimeSetUp]
+        public void RunBeforeAnyTests()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            var config = configuration.GetSection("Configuration").Get<Configuration>();
+            ArgumentNullException.ThrowIfNull(config);
+            _configuration = config;
+            Logger = new Logger(configuration);
+        }
 
         [SetUp]
         public virtual void Setup()
         {
             Logger.LogInformation("Starting test");
-            var browserType = TestSetup.Configuration.BrowserType;
-            var headless = TestSetup.Configuration.Headless;
+            var browserType = _configuration.BrowserType;
+            var headless = _configuration.Headless;
             var options = WebDriverOptionsFactory.CreateOptions(browserType, headless);
             AddWebDriverOptions(options);
 
@@ -27,7 +45,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             // Because firefox does not have argument for options.AddArgument("start-maximized"), so we maximize manually.
             Driver.Maximize(headless);
-            Driver.GoToUrl(TestSetup.Configuration.ApplicationUrl);
+            Driver.GoToUrl(_configuration.ApplicationUrl);
         }
 
         [TearDown]

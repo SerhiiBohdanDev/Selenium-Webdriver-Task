@@ -6,7 +6,7 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 public class InsightBasePage
 {
     private readonly DriverWrapper _driver;
-    private readonly By _title = By.XPath("//*[@class='header_and_download']//span[@class='font-size-80-33']");
+    private readonly By _title = By.XPath("//*[@class='ai-report-page']//*[@class='layout-box']");
 
     public InsightBasePage(DriverWrapper driver)
     {

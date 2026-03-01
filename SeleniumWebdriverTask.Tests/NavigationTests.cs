@@ -17,11 +17,11 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickNextSlide()
                 .ClickNextSlide();
 
-            var slideTitle = insightsPage.GetActiveSlideTitle().Trim();
+            var slideTitle = FormatTitle(insightsPage.GetActiveSlideTitle());
             insightsPage.ClickMoreInfo();
 
             var insightPage = new InsightBasePage(Driver);
-            var pageTitle = insightPage.GetTitle().Trim();
+            var pageTitle = FormatTitle(insightPage.GetTitle());
 
             LogComparedTitles(slideTitle, pageTitle);
 
@@ -34,7 +34,13 @@ namespace SeleniumWebdriverTask.TestLayer
             Assert.That(pageTitle, Does.Contain(slideTitle));
         }
 
-        private static void LogComparedTitles(string slideTitle, string pageTitle)
+        private static string FormatTitle(string title)
+        {
+            // Trimming whitespace and removing non-breaking spaces.
+            return title.Trim().Replace('\u00A0', ' ');
+        }
+
+        private void LogComparedTitles(string slideTitle, string pageTitle)
         {
             if (pageTitle.Contains(slideTitle))
             {

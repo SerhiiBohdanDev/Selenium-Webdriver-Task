@@ -13,7 +13,11 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCaseSource(nameof(JobsSearchData))]
         public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {
-            Logger.LogInformation($"Starting job search, keyword = {model.Language[0]}, location = {model.Location}");
+            var keywords = string.Join(',', model.Language);
+            Logger.LogInformation($"Starting job search, search language = {model.Language[0]}," +
+                $" keywords to find in description [{keywords}], " +
+                $"location = {model.Location}");
+
             new MainPage(Driver)
                 .ClickJoinUs();
 
@@ -33,7 +37,7 @@ namespace SeleniumWebdriverTask.TestLayer
                 && Driver.Url.Contains("vacancy_type");
             });
 
-            Logger.LogInformation($"Current location:\n {Driver.Url}");
+            Logger.LogInformation($"Current url:\n {Driver.Url}");
 
             var jobInformation = searchPage.GetJobInformation();
             var isInformationContainsLanguage = false;
@@ -102,7 +106,7 @@ namespace SeleniumWebdriverTask.TestLayer
             }
         }
 
-        private static void LogAllTitles(List<string> titles)
+        private void LogAllTitles(List<string> titles)
         {
             var builder = new StringBuilder();
             builder.AppendLine($"Found titles:");
@@ -114,7 +118,7 @@ namespace SeleniumWebdriverTask.TestLayer
             Logger.LogInformation(builder.ToString());
         }
 
-        private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
+        private void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
         {
             if (titlesThatDoNoContainTerm.Count == 0)
             {
@@ -132,12 +136,12 @@ namespace SeleniumWebdriverTask.TestLayer
             Logger.LogError(builder.ToString());
         }
 
-        private static void LogJobInformation(string jobInformation)
+        private void LogJobInformation(string jobInformation)
         {
             Logger.LogInformation("Job information:\n" + jobInformation);
         }
 
-        private static void LogJobInformationError(string[] languages)
+        private void LogJobInformationError(string[] languages)
         {
             var keywords = string.Join(',', languages);
             Logger.LogError($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
