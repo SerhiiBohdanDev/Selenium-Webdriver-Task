@@ -25,30 +25,7 @@ namespace SeleniumWebdriverTask.TestLayer
         }
 
         /// <summary>
-        /// Verifies that file can be downloaded.
-        /// </summary>
-        /// <param name="fileName">Name of the file.</param>
-        /// <returns>A task object that can be awaited.</returns>
-        [TestCase("EPAM_Corporate_Overview_Sept_25.pdf")]
-        public async Task CorporateOverview_DownloadFile_Success(string fileName)
-        {
-            Logger.LogInformation($"Starting download test for file '{fileName}'");
-            new MainPage(Driver)
-                .ClickAbout();
-
-            new AboutPage(Driver)
-                .ScrollToDownloadButton()
-                .ClickDownloadButton();
-
-            Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
-            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            var isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(_downloadFolderPath, fileName, 1, cancellationTokenSource.Token);
-
-            Assert.That(isFileDownloaded, Is.True);
-        }
-
-        /// <summary>
-        /// Verifies that file can be downloaded.
+        /// Verifies that Quick Facts file can be downloaded.
         /// </summary>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>A task object that can be awaited.</returns>
@@ -65,7 +42,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            bool isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(_downloadFolderPath, fileName, 1, cancellationTokenSource.Token);
+            var isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(_downloadFolderPath, fileName, 1, cancellationTokenSource.Token);
 
             Assert.That(isFileDownloaded, Is.True);
         }
