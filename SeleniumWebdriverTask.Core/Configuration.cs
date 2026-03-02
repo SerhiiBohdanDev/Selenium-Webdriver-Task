@@ -5,11 +5,23 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.CoreLayer;
 
+/// <summary>
+/// A model class to use with json configuration.
+/// </summary>
 public class Configuration
 {
+    /// <summary>
+    /// Gets type of browser.
+    /// </summary>
     public required BrowserType BrowserType { get; init; }
 
+    /// <summary>
+    /// Gets application main url.
+    /// </summary>
     public required string ApplicationUrl { get; init; }
 
+    /// <summary>
+    /// Gets a value indicating whether browser is in headless mode.
+    /// </summary>
     public required bool Headless { get; init; }
 }

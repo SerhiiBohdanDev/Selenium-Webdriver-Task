@@ -4,6 +4,9 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
+/// <summary>
+/// Class to store information related to Search jobs page.
+/// </summary>
 public class SearchJobsPage
 {
     private readonly DriverWrapper _driver;
@@ -18,11 +21,19 @@ public class SearchJobsPage
     private readonly By _descriptionSentences = By.CssSelector("div[data-testid='rich-text']");
     private readonly By _lastElement = By.XPath("./*[last()]");
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SearchJobsPage"/> class.
+    /// </summary>
+    /// <param name="driver">DriverWrapper instance.</param>
     public SearchJobsPage(DriverWrapper driver)
     {
         _driver = driver;
     }
 
+    /// <summary>
+    /// Waits until page is stabilized after initial load.
+    /// </summary>
+    /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage WaitUntilCountryDetected()
     {
         _driver.WaitForCondition(() =>
@@ -36,6 +47,11 @@ public class SearchJobsPage
         return this;
     }
 
+    /// <summary>
+    /// Enters language into the keyword search field.
+    /// </summary>
+    /// <param name="language">Language to search for.</param>
+    /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLanguage(string language)
     {
         var element = _driver.FindElement(_keywordSearchField);
@@ -47,6 +63,11 @@ public class SearchJobsPage
         return this;
     }
 
+    /// <summary>
+    /// Enters location into the location field.
+    /// </summary>
+    /// <param name="location">Location to restrict search to.</param>
+    /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLocation(string location)
     {
         var element = _driver.FindElement(_locationDropdown);
@@ -58,6 +79,10 @@ public class SearchJobsPage
         return this;
     }
 
+    /// <summary>
+    /// Checks the 'remote' option checkbox.
+    /// </summary>
+    /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickRemoteCheckbox()
     {
         var checkbox = _driver.FindElement(_remoteCheckbox);
@@ -70,6 +95,10 @@ public class SearchJobsPage
         return this;
     }
 
+    /// <summary>
+    /// Clicks search button.
+    /// </summary>
+    /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickSearch()
     {
         var search = _driver.FindElement(_searchButton);
@@ -81,6 +110,10 @@ public class SearchJobsPage
         return this;
     }
 
+    /// <summary>
+    /// Gets the information abut the last job in the list.
+    /// </summary>
+    /// <returns>Full description of the job.</returns>
     public string GetJobInformation()
     {
         /* Have to wait for this element because

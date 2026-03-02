@@ -5,11 +5,18 @@ using SeleniumWebdriverTask.TestLayer.Models;
 
 namespace SeleniumWebdriverTask.TestLayer
 {
+    /// <summary>
+    /// Test related to searching functionality.
+    /// </summary>
     internal class SearchTests : TestBase
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
 
+        /// <summary>
+        /// Validates that last job in the search results contains the searched term.
+        /// </summary>
+        /// <param name="model">Model class containing information about search.</param>
         [TestCaseSource(nameof(JobsSearchData))]
         public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
         {
@@ -60,6 +67,10 @@ namespace SeleniumWebdriverTask.TestLayer
             Assert.That(isInformationContainsLanguage, Is.True);
         }
 
+        /// <summary>
+        /// Verifies that search result titles contain the search term.
+        /// </summary>
+        /// <param name="term">Term to seach for.</param>
         [TestCase("BLOCKCHAIN")]
         [TestCase("Cloud")]
         [TestCase("Automation")]

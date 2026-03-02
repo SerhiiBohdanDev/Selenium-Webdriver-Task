@@ -3,6 +3,9 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
+/// <summary>
+/// Class to store information related to Main page.
+/// </summary>
 public class MainPage
 {
     private readonly DriverWrapper _driver;
@@ -18,11 +21,19 @@ public class MainPage
     private readonly By _insights = By.LinkText("Insights");
     private readonly By _corporateResponsibility = By.LinkText("Corporate Responsibility");
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainPage"/> class.
+    /// </summary>
+    /// <param name="driver">DriverWrapper instance.</param>
     public MainPage(DriverWrapper driver)
     {
         _driver = driver;
     }
 
+    /// <summary>
+    /// Click 'Join us' link.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickJoinUs()
     {
         var topRow = _driver.FindElement(_topNavRow);
@@ -37,6 +48,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Click 'About' link.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickAbout()
     {
         var topRow = _driver.FindElement(_topNavRow);
@@ -48,6 +63,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Click 'Insights' link.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickInsights()
     {
         var topRow = _driver.FindElement(_topNavRow);
@@ -59,6 +78,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Click magnifying glass button.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickMagnifyingGlass()
     {
         _driver
@@ -68,6 +91,11 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Enter text into search field.
+    /// </summary>
+    /// <param name="text">Text to search for.</param>
+    /// <returns>MainPage instance.</returns>
     public MainPage EnterSearchTerm(string text)
     {
         var searchField = _driver.FindElement(_searchField);
@@ -78,6 +106,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Click 'Find' button.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickFind()
     {
         var findButton = _driver.FindElement(_findButton);
@@ -88,6 +120,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Click 'Corporate responsibility' link.
+    /// </summary>
+    /// <returns>MainPage instance.</returns>
     public MainPage ClickCorporateResponsibility()
     {
         var topRow = _driver.FindElement(_topNavRow);
@@ -100,6 +136,10 @@ public class MainPage
         return this;
     }
 
+    /// <summary>
+    /// Gets the titles of search results.
+    /// </summary>
+    /// <returns>The titles of search results.</returns>
     public List<string> GetSearchResultTitles()
     {
         var results = new List<string>();

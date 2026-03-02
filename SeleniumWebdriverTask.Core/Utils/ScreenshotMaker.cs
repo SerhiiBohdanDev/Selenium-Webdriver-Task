@@ -7,6 +7,9 @@ using OpenQA.Selenium.Firefox;
 
 namespace SeleniumWebdriverTask.CoreLayer.Utils;
 
+/// <summary>
+/// A helper class to make screenshots.
+/// </summary>
 public static class ScreenshotMaker
 {
     private static string NewScreenshotName
@@ -14,7 +17,13 @@ public static class ScreenshotMaker
         get { return "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".png"; }
     }
 
-    public static string TakeBrowserScreenshot(IWebDriver driver)
+    /// <summary>
+    /// Takes full page screenshot of a web page.
+    /// </summary>
+    /// <param name="driver">Instance of IWebDriver.</param>
+    /// <returns>Path where screenshot is saved.</returns>
+    /// <exception cref="NotSupportedException">Thrown if type of IWebDiver is not supported.</exception>
+    public static string TakeFullPageScreenshot(IWebDriver driver)
     {
         var screenshotPath = Path.Combine(Environment.CurrentDirectory, $"Display_{NewScreenshotName}");
         if (driver is FirefoxDriver firefoxDriver)

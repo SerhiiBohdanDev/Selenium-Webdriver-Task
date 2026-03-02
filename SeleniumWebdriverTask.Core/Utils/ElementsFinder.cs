@@ -7,13 +7,30 @@ using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumWebdriverTask.CoreLayer.Utils;
 
+/// <summary>
+/// Helper class to find elements.
+/// </summary>
 internal static class ElementsFinder
 {
+    /// <summary>
+    /// Waits and finds element.
+    /// </summary>
+    /// <param name="by">Locator to find element by.</param>
+    /// <param name="searchContext">Driver or element.</param>
+    /// <param name="wait">WebDriverWait instance.</param>
+    /// <returns>Instance of IWebELement.</returns>
     public static IWebElement FindElement(By by, ISearchContext searchContext, WebDriverWait wait)
     {
         return Waiter.WaitForElements(by, () => searchContext.FindElement(by), wait);
     }
 
+    /// <summary>
+    /// Waits and finds elements.
+    /// </summary>
+    /// <param name="by">Locator to find elements by.</param>
+    /// <param name="searchContext">Driver or element.</param>
+    /// <param name="wait">WebDriverWait instance.</param>
+    /// <returns>Collection of elements or empty collection if none were found.</returns>
     public static ReadOnlyCollection<IWebElement> FindElements(By by, ISearchContext searchContext, WebDriverWait wait)
     {
         var elements = new ReadOnlyCollection<IWebElement>([]);

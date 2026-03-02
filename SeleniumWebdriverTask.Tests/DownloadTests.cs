@@ -4,10 +4,16 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.TestLayer
 {
+    /// <summary>
+    /// Class to contain tests related to downloading a file.
+    /// </summary>
     internal class DownloadTests : TestBase
     {
         private string _downloadFolderPath;
 
+        /// <summary>
+        /// Runs before every test.
+        /// </summary>
         public override void Setup()
         {
             // Create a unique download directory for each test run for best practice
@@ -18,6 +24,11 @@ namespace SeleniumWebdriverTask.TestLayer
             base.Setup();
         }
 
+        /// <summary>
+        /// Verifies that file can be downloaded.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A task object that can be awaited.</returns>
         [TestCase("EPAM_Corporate_Overview_Sept_25.pdf")]
         public async Task CorporateOverview_DownloadFile_Success(string fileName)
         {
@@ -26,7 +37,8 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickAbout();
 
             new AboutPage(Driver)
-                .ScrollToAndClickDownload();
+                .ScrollToDownloadButton()
+                .ClickDownloadButton();
 
             Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
@@ -35,6 +47,11 @@ namespace SeleniumWebdriverTask.TestLayer
             Assert.That(isFileDownloaded, Is.True);
         }
 
+        /// <summary>
+        /// Verifies that file can be downloaded.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A task object that can be awaited.</returns>
         [TestCase("EPAM_ESG_Quick_Facts.pdf")]
         public async Task EPAMQuickFacts_DownloadFile_Success(string fileName)
         {
@@ -43,7 +60,8 @@ namespace SeleniumWebdriverTask.TestLayer
                 .ClickCorporateResponsibility();
 
             new CorporateResponsibilityPage(Driver)
-                .ScrollToAndClickDownload();
+                .ScrollToDownloadLink()
+                .ClickDownloadLink();
 
             Logger.LogInformation($"File will be saved at: {_downloadFolderPath}");
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
@@ -52,6 +70,9 @@ namespace SeleniumWebdriverTask.TestLayer
             Assert.That(isFileDownloaded, Is.True);
         }
 
+        /// <summary>
+        /// Runs after every test.
+        /// </summary>
         public override void Teardown()
         {
             Logger.LogInformation($"Deleting directory: {_downloadFolderPath}");
@@ -59,12 +80,20 @@ namespace SeleniumWebdriverTask.TestLayer
             base.Teardown();
         }
 
+        /// <summary>
+        /// Adds options specific for downloading files.
+        /// </summary>
+        /// <param name="options">DriverOptions to change.</param>
         protected override void AddWebDriverOptions(DriverOptions options)
         {
             WebDriverOptionsFactory.AddDownloadOptions(options, _downloadFolderPath);
             base.AddWebDriverOptions(options);
         }
 
+        /// <summary>
+        /// Sets settings specific for downloading files.
+        /// </summary>
+        /// <param name="driver">IWebDriver instance.</param>
         protected override void SetWebDriverSettings(IWebDriver driver)
         {
             WebDriverFactory.SetupChromiumDriverDownloadSettings(driver, _downloadFolderPath);

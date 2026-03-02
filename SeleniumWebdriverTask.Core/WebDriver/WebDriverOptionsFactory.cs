@@ -9,8 +9,18 @@ using OpenQA.Selenium.Firefox;
 
 namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
+/// <summary>
+/// A helper class to create DriverOptions.
+/// </summary>
 public static class WebDriverOptionsFactory
 {
+    /// <summary>
+    /// Creates Driver options based on selected browser type and mode.
+    /// </summary>
+    /// <param name="browserType">The type of browser.</param>
+    /// <param name="headless">Headless mode.</param>
+    /// <returns>Instance of DriverOptions.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if browser type is not supported.</exception>
     public static DriverOptions CreateOptions(BrowserType browserType, bool headless)
     {
         switch (browserType)
@@ -76,6 +86,12 @@ public static class WebDriverOptionsFactory
         }
     }
 
+    /// <summary>
+    /// Adds settings to allow downloading files.
+    /// </summary>
+    /// <param name="options">DriverOptions that settings will be added to.</param>
+    /// <param name="downloadFolderPath">Folder in which files will be saved.</param>
+    /// <returns>DriverOptions instance with new settings added.</returns>
     public static DriverOptions AddDownloadOptions(DriverOptions options, string downloadFolderPath)
     {
         if (options is ChromiumOptions chromiumOptions)

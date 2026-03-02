@@ -231,7 +231,7 @@ dotnet_diagnostic.SA1312.severity = none
 dotnet_diagnostic.SA1633.severity = none
 
 # Elements should be documented
-dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1600.severity = warning
 
 # Enumeration items must be documented
 dotnet_diagnostic.SA1602.severity = none

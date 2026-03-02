@@ -3,14 +3,22 @@
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.CoreLayer.Utils;
 
+/// <summary>
+/// A helper class to wait for elements and conditions.
+/// </summary>
 internal static class Waiter
 {
     private const int MaxRetries = 3;
 
+    /// <summary>
+    /// Waits until condition becomes true or timeout expires.
+    /// </summary>
+    /// <param name="wait">WebDriverWait instance.</param>
+    /// <param name="condition">Condition to check.</param>
+    /// <exception cref="WebDriverTimeoutException">Thrown if condition remained false after wait finished.</exception>
     public static void WaitForCondition(WebDriverWait wait, Func<bool> condition)
     {
         var retries = 0;
@@ -38,7 +46,7 @@ internal static class Waiter
 
         if (!result)
         {
-            throw new WebDriverTimeoutException($"Driver timed out after {DriverWrapper.MaxRetries} retries.");
+            throw new WebDriverTimeoutException($"Driver timed out after {MaxRetries} retries.");
         }
     }
 

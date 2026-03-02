@@ -3,6 +3,9 @@
 
 namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
+/// <summary>
+/// Type of browser.
+/// </summary>
 public enum BrowserType
 {
     Chrome,

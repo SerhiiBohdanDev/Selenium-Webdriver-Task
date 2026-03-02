@@ -2,8 +2,14 @@
 
 namespace SeleniumWebdriverTask.TestLayer
 {
+    /// <summary>
+    /// Tests related to correctly navigating to pages.
+    /// </summary>
     internal class NavigationTests : TestBase
     {
+        /// <summary>
+        /// Verifies that slide text on the insights page is contained in the title of the article on that insight's page.
+        /// </summary>
         [Test]
         public void CorrectTitle_CompareSlideTitles_Success()
         {

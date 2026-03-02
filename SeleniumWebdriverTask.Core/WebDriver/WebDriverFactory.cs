@@ -10,8 +10,18 @@ using OpenQA.Selenium.Firefox;
 
 namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 
+/// <summary>
+/// A factory class to create IWebDriver.
+/// </summary>
 public static class WebDriverFactory
 {
+    /// <summary>
+    /// Creates IWebDriver instance.
+    /// </summary>
+    /// <param name="browserType">Selected browser type.</param>
+    /// <param name="options">Driver options.</param>
+    /// <returns>Instance of IWebDriver.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if browser type is not supported.</exception>
     public static IWebDriver CreateWebDriver(BrowserType browserType, DriverOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
@@ -25,6 +35,11 @@ public static class WebDriverFactory
         };
     }
 
+    /// <summary>
+    /// Sets additional settings for Chromium-based drivers to allow downloading.
+    /// </summary>
+    /// <param name="driver">Instanec of IWebDriver.</param>
+    /// <param name="downloadFolderPath">Path to a folder where file will be saved.</param>
     public static void SetupChromiumDriverDownloadSettings(IWebDriver driver, string downloadFolderPath)
     {
         if (driver is IDevTools devTools)

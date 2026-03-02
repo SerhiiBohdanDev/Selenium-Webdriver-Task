@@ -7,14 +7,26 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.TestLayer
 {
+    /// <summary>
+    /// A base class for classes containing tests.
+    /// </summary>
     internal abstract class TestBase
     {
         private Configuration _configuration;
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
         protected Logger Logger { get; private set; }
 
+        /// <summary>
+        /// Gets the DriverWrapper.
+        /// </summary>
         protected DriverWrapper Driver { get; private set; }
 
+        /// <summary>
+        /// Runs once before any tests.
+        /// </summary>
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
         {
@@ -29,6 +41,9 @@ namespace SeleniumWebdriverTask.TestLayer
             Logger = new Logger(configuration);
         }
 
+        /// <summary>
+        /// Runs before every test.
+        /// </summary>
         [SetUp]
         public virtual void Setup()
         {
@@ -48,6 +63,9 @@ namespace SeleniumWebdriverTask.TestLayer
             Driver.GoToUrl(_configuration.ApplicationUrl);
         }
 
+        /// <summary>
+        /// Runs after every test.
+        /// </summary>
         [TearDown]
         public virtual void Teardown()
         {
@@ -55,17 +73,25 @@ namespace SeleniumWebdriverTask.TestLayer
             Logger.LogInformation($"Test status: {TestContext.CurrentContext.Result.Outcome.Status}");
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
-                var screenshotLocation = ScreenshotMaker.TakeBrowserScreenshot(Driver.WebDriver);
+                var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver);
                 Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
             }
 
             Driver.Close();
         }
 
+        /// <summary>
+        /// Virutal method to allow adding options to the driver.
+        /// </summary>
+        /// <param name="options">Options to be added.</param>
         protected virtual void AddWebDriverOptions(DriverOptions options)
         {
         }
 
+        /// <summary>
+        /// Virtual method to allow changing settings of the driver.
+        /// </summary>
+        /// <param name="driver">Instance of the IWebDriver.</param>
         protected virtual void SetWebDriverSettings(IWebDriver driver)
         {
         }
