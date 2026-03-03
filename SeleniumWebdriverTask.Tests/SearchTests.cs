@@ -74,7 +74,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [TestCase("BLOCKCHAIN")]
         [TestCase("Cloud")]
         [TestCase("Automation")]
-        public void ValidTerm_GeneralSearchInTitle_Sucess(string term)
+        public void ValidTerm_GeneralSearchInTitle_Success(string term)
         {
             Logger.LogInformation($"Starting main page search, searching for '{term}'");
             var mainPage = new MainPage(Driver)
