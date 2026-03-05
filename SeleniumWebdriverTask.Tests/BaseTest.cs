@@ -10,7 +10,7 @@ namespace SeleniumWebdriverTask.TestLayer
     /// <summary>
     /// A base class for classes containing tests.
     /// </summary>
-    internal abstract class TestBase
+    internal abstract class BaseTest
     {
         private Configuration _configuration;
 

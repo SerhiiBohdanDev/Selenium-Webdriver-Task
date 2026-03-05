@@ -8,7 +8,7 @@ namespace SeleniumWebdriverTask.TestLayer
     /// <summary>
     /// Test related to searching functionality.
     /// </summary>
-    internal class SearchTests : TestBase
+    internal class SearchTests : BaseTest
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";

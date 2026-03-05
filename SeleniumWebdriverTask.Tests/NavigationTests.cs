@@ -5,7 +5,7 @@ namespace SeleniumWebdriverTask.TestLayer
     /// <summary>
     /// Tests related to correctly navigating to pages.
     /// </summary>
-    internal class NavigationTests : TestBase
+    internal class NavigationTests : BaseTest
     {
         /// <summary>
         /// Verifies that slide text on the insights page is contained in the title of the article on that insight's page.
