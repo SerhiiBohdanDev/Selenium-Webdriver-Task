@@ -6,9 +6,8 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// <summary>
 /// Class to store information related to About page.
 /// </summary>
-public class AboutPage
+public class AboutPage : BasePage
 {
-    private readonly DriverWrapper _driver;
     private readonly By _downloadButton = By.XPath("//a[@download='']");
 
     /// <summary>
@@ -16,8 +15,8 @@ public class AboutPage
     /// </summary>
     /// <param name="driver">DriverWrapper instance.</param>
     public AboutPage(DriverWrapper driver)
+        : base(driver)
     {
-        _driver = driver;
     }
 
     /// <summary>
@@ -26,7 +25,7 @@ public class AboutPage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ScrollToDownloadButton()
     {
-        var downloadButton = _driver.FindElement(_downloadButton);
+        var downloadButton = DriverWrapper.FindElement(_downloadButton);
         downloadButton
             .WaitUntilLinkIsReady()
             .ScrollToElement();
@@ -40,7 +39,7 @@ public class AboutPage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ClickDownloadButton()
     {
-        var downloadButton = _driver.FindElement(_downloadButton);
+        var downloadButton = DriverWrapper.FindElement(_downloadButton);
         downloadButton
             .WaitUntilLinkIsReady()
             .JavascriptClick();

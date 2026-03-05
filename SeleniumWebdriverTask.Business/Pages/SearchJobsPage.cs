@@ -7,10 +7,8 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// <summary>
 /// Class to store information related to Search jobs page.
 /// </summary>
-public class SearchJobsPage
+public class SearchJobsPage : BasePage
 {
-    private readonly DriverWrapper _driver;
-
     private readonly By _keywordSearchField = By.XPath("//*[@id='anchor-list']//form//input[@data-testid='search-input']");
     private readonly By _locationDropdown = By.XPath("//*[@id='anchor-list']//form//input[contains(@class, 'dropdown__input')]");
     private readonly By _remoteCheckbox = By.XPath("//*[@class='List_sideMenu__wGtLn']//input[@name='vacancy_type-Remote']");
@@ -26,8 +24,8 @@ public class SearchJobsPage
     /// </summary>
     /// <param name="driver">DriverWrapper instance.</param>
     public SearchJobsPage(DriverWrapper driver)
+        : base(driver)
     {
-        _driver = driver;
     }
 
     /// <summary>
@@ -36,12 +34,12 @@ public class SearchJobsPage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage WaitUntilCountryDetected()
     {
-        _driver.WaitForCondition(() =>
+        DriverWrapper.WaitForCondition(() =>
         {
             return
-            _driver.Url.Contains("careers")
-            && _driver.Url.Contains("country")
-            && !_driver.Url.Contains("utm");
+            DriverWrapper.Url.Contains("careers")
+            && DriverWrapper.Url.Contains("country")
+            && !DriverWrapper.Url.Contains("utm");
         });
 
         return this;
@@ -54,7 +52,7 @@ public class SearchJobsPage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLanguage(string language)
     {
-        var element = _driver.FindElement(_keywordSearchField);
+        var element = DriverWrapper.FindElement(_keywordSearchField);
         element
             .WaitUntilEnabled()
             .EnterText(language);
@@ -70,7 +68,7 @@ public class SearchJobsPage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLocation(string location)
     {
-        var element = _driver.FindElement(_locationDropdown);
+        var element = DriverWrapper.FindElement(_locationDropdown);
         element
             .WaitUntilEnabled()
             .EnterText(location);
@@ -85,7 +83,7 @@ public class SearchJobsPage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickRemoteCheckbox()
     {
-        var checkbox = _driver.FindElement(_remoteCheckbox);
+        var checkbox = DriverWrapper.FindElement(_remoteCheckbox);
         checkbox.ScrollToElement();
         checkbox.Hover();
 
@@ -101,7 +99,7 @@ public class SearchJobsPage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickSearch()
     {
-        var search = _driver.FindElement(_searchButton);
+        var search = DriverWrapper.FindElement(_searchButton);
         search.ScrollToElement();
         search
             .WaitUntilEnabled()
@@ -119,10 +117,10 @@ public class SearchJobsPage
         /* Have to wait for this element because
          * Firefox in headless mode throws StaleElement exception when looking for resultsContainer.
          */
-        var search = _driver.FindElement(_searchButton);
+        var search = DriverWrapper.FindElement(_searchButton);
         search.WaitUntilEnabled();
 
-        var resultsContainer = _driver.FindElement(_resultsContainer);
+        var resultsContainer = DriverWrapper.FindElement(_resultsContainer);
         resultsContainer.WaitUntilDisplayed();
         resultsContainer.ScrollToElement();
 

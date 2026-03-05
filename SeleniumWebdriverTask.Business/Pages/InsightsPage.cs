@@ -6,9 +6,8 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// <summary>
 /// Class to store information related to Insights page.
 /// </summary>
-public class InsightsPage
+public class InsightsPage : BasePage
 {
-    private readonly DriverWrapper _driver;
     private readonly By _nextSlideButton = By.XPath("//*[@class='slider-ui-23   media-content ']//button[@class='slider__right-arrow slider-navigation-arrow']");
     private readonly By _slideTitle = By.XPath("//*[@class='slider-ui-23   media-content ']//*[contains(@class,'active')]//span[@class='font-size-60']");
     private readonly By _readMoreLink = By.XPath("//*[@class='slider-ui-23   media-content ']//*[contains(@class,'active')]//a");
@@ -18,8 +17,8 @@ public class InsightsPage
     /// </summary>
     /// <param name="driver">DriverWrapper instance.</param>
     public InsightsPage(DriverWrapper driver)
+        : base(driver)
     {
-        _driver = driver;
     }
 
     /// <summary>
@@ -29,7 +28,7 @@ public class InsightsPage
     public InsightsPage WaitUntilPageSwitched()
     {
         // Need to wait because firefox is not switching to this page in time
-        _driver.WaitForCondition(() => _driver.Url.Contains("insights"));
+        DriverWrapper.WaitForCondition(() => DriverWrapper.Url.Contains("insights"));
         return this;
     }
 
@@ -39,9 +38,9 @@ public class InsightsPage
     /// <returns>InsightsPage instance.</returns>
     public InsightsPage ClickNextSlide()
     {
-        var button = _driver.FindElement(_nextSlideButton);
+        var button = DriverWrapper.FindElement(_nextSlideButton);
         button.WaitUntilEnabled();
-        var slideTitle = _driver.FindElement(_slideTitle);
+        var slideTitle = DriverWrapper.FindElement(_slideTitle);
         slideTitle.WaitUntilDisplayed();
         button.JavascriptClick();
 
@@ -54,7 +53,7 @@ public class InsightsPage
     /// <returns>The title of the currently active slide.</returns>
     public string GetActiveSlideTitle()
     {
-        var slideTitle = _driver.FindElement(_slideTitle);
+        var slideTitle = DriverWrapper.FindElement(_slideTitle);
         slideTitle.WaitUntilDisplayed();
         return slideTitle.TextContent ?? string.Empty;
     }
@@ -65,7 +64,7 @@ public class InsightsPage
     /// <returns>InsightsPage instance.</returns>
     public InsightsPage ClickMoreInfo()
     {
-        var readMoreButton = _driver.FindElement(_readMoreLink);
+        var readMoreButton = DriverWrapper.FindElement(_readMoreLink);
         readMoreButton.WaitUntilEnabled();
         readMoreButton.JavascriptClick();
 
