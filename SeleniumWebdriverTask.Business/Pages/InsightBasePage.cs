@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -25,7 +26,7 @@ public class InsightBasePage : BasePage
     /// <returns>Title of the article or empty string if title was null.</returns>
     public string GetTitle()
     {
-        var title = DriverWrapper.FindElement(_title);
+        var title = DriverWrapper.FindElement<TextElement>(_title);
         title.WaitUntilDisplayed();
         return title.Text ?? string.Empty;
     }

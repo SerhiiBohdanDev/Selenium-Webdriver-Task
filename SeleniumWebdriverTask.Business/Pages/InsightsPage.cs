@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -38,9 +39,9 @@ public class InsightsPage : BasePage
     /// <returns>InsightsPage instance.</returns>
     public InsightsPage ClickNextSlide()
     {
-        var button = DriverWrapper.FindElement(_nextSlideButton);
+        var button = DriverWrapper.FindElement<Button>(_nextSlideButton);
         button.WaitUntilEnabled();
-        var slideTitle = DriverWrapper.FindElement(_slideTitle);
+        var slideTitle = DriverWrapper.FindElement<TextElement>(_slideTitle);
         slideTitle.WaitUntilDisplayed();
         button.JavascriptClick();
 
@@ -53,7 +54,7 @@ public class InsightsPage : BasePage
     /// <returns>The title of the currently active slide.</returns>
     public string GetActiveSlideTitle()
     {
-        var slideTitle = DriverWrapper.FindElement(_slideTitle);
+        var slideTitle = DriverWrapper.FindElement<TextElement>(_slideTitle);
         slideTitle.WaitUntilDisplayed();
         return slideTitle.TextContent ?? string.Empty;
     }
@@ -64,9 +65,9 @@ public class InsightsPage : BasePage
     /// <returns>InsightsPage instance.</returns>
     public InsightsPage ClickMoreInfo()
     {
-        var readMoreButton = DriverWrapper.FindElement(_readMoreLink);
-        readMoreButton.WaitUntilEnabled();
-        readMoreButton.JavascriptClick();
+        var readMoreLink = DriverWrapper.FindElement<Link>(_readMoreLink);
+        readMoreLink.WaitUntilEnabled();
+        readMoreLink.JavascriptClick();
 
         return this;
     }

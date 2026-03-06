@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -52,7 +54,7 @@ public class SearchJobsPage : BasePage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLanguage(string language)
     {
-        var element = DriverWrapper.FindElement(_keywordSearchField);
+        var element = DriverWrapper.FindElement<TextInput>(_keywordSearchField);
         element
             .WaitUntilEnabled()
             .EnterText(language);
@@ -68,7 +70,7 @@ public class SearchJobsPage : BasePage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage EnterLocation(string location)
     {
-        var element = DriverWrapper.FindElement(_locationDropdown);
+        var element = DriverWrapper.FindElement<TextInput>(_locationDropdown);
         element
             .WaitUntilEnabled()
             .EnterText(location);
@@ -83,7 +85,7 @@ public class SearchJobsPage : BasePage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickRemoteCheckbox()
     {
-        var checkbox = DriverWrapper.FindElement(_remoteCheckbox);
+        var checkbox = DriverWrapper.FindElement<Checkbox>(_remoteCheckbox);
         checkbox.ScrollToElement();
         checkbox.Hover();
 
@@ -99,7 +101,7 @@ public class SearchJobsPage : BasePage
     /// <returns>SearchJobsPage instance.</returns>
     public SearchJobsPage ClickSearch()
     {
-        var search = DriverWrapper.FindElement(_searchButton);
+        var search = DriverWrapper.FindElement<Button>(_searchButton);
         search.ScrollToElement();
         search
             .WaitUntilEnabled()
@@ -117,23 +119,23 @@ public class SearchJobsPage : BasePage
         /* Have to wait for this element because
          * Firefox in headless mode throws StaleElement exception when looking for resultsContainer.
          */
-        var search = DriverWrapper.FindElement(_searchButton);
+        var search = DriverWrapper.FindElement<Button>(_searchButton);
         search.WaitUntilEnabled();
 
-        var resultsContainer = DriverWrapper.FindElement(_resultsContainer);
+        var resultsContainer = DriverWrapper.FindElement<WebElementWrapper>(_resultsContainer);
         resultsContainer.WaitUntilDisplayed();
         resultsContainer.ScrollToElement();
 
-        var lastResult = resultsContainer.FindElement(_lastElement);
+        var lastResult = resultsContainer.FindElement<WebElementWrapper>(_lastElement);
         lastResult.WaitUntilDisplayed();
 
         var jobDescriptionSentences = new List<string>();
-        var title = lastResult.FindElement(_jobCardTitle);
+        var title = lastResult.FindElement<TextElement>(_jobCardTitle);
         jobDescriptionSentences.Add(title.Text);
-        var shortDescription = lastResult.FindElement(_shortJobDescription);
+        var shortDescription = lastResult.FindElement<TextElement>(_shortJobDescription);
         jobDescriptionSentences.Add(shortDescription.Text);
 
-        var sentences = lastResult.FindElements(_descriptionSentences);
+        var sentences = lastResult.FindElements<TextElement>(_descriptionSentences);
         for (int i = 0; i < sentences.Count; i++)
         {
             var text = sentences[i].TextContent;

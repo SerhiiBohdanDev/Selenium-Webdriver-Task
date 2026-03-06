@@ -139,24 +139,28 @@ public class WebElementWrapper
     }
 
     /// <summary>
-    /// Finds an element.
+    /// Finds and wraps an element.
     /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
-    /// <returns>Instance of the WebElementWrapper.</returns>
-    public WebElementWrapper FindElement(By by)
+    /// <returns>Instance of WebElementWrapper.</returns>
+    public T FindElement<T>(By by)
+        where T : WebElementWrapper
     {
         var element = ElementsFinder.FindElement(by, _element, Wait);
-        return element.WrapElement(_driverWrapper);
+        return element.WrapElement<T>(_driverWrapper);
     }
 
     /// <summary>
     /// Finds elements.
     /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
     /// <returns>A collection of WebElementWrapper, or an empty collection if none were found..</returns>
-    public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
+    public ReadOnlyCollection<T> FindElements<T>(By by)
+         where T : WebElementWrapper
     {
         var elements = ElementsFinder.FindElements(by, _element, Wait);
-        return elements.WrapElements(_driverWrapper);
+        return elements.WrapElements<T>(_driverWrapper);
     }
 }

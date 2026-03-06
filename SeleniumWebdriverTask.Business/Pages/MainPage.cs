@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -34,11 +36,11 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage ClickJoinUs()
     {
-        var topRow = DriverWrapper.FindElement(_topNavRow);
-        var careers = topRow.FindElement(_careersText);
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
+        var careers = topRow.FindElement<TextElement>(_careersText);
         careers.Hover();
 
-        var joinUsLink = topRow.FindElement(_joinUs);
+        var joinUsLink = topRow.FindElement<Link>(_joinUs);
         joinUsLink
             .WaitUntilEnabled()
             .SafeClick();
@@ -52,8 +54,8 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage ClickAbout()
     {
-        var topRow = DriverWrapper.FindElement(_topNavRow);
-        var about = topRow.FindElement(_about);
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
+        var about = topRow.FindElement<Link>(_about);
         about
             .WaitUntilEnabled()
             .SafeClick();
@@ -67,8 +69,8 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage ClickInsights()
     {
-        var topRow = DriverWrapper.FindElement(_topNavRow);
-        var insights = topRow.FindElement(_insights);
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
+        var insights = topRow.FindElement<Link>(_insights);
         insights
             .WaitUntilEnabled()
             .SafeClick();
@@ -83,7 +85,7 @@ public class MainPage : BasePage
     public MainPage ClickMagnifyingGlass()
     {
         DriverWrapper
-            .FindElement(_magnifyingGlass)
+            .FindElement<Button>(_magnifyingGlass)
             .SafeClick();
 
         return this;
@@ -96,7 +98,7 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage EnterSearchTerm(string text)
     {
-        var searchField = DriverWrapper.FindElement(_searchField);
+        var searchField = DriverWrapper.FindElement<TextInput>(_searchField);
         searchField
             .WaitUntilEnabled()
             .EnterText(text);
@@ -110,7 +112,7 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage ClickFind()
     {
-        var findButton = DriverWrapper.FindElement(_findButton);
+        var findButton = DriverWrapper.FindElement<Button>(_findButton);
         findButton
             .WaitUntilEnabled()
             .SafeClick();
@@ -124,11 +126,11 @@ public class MainPage : BasePage
     /// <returns>MainPage instance.</returns>
     public MainPage ClickCorporateResponsibility()
     {
-        var topRow = DriverWrapper.FindElement(_topNavRow);
-        var about = topRow.FindElement(_about);
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
+        var about = topRow.FindElement<Link>(_about);
         about.Hover();
         topRow
-            .FindElement(_corporateResponsibility)
+            .FindElement<Link>(_corporateResponsibility)
             .SafeClick();
 
         return this;
@@ -141,7 +143,7 @@ public class MainPage : BasePage
     public List<string> GetSearchResultTitles()
     {
         var results = new List<string>();
-        var elements = DriverWrapper.FindElements(_searchResult);
+        var elements = DriverWrapper.FindElements<TextElement>(_searchResult);
         foreach (var element in elements)
         {
             results.Add(element.Text);

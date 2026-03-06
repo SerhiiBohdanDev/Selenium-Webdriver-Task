@@ -28,5 +28,5 @@ public class Configuration
     /// <summary>
     /// Gets explicit wait duration in seconds.
     /// </summary>
-    public required double ExplicitWaitSeconds { get; init; }
+    public required double ExplicitWait { get; init; }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading;
+using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
@@ -56,7 +58,8 @@ namespace SeleniumWebdriverTask.TestLayer
             var driver = WebDriverFactory.CreateWebDriver(browserType, options);
             SetWebDriverSettings(driver);
 
-            Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(_configuration.ExplicitWaitSeconds));
+            Console.WriteLine("_configuration.ExplicitWaitSeconds = " + _configuration.ExplicitWait);
+            Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(_configuration.ExplicitWait));
 
             // Because firefox does not have argument for options.AddArgument("start-maximized"), so we maximize manually.
             Driver.Maximize(headless);

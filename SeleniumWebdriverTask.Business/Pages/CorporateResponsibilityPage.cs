@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -25,8 +26,8 @@ public class CorporateResponsibilityPage : BasePage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ScrollToDownloadLink()
     {
-        var downloadButton = DriverWrapper.FindElement(_downloadLink);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        downloadLink
             .WaitUntilLinkIsReady()
             .ScrollToElement();
 
@@ -39,8 +40,8 @@ public class CorporateResponsibilityPage : BasePage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ClickDownloadLink()
     {
-        var downloadButton = DriverWrapper.FindElement(_downloadLink);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        downloadLink
             .WaitUntilLinkIsReady()
             .JavascriptClick();
 

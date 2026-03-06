@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
@@ -25,8 +26,8 @@ public class AboutPage : BasePage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ScrollToDownloadButton()
     {
-        var downloadButton = DriverWrapper.FindElement(_downloadButton);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButton);
+        downloadLink
             .WaitUntilLinkIsReady()
             .ScrollToElement();
 
@@ -39,8 +40,8 @@ public class AboutPage : BasePage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ClickDownloadButton()
     {
-        var downloadButton = DriverWrapper.FindElement(_downloadButton);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButton);
+        downloadLink
             .WaitUntilLinkIsReady()
             .JavascriptClick();
 
