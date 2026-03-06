@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using RestSharp;
 using RestSharp.Serializers.Json;
+using SeleniumWebdriverTask.CoreLayer.API.Models;
 
 namespace SeleniumWebdriverTask.CoreLayer.API;
 
@@ -46,13 +47,12 @@ public class ApiClient
     /// <summary>
     /// Sends request to create a user.
     /// </summary>
-    /// <param name="name">User's name.</param>
-    /// <param name="username">User's username.</param>
+    /// <param name="user">Instance of User object.</param>
     /// <returns>RestRequest with information about request state and user data.</returns>
-    public async Task<RestResponse> CreateUserAsync(string name, string username)
+    public async Task<RestResponse> CreateUserAsync(User user)
     {
         var request = new RestRequest(UsersEndpoint, Method.Post);
-        request.AddBody(new { name, username, });
+        request.AddBody(new { user.Name, user.Username, });
         var response = await _client.PostAsync(request);
 
         return response;

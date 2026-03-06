@@ -5,14 +5,26 @@ using System.Text.Json.Serialization;
 
 namespace SeleniumWebdriverTask.CoreLayer.API.Models;
 
+/// <summary>
+/// Information about user's company.
+/// </summary>
 public struct Company
 {
+    /// <summary>
+    /// Gets or sets company name.
+    /// </summary>
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    /// <summary>
+    /// Gets or sets company catch phrase.
+    /// </summary>
     [JsonPropertyName("catchPhrase")]
     public string CatchPhrase { get; set; }
 
+    /// <summary>
+    /// Gets or sets company bs.
+    /// </summary>
     [JsonPropertyName("bs")]
     public string Bs { get; set; }
 }

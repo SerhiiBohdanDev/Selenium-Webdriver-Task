@@ -42,7 +42,7 @@ internal class ApiTests : BaseTest
 
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
-        Logger.LogInformation($"ErrorMessage = {response.ErrorMessage}");
+        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         Logger.LogInformation($"Users count = {users.Count}");
         using (Assert.EnterMultipleScope())
         {
@@ -64,6 +64,7 @@ internal class ApiTests : BaseTest
         var expectedHeader = "application/json";
         var response = ValidateResponse(await _client.GetUsersAsync());
 
+        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
         using (Assert.EnterMultipleScope())
         {
@@ -93,7 +94,7 @@ internal class ApiTests : BaseTest
         var allHaveNameAndUsername = users.All(u => !string.IsNullOrEmpty(u.Name) && !string.IsNullOrEmpty(u.Username));
         var allHaveCompanyName = users.All(u => !string.IsNullOrEmpty(u.Company.Name));
 
-        Logger.LogInformation($"ErrorMessage = {response.ErrorMessage}");
+        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         Logger.LogInformation($"Users count = {users.Count}");
         Logger.LogInformation($"Users have duplicate ids = {hasDuplicateIds}");
         Logger.LogInformation($"All users have unique name and username = {allHaveNameAndUsername}");
@@ -119,14 +120,21 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.Created;
         var dateTime = DateTime.UtcNow.ToString("yyyy_mm_dd_hh_mm_ss");
-        var name = "Jim_" + dateTime;
-        var username = "jimbo_" + dateTime;
-        var response = ValidateResponse(await _client.CreateUserAsync(name, username));
+        var name = "Name_" + dateTime;
+        var username = "Username_" + dateTime;
+        var user =
+            new UserDtoBuilder()
+            .WithName(name)
+            .WithUsername(username)
+            .Build();
+
+        var response = ValidateResponse(await _client.CreateUserAsync(user));
         var responseContent = ValidateContent(response.Content);
 
         var userData = JObject.Parse(responseContent);
         var idExists = userData.ContainsKey("id");
         Logger.LogInformation($"User created = {userData}");
+        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
 
         using (Assert.EnterMultipleScope())
         {
@@ -146,6 +154,8 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.NotFound;
         var response = ValidateResponse(await _client.GetUsersAsync());
+
+        Logger.LogInformation($"ErrorMessage = {response.ErrorMessage}");
 
         using (Assert.EnterMultipleScope())
         {

@@ -5,20 +5,38 @@ using System.Text.Json.Serialization;
 
 namespace SeleniumWebdriverTask.CoreLayer.API.Models;
 
+/// <summary>
+/// Information about user address.
+/// </summary>
 public struct Address
 {
+    /// <summary>
+    /// Gets or sets street.
+    /// </summary>
     [JsonPropertyName("street")]
     public string Street { get; set; }
 
+    /// <summary>
+    /// Gets or sets suite.
+    /// </summary>
     [JsonPropertyName("suite")]
     public string Suite { get; set; }
 
+    /// <summary>
+    /// Gets or sets city.
+    /// </summary>
     [JsonPropertyName("city")]
     public string City { get; set; }
 
+    /// <summary>
+    /// Gets or sets zipcode.
+    /// </summary>
     [JsonPropertyName("zipcode")]
     public string Zipcode { get; set; }
 
+    /// <summary>
+    /// Gets or sets lattitude and longitude.
+    /// </summary>
     [JsonPropertyName("geo")]
     public Geo Geo { get; set; }
 }
