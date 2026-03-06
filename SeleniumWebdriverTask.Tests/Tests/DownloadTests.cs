@@ -2,12 +2,12 @@
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Class to contain tests related to downloading a file.
     /// </summary>
-    internal class DownloadTests : BaseTest
+    internal class DownloadTests : BaseUiTest
     {
         private string _downloadFolderPath;
 

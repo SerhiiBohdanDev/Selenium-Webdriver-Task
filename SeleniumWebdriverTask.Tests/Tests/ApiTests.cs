@@ -8,12 +8,12 @@ using RestSharp;
 using SeleniumWebdriverTask.CoreLayer.API;
 using SeleniumWebdriverTask.CoreLayer.API.Models;
 
-namespace SeleniumWebdriverTask.TestLayer;
+namespace SeleniumWebdriverTask.TestLayer.Tests;
 
 /// <summary>
 /// Class containing tests related to API testing.
 /// </summary>
-internal class ApiTests
+internal class ApiTests : BaseTest
 {
     private readonly ApiClient _client = new("https://jsonplaceholder.typicode.com/");
 
@@ -27,13 +27,10 @@ internal class ApiTests
     public async Task UsersExist_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
-        var response = ValidateResponse(await _client.GetUsersAsync(), out var responseContent);
+        var response = ValidateResponse(await _client.GetUsersAsync());
+        var responseContent = ValidateContent(response.Content);
 
-        var users = JsonConvert.DeserializeObject<List<User>>(responseContent);
-        if (users == null)
-        {
-            throw new InvalidOperationException($"Couldn't deserialize content to appropriate format.");
-        }
+        var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
         using (Assert.EnterMultipleScope())
         {
@@ -53,7 +50,7 @@ internal class ApiTests
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedHeader = "application/json";
-        var response = ValidateResponse(await _client.GetUsersAsync(), out var _);
+        var response = ValidateResponse(await _client.GetUsersAsync());
 
         using (Assert.EnterMultipleScope())
         {
@@ -74,13 +71,10 @@ internal class ApiTests
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
-        var response = ValidateResponse(await _client.GetUsersAsync(), out var responseContent);
+        var response = ValidateResponse(await _client.GetUsersAsync());
+        var responseContent = ValidateContent(response.Content);
 
-        var users = JsonConvert.DeserializeObject<List<User>>(responseContent);
-        if (users == null)
-        {
-            throw new InvalidOperationException($"Couldn't deserialize content to appropriate format.");
-        }
+        var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
         var hasDuplicateIds = users.Select(u => u.Id).Distinct().Count() != users.Count;
         var allHaveNameAndUsername = users.All(u => !string.IsNullOrEmpty(u.Name) && !string.IsNullOrEmpty(u.Username));
@@ -106,9 +100,11 @@ internal class ApiTests
     public async Task ValidData_CreateUser_Success()
     {
         var expectedStatus = HttpStatusCode.Created;
-        var name = "Jim";
-        var username = "jimbo";
-        var response = ValidateResponse(await _client.CreateUserAsync(name, username), out var responseContent);
+        var dateTime = DateTime.UtcNow.ToString("yyyy_mm_dd_hh_mm_ss");
+        var name = "Jim_" + dateTime;
+        var username = "jimbo_" + dateTime;
+        var response = ValidateResponse(await _client.CreateUserAsync(name, username));
+        var responseContent = ValidateContent(response.Content);
 
         var jsonObj = JObject.Parse(responseContent);
         var idExists = jsonObj.ContainsKey("id");
@@ -129,9 +125,8 @@ internal class ApiTests
     [Category("API")]
     public async Task InvalidEndpoint_GetEndpoint_Success()
     {
-        // Going to invalid endpoint doesn't work, any page returns ok.
-        var expectedStatus = HttpStatusCode.OK;
-        var response = ValidateResponse(await _client.GetUsersAsync(), out var _);
+        var expectedStatus = HttpStatusCode.NotFound;
+        var response = ValidateResponse(await _client.GetUsersAsync());
 
         using (Assert.EnterMultipleScope())
         {
@@ -140,19 +135,33 @@ internal class ApiTests
         }
     }
 
-    private static RestResponse ValidateResponse(RestResponse response, out string responseContent)
+    private static RestResponse ValidateResponse(RestResponse response)
     {
         if (response == null)
         {
-            throw new InvalidOperationException($"Did not receive a valid response.");
+            throw new InvalidOperationException($"Response is null");
         }
 
-        if (string.IsNullOrEmpty(response.Content))
-        {
-            throw new InvalidOperationException($"Response content was null or empty: {response.Content}");
-        }
-
-        responseContent = response.Content;
         return response;
+    }
+
+    private static string ValidateContent(string? content)
+    {
+        if (string.IsNullOrEmpty(content))
+        {
+            throw new InvalidOperationException($"Response content is null or empty: {content}");
+        }
+
+        return content;
+    }
+
+    private static List<User> ValidateUsers(List<User>? users)
+    {
+        if (users == null)
+        {
+            throw new InvalidOperationException($"Couldn't deserialize content to appropriate format.");
+        }
+
+        return users;
     }
 }

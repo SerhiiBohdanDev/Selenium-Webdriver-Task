@@ -1,11 +1,11 @@
 ﻿using SeleniumWebdriverTask.BusinessLayer.Pages;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Tests related to correctly navigating to pages.
     /// </summary>
-    internal class NavigationTests : BaseTest
+    internal class NavigationTests : BaseUiTest
     {
         /// <summary>
         /// Verifies that slide text on the insights page is contained in the title of the article on that insight's page.

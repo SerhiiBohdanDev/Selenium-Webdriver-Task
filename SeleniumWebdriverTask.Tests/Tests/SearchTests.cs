@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.TestLayer.Models;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Test related to searching functionality.
     /// </summary>
-    internal class SearchTests : BaseTest
+    internal class SearchTests : BaseUiTest
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
         private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
@@ -48,7 +48,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             var jobInformation = searchPage.GetJobInformation();
             var isInformationContainsLanguage = false;
-            for (int i = 0; i < model.Language.Length; i++)
+            for (var i = 0; i < model.Language.Length; i++)
             {
                 var pattern = @$"\b{model.Language[i]}\b";
                 if (Regex.IsMatch(jobInformation, pattern, RegexOptions.IgnoreCase))
@@ -121,7 +121,7 @@ namespace SeleniumWebdriverTask.TestLayer
         {
             var builder = new StringBuilder();
             builder.AppendLine($"Found titles:");
-            for (int i = 0; i < titles.Count; i++)
+            for (var i = 0; i < titles.Count; i++)
             {
                 builder.AppendLine(titles[i]);
             }
@@ -139,7 +139,7 @@ namespace SeleniumWebdriverTask.TestLayer
 
             var builder = new StringBuilder();
             builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
-            for (int i = 0; i < titlesThatDoNoContainTerm.Count; i++)
+            for (var i = 0; i < titlesThatDoNoContainTerm.Count; i++)
             {
                 builder.AppendLine(titlesThatDoNoContainTerm[i]);
             }
