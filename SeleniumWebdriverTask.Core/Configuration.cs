@@ -24,4 +24,9 @@ public class Configuration
     /// Gets a value indicating whether browser is in headless mode.
     /// </summary>
     public required bool Headless { get; init; }
+
+    /// <summary>
+    /// Gets explicit wait duration in seconds.
+    /// </summary>
+    public required double ExplicitWaitSeconds { get; init; }
 }
