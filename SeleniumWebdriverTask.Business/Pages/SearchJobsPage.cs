@@ -55,9 +55,8 @@ public class SearchJobsPage : BasePage
     public SearchJobsPage EnterLanguage(string language)
     {
         var element = DriverWrapper.FindElement<TextInput>(_keywordSearchField);
-        element
-            .WaitUntilEnabled()
-            .EnterText(language);
+        element.WaitUntilEnabled();
+        element.EnterText(language);
         element.PressEnter();
 
         return this;
@@ -71,9 +70,8 @@ public class SearchJobsPage : BasePage
     public SearchJobsPage EnterLocation(string location)
     {
         var element = DriverWrapper.FindElement<TextInput>(_locationDropdown);
-        element
-            .WaitUntilEnabled()
-            .EnterText(location);
+        element.WaitUntilEnabled();
+        element.EnterText(location);
         element.PressEnter();
 
         return this;
@@ -103,9 +101,8 @@ public class SearchJobsPage : BasePage
     {
         var search = DriverWrapper.FindElement<Button>(_searchButton);
         search.ScrollToElement();
-        search
-            .WaitUntilEnabled()
-            .SafeClick();
+        search.WaitUntilEnabled();
+        search.SafeClick();
 
         return this;
     }

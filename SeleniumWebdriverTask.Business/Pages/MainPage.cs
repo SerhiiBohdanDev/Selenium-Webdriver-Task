@@ -41,9 +41,8 @@ public class MainPage : BasePage
         careers.Hover();
 
         var joinUsLink = topRow.FindElement<Link>(_joinUs);
-        joinUsLink
-            .WaitUntilEnabled()
-            .SafeClick();
+        joinUsLink.WaitUntilEnabled();
+        joinUsLink.SafeClick();
 
         return this;
     }
@@ -56,9 +55,8 @@ public class MainPage : BasePage
     {
         var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
         var about = topRow.FindElement<Link>(_about);
-        about
-            .WaitUntilEnabled()
-            .SafeClick();
+        about.WaitUntilEnabled();
+        about.SafeClick();
 
         return this;
     }
@@ -71,9 +69,8 @@ public class MainPage : BasePage
     {
         var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRow);
         var insights = topRow.FindElement<Link>(_insights);
-        insights
-            .WaitUntilEnabled()
-            .SafeClick();
+        insights.WaitUntilEnabled();
+        insights.SafeClick();
 
         return this;
     }
@@ -99,9 +96,8 @@ public class MainPage : BasePage
     public MainPage EnterSearchTerm(string text)
     {
         var searchField = DriverWrapper.FindElement<TextInput>(_searchField);
-        searchField
-            .WaitUntilEnabled()
-            .EnterText(text);
+        searchField.WaitUntilEnabled();
+        searchField.EnterText(text);
 
         return this;
     }
@@ -113,9 +109,8 @@ public class MainPage : BasePage
     public MainPage ClickFind()
     {
         var findButton = DriverWrapper.FindElement<Button>(_findButton);
-        findButton
-            .WaitUntilEnabled()
-            .SafeClick();
+        findButton.WaitUntilEnabled();
+        findButton.SafeClick();
 
         return this;
     }

@@ -20,4 +20,21 @@ public class TextInput : WebElementWrapper
         : base(driverWrapper, element)
     {
     }
+
+    /// <summary>
+    /// Sends text to the element.
+    /// </summary>
+    /// <param name="text">Text to send.</param>
+    public void EnterText(string text)
+    {
+        Element.SendKeys(text);
+    }
+
+    /// <summary>
+    /// Emulates pressing Enter.
+    /// </summary>
+    public void PressEnter()
+    {
+        Element.SendKeys(Keys.Enter);
+    }
 }
