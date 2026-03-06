@@ -21,13 +21,13 @@ public class ApiClient
     /// <summary>
     /// Initializes a new instance of the <see cref="ApiClient"/> class.
     /// </summary>
-    /// <param name="endpoint">Endpoint url.</param>
-    public ApiClient(string endpoint)
+    /// <param name="baseUrl">Base url.</param>
+    public ApiClient(string baseUrl)
     {
         var serializerOptions = new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
         _client = new RestClient(
-            options: new() { BaseUrl = new(endpoint) },
+            options: new() { BaseUrl = new(baseUrl) },
             configureSerialization: s => s.UseSystemTextJson(serializerOptions));
     }
 

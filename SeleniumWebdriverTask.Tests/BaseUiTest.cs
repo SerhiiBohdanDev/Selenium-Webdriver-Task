@@ -19,7 +19,6 @@ namespace SeleniumWebdriverTask.TestLayer
         /// <summary>
         /// Runs before every test.
         /// </summary>
-        [SetUp]
         public override void Setup()
         {
             base.Setup();
@@ -41,7 +40,6 @@ namespace SeleniumWebdriverTask.TestLayer
         /// <summary>
         /// Runs after every test.
         /// </summary>
-        [TearDown]
         public override void Teardown()
         {
             base.Teardown();

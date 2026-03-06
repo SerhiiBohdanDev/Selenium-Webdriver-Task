@@ -29,4 +29,9 @@ public class Configuration
     /// Gets explicit wait duration in seconds.
     /// </summary>
     public required double ExplicitWait { get; init; }
+
+    /// <summary>
+    /// Gets base url for API tests.
+    /// </summary>
+    public required string ApiTestsBaseUrl { get; init; }
 }

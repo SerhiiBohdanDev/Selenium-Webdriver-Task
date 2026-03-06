@@ -4,6 +4,7 @@
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NUnit.Framework.Internal;
 using RestSharp;
 using SeleniumWebdriverTask.CoreLayer.API;
 using SeleniumWebdriverTask.CoreLayer.API.Models;
@@ -15,7 +16,16 @@ namespace SeleniumWebdriverTask.TestLayer.Tests;
 /// </summary>
 internal class ApiTests : BaseTest
 {
-    private readonly ApiClient _client = new("https://jsonplaceholder.typicode.com/");
+    private ApiClient _client;
+
+    /// <summary>
+    /// Runs before every test.
+    /// </summary>
+    public override void Setup()
+    {
+        base.Setup();
+        _client = new(Configuration.ApiTestsBaseUrl);
+    }
 
     /// <summary>
     /// Verifies that at least one user exists.
@@ -32,6 +42,8 @@ internal class ApiTests : BaseTest
 
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
+        Logger.LogInformation($"ErrorMessage = {response.ErrorMessage}");
+        Logger.LogInformation($"Users count = {users.Count}");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
@@ -52,6 +64,7 @@ internal class ApiTests : BaseTest
         var expectedHeader = "application/json";
         var response = ValidateResponse(await _client.GetUsersAsync());
 
+        Logger.LogInformation($"Received ContentType = {response.ContentType}");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
@@ -80,6 +93,11 @@ internal class ApiTests : BaseTest
         var allHaveNameAndUsername = users.All(u => !string.IsNullOrEmpty(u.Name) && !string.IsNullOrEmpty(u.Username));
         var allHaveCompanyName = users.All(u => !string.IsNullOrEmpty(u.Company.Name));
 
+        Logger.LogInformation($"ErrorMessage = {response.ErrorMessage}");
+        Logger.LogInformation($"Users count = {users.Count}");
+        Logger.LogInformation($"Users have duplicate ids = {hasDuplicateIds}");
+        Logger.LogInformation($"All users have unique name and username = {allHaveNameAndUsername}");
+        Logger.LogInformation($"All users have company name = {allHaveCompanyName}");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
@@ -106,8 +124,9 @@ internal class ApiTests : BaseTest
         var response = ValidateResponse(await _client.CreateUserAsync(name, username));
         var responseContent = ValidateContent(response.Content);
 
-        var jsonObj = JObject.Parse(responseContent);
-        var idExists = jsonObj.ContainsKey("id");
+        var userData = JObject.Parse(responseContent);
+        var idExists = userData.ContainsKey("id");
+        Logger.LogInformation($"User created = {userData}");
 
         using (Assert.EnterMultipleScope())
         {
@@ -135,30 +154,35 @@ internal class ApiTests : BaseTest
         }
     }
 
-    private static RestResponse ValidateResponse(RestResponse response)
+    private RestResponse ValidateResponse(RestResponse response)
     {
         if (response == null)
         {
+            Logger.LogError("Response is null");
             throw new InvalidOperationException($"Response is null");
         }
 
+        Logger.LogInformation($"Response status = {response.StatusCode}");
         return response;
     }
 
-    private static string ValidateContent(string? content)
+    private string ValidateContent(string? content)
     {
         if (string.IsNullOrEmpty(content))
         {
+            Logger.LogError($"Response content is null or empty: {content}");
             throw new InvalidOperationException($"Response content is null or empty: {content}");
         }
 
+        Logger.LogInformation($"Response content = {content}");
         return content;
     }
 
-    private static List<User> ValidateUsers(List<User>? users)
+    private List<User> ValidateUsers(List<User>? users)
     {
         if (users == null)
         {
+            Logger.LogError($"Couldn't deserialize content to appropriate format.");
             throw new InvalidOperationException($"Couldn't deserialize content to appropriate format.");
         }
 
