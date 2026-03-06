@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading;
+using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
@@ -10,7 +12,7 @@ namespace SeleniumWebdriverTask.TestLayer
     /// <summary>
     /// A base class for classes containing tests.
     /// </summary>
-    internal abstract class TestBase
+    internal abstract class BaseTest
     {
         private Configuration _configuration;
 
@@ -32,7 +34,7 @@ namespace SeleniumWebdriverTask.TestLayer
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
             var config = configuration.GetSection("Configuration").Get<Configuration>();
@@ -56,7 +58,8 @@ namespace SeleniumWebdriverTask.TestLayer
             var driver = WebDriverFactory.CreateWebDriver(browserType, options);
             SetWebDriverSettings(driver);
 
-            Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(5));
+            Console.WriteLine("_configuration.ExplicitWaitSeconds = " + _configuration.ExplicitWait);
+            Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(_configuration.ExplicitWait));
 
             // Because firefox does not have argument for options.AddArgument("start-maximized"), so we maximize manually.
             Driver.Maximize(headless);
@@ -69,9 +72,10 @@ namespace SeleniumWebdriverTask.TestLayer
         [TearDown]
         public virtual void Teardown()
         {
+            var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
             Logger.LogInformation("Finishing test");
-            Logger.LogInformation($"Test status: {TestContext.CurrentContext.Result.Outcome.Status}");
-            if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
+            Logger.LogInformation($"Test status: {testStatus}");
+            if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver);
                 Logger.LogError($"Error screenshot location:\n {screenshotLocation}");

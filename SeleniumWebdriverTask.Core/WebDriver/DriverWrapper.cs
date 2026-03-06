@@ -94,26 +94,30 @@ public class DriverWrapper
         WebDriver.Dispose();
     }
 
-    /// <summary>
+    /// /// <summary>
     /// Finds and wraps an element.
     /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
     /// <returns>Instance of WebElementWrapper.</returns>
-    public WebElementWrapper FindElement(By by)
+    public T FindElement<T>(By by)
+        where T : WebElementWrapper
     {
         var element = ElementsFinder.FindElement(by, WebDriver, Wait);
-        return element.WrapElement(this);
+        return element.WrapElement<T>(this);
     }
 
     /// <summary>
     /// Finds and wraps collection of elements.
     /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
     /// <returns>A collection of elements or empty collection if non were found.</returns>
-    public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
+    public ReadOnlyCollection<T> FindElements<T>(By by)
+        where T : WebElementWrapper
     {
         var elements = ElementsFinder.FindElements(by, WebDriver, Wait);
-        return elements.WrapElements(this);
+        return elements.WrapElements<T>(this);
     }
 
     /// <summary>

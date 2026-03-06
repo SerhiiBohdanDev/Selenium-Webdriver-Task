@@ -12,7 +12,7 @@ using SeleniumWebdriverTask.CoreLayer.WebDriver;
 namespace SeleniumWebdriverTask.CoreLayer.WebElement;
 
 /// <summary>
-/// A wrapper class for IWebDriver.
+/// A wrapper class for IWebElement.
 /// </summary>
 public class WebElementWrapper
 {
@@ -21,7 +21,6 @@ public class WebElementWrapper
     private const string JavascriptClickCommand = "arguments[0].click();";
 
     private readonly DriverWrapper _driverWrapper;
-    private readonly IWebElement _element;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebElementWrapper"/> class.
@@ -31,27 +30,30 @@ public class WebElementWrapper
     public WebElementWrapper(DriverWrapper driverWrapper, IWebElement element)
     {
         _driverWrapper = driverWrapper;
-        _element = element;
+        Element = element;
     }
 
     /// <summary>
     /// Gets text content of the element by attribute.
     /// </summary>
-    public string? TextContent => _element.GetAttribute("textContent");
-
-    /// <summary>
-    /// Gets element's href attribute.
-    /// </summary>
-    public string? Href => _element.GetAttribute("href");
+    public string? TextContent => Element.GetAttribute("textContent");
 
     /// <summary>
     /// Gets element's text.
     /// </summary>
-    public string Text => _element.Text;
+    public string Text => Element.Text;
+
+    /// <summary>
+    /// Gets inner IWebElement.
+    /// </summary>
+    protected IWebElement Element { get; private set; }
+
+    /// <summary>
+    /// Gets WebDriverWait instance.
+    /// </summary>
+    protected WebDriverWait Wait => _driverWrapper.Wait;
 
     private IWebDriver WebDriver => _driverWrapper.WebDriver;
-
-    private WebDriverWait Wait => _driverWrapper.Wait;
 
     /// <summary>
     /// Moves mouse to element and clicks it.
@@ -59,7 +61,7 @@ public class WebElementWrapper
     public void SafeClick()
     {
         new Actions(WebDriver)
-            .MoveToElement(_element)
+            .MoveToElement(Element)
             .Click()
             .Build()
             .Perform();
@@ -70,24 +72,7 @@ public class WebElementWrapper
     /// </summary>
     public void JavascriptClick()
     {
-        WebDriver.ExecuteJavaScript(JavascriptClickCommand, _element);
-    }
-
-    /// <summary>
-    /// Sends text to the element.
-    /// </summary>
-    /// <param name="text">Text to send.</param>
-    public void EnterText(string text)
-    {
-        _element.SendKeys(text);
-    }
-
-    /// <summary>
-    /// Emulates pressing Enter.
-    /// </summary>
-    public void PressEnter()
-    {
-        _element.SendKeys(Keys.Enter);
+        WebDriver.ExecuteJavaScript(JavascriptClickCommand, Element);
     }
 
     /// <summary>
@@ -95,7 +80,7 @@ public class WebElementWrapper
     /// </summary>
     public void ScrollToElement()
     {
-        WebDriver.ExecuteJavaScript(JavascriptScrollCommand, _element);
+        WebDriver.ExecuteJavaScript(JavascriptScrollCommand, Element);
     }
 
     /// <summary>
@@ -104,59 +89,49 @@ public class WebElementWrapper
     public void Hover()
     {
         new Actions(WebDriver)
-            .MoveToElement(_element)
+            .MoveToElement(Element)
             .Perform();
     }
 
     /// <summary>
     /// Waits until element is displayed.
     /// </summary>
-    /// <returns>Instance of the WebElementWrapper.</returns>
-    public WebElementWrapper WaitUntilDisplayed()
+    public void WaitUntilDisplayed()
     {
-        Waiter.WaitForCondition(Wait, () => _element.Displayed);
-        return this;
+        Waiter.WaitForCondition(Wait, () => Element.Displayed);
     }
 
     /// <summary>
     /// Waits until element is enabled.
     /// </summary>
-    /// <returns>Instance of the WebElementWrapper.</returns>
-    public WebElementWrapper WaitUntilEnabled()
+    public void WaitUntilEnabled()
     {
-        Waiter.WaitForCondition(Wait, () => _element.Displayed && _element.Enabled);
-        return this;
+        Waiter.WaitForCondition(Wait, () => Element.Displayed && Element.Enabled);
     }
 
     /// <summary>
-    /// Waits until link is ready.
+    /// Finds and wraps an element.
     /// </summary>
-    /// <returns>Instance of the WebElementWrapper.</returns>
-    public WebElementWrapper WaitUntilLinkIsReady()
-    {
-        Waiter.WaitForCondition(Wait, () => _element.Displayed && _element.Enabled && Href != null);
-        return this;
-    }
-
-    /// <summary>
-    /// Finds an element.
-    /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
-    /// <returns>Instance of the WebElementWrapper.</returns>
-    public WebElementWrapper FindElement(By by)
+    /// <returns>Instance of WebElementWrapper.</returns>
+    public T FindElement<T>(By by)
+        where T : WebElementWrapper
     {
-        var element = ElementsFinder.FindElement(by, _element, Wait);
-        return element.WrapElement(_driverWrapper);
+        var element = ElementsFinder.FindElement(by, Element, Wait);
+        return element.WrapElement<T>(_driverWrapper);
     }
 
     /// <summary>
     /// Finds elements.
     /// </summary>
+    /// <typeparam name="T">WebElementWrapper type.</typeparam>
     /// <param name="by">Element locator.</param>
     /// <returns>A collection of WebElementWrapper, or an empty collection if none were found..</returns>
-    public ReadOnlyCollection<WebElementWrapper> FindElements(By by)
+    public ReadOnlyCollection<T> FindElements<T>(By by)
+         where T : WebElementWrapper
     {
-        var elements = ElementsFinder.FindElements(by, _element, Wait);
-        return elements.WrapElements(_driverWrapper);
+        var elements = ElementsFinder.FindElements(by, Element, Wait);
+        return elements.WrapElements<T>(_driverWrapper);
     }
 }

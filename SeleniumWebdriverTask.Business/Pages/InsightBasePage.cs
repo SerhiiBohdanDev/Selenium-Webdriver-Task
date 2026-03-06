@@ -1,14 +1,14 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
 /// <summary>
 /// Class to store information related to an Insight page.
 /// </summary>
-public class InsightBasePage
+public class InsightBasePage : BasePage
 {
-    private readonly DriverWrapper _driver;
     private readonly By _title = By.XPath("//*[@class='ai-report-page']//*[@class='layout-box']");
 
     /// <summary>
@@ -16,8 +16,8 @@ public class InsightBasePage
     /// </summary>
     /// <param name="driver">DriverWrapper instance.</param>
     public InsightBasePage(DriverWrapper driver)
+        : base(driver)
     {
-        _driver = driver;
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class InsightBasePage
     /// <returns>Title of the article or empty string if title was null.</returns>
     public string GetTitle()
     {
-        var title = _driver.FindElement(_title);
+        var title = DriverWrapper.FindElement<TextElement>(_title);
         title.WaitUntilDisplayed();
         return title.Text ?? string.Empty;
     }

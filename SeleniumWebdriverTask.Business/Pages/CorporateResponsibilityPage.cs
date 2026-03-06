@@ -1,14 +1,14 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.CoreLayer.WebElement.Elements;
 
 namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 
 /// <summary>
 /// Class to store information related to Corporate Responsibility page.
 /// </summary>
-public class CorporateResponsibilityPage
+public class CorporateResponsibilityPage : BasePage
 {
-    private readonly DriverWrapper _driver;
     private readonly By _downloadLink = By.LinkText("Download Our ESG Quick Facts");
 
     /// <summary>
@@ -16,8 +16,8 @@ public class CorporateResponsibilityPage
     /// </summary>
     /// <param name="driver">DriverWrapper instance.</param>
     public CorporateResponsibilityPage(DriverWrapper driver)
+        : base(driver)
     {
-        _driver = driver;
     }
 
     /// <summary>
@@ -26,8 +26,8 @@ public class CorporateResponsibilityPage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ScrollToDownloadLink()
     {
-        var downloadButton = _driver.FindElement(_downloadLink);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        downloadLink
             .WaitUntilLinkIsReady()
             .ScrollToElement();
 
@@ -40,8 +40,8 @@ public class CorporateResponsibilityPage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ClickDownloadLink()
     {
-        var downloadButton = _driver.FindElement(_downloadLink);
-        downloadButton
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        downloadLink
             .WaitUntilLinkIsReady()
             .JavascriptClick();
 
