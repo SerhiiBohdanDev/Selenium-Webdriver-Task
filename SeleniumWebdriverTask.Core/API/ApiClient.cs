@@ -14,9 +14,6 @@ namespace SeleniumWebdriverTask.CoreLayer.API;
 /// </summary>
 public class ApiClient
 {
-    private const string UsersEndpoint = "/users";
-    private const string InvalidEndpoint = "/invalidendpoint";
-
     private readonly IRestClient _client;
 
     /// <summary>
@@ -35,10 +32,11 @@ public class ApiClient
     /// <summary>
     /// Sends request to get users information.
     /// </summary>
+    /// <param name="endpoint">Endpoint containing users data.</param>
     /// <returns>RequestResponse containing information about users.</returns>
-    public async Task<RestResponse> GetUsersAsync()
+    public async Task<RestResponse> GetUsersAsync(string endpoint)
     {
-        var request = new RestRequest(UsersEndpoint, Method.Get);
+        var request = new RestRequest(endpoint, Method.Get);
         var response = await _client.GetAsync(request);
 
         return response;
@@ -48,10 +46,11 @@ public class ApiClient
     /// Sends request to create a user.
     /// </summary>
     /// <param name="user">Instance of User object.</param>
+    /// <param name="endpoint">Endpoint containing users data.</param>
     /// <returns>RestRequest with information about request state and user data.</returns>
-    public async Task<RestResponse> CreateUserAsync(User user)
+    public async Task<RestResponse> CreateUserAsync(User user, string endpoint)
     {
-        var request = new RestRequest(UsersEndpoint, Method.Post);
+        var request = new RestRequest(endpoint, Method.Post);
         request.AddBody(new { user.Name, user.Username, });
         var response = await _client.PostAsync(request);
 
@@ -61,10 +60,11 @@ public class ApiClient
     /// <summary>
     /// Sends request to invalid endpoint.
     /// </summary>
+    /// <param name="endpoint">Invalid endpoint.</param>
     /// <returns>RestResponse with information about request state.</returns>
-    public async Task<RestResponse> GetInvalidEndpointAsync()
+    public async Task<RestResponse> GetInvalidEndpointAsync(string endpoint)
     {
-        var request = new RestRequest(InvalidEndpoint, Method.Get);
+        var request = new RestRequest(endpoint, Method.Get);
         var response = await _client.GetAsync(request);
 
         return response;

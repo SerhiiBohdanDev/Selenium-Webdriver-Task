@@ -34,4 +34,14 @@ public class Configuration
     /// Gets base url for API tests.
     /// </summary>
     public required string ApiTestsBaseUrl { get; init; }
+
+    /// <summary>
+    /// Gets endpoint for users page.
+    /// </summary>
+    public required string UsersEndpoint { get; init; }
+
+    /// <summary>
+    /// Gets endpoint for invalid page.
+    /// </summary>
+    public required string InvalidEndpoint { get; init; }
 }
