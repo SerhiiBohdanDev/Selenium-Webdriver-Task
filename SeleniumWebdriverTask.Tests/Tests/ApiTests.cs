@@ -194,7 +194,7 @@ internal class ApiTests : BaseTest
         AssertResponseIsValid(response, expectedStatus);
     }
 
-    private void AssertResponseIsValid(RestResponse response, HttpStatusCode expectedStatus)
+    private static void AssertResponseIsValid(RestResponse response, HttpStatusCode expectedStatus)
     {
         using (Assert.EnterMultipleScope())
         {
