@@ -37,18 +37,39 @@ internal class ApiTests : BaseTest
     public async Task UsersExist_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
+        var requiredKeys = new string[] { "id", "name", "username", "email", "address", "phone", "website", "company" };
+
         var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
         var responseContent = ValidateContent(response.Content);
 
-        var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
+        var users = JArray.Parse(responseContent).Cast<JObject>().ToArray();
+
+        var usersMissingKeys = 0;
+        foreach (var user in users)
+        {
+            var missingKeys = new List<string>();
+            foreach (var key in requiredKeys)
+            {
+                if (!user.ContainsKey(key))
+                {
+                    missingKeys.Add(key);
+                }
+            }
+
+            if (missingKeys.Count > 0)
+            {
+                usersMissingKeys++;
+                Logger.LogError($"User is missing keys: {string.Join(',', missingKeys)}\n" +
+                        $"User information:\n{user}");
+            }
+        }
 
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
-        Logger.LogInformation($"Users count = {users.Count}");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
             Assert.That(response.ErrorMessage, Is.Null);
-            Assert.That(users, Is.Not.Empty);
+            Assert.That(usersMissingKeys, Is.Zero);
         }
     }
 
@@ -62,6 +83,7 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedHeader = "application/json";
+
         var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
 
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
@@ -85,28 +107,34 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
+
         var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
         var responseContent = ValidateContent(response.Content);
-
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
-        var hasDuplicateIds = users.Select(u => u.Id).Distinct().Count() != users.Count;
-        var allHaveNameAndUsername = users.All(u => !string.IsNullOrEmpty(u.Name) && !string.IsNullOrEmpty(u.Username));
-        var allHaveCompanyName = users.All(u => !string.IsNullOrEmpty(u.Company.Name));
+        var duplicateUsers = users
+            .GroupBy(u => u.Id)
+            .Where(g => g.Count() > 1)
+            .SelectMany(g => g)
+            .ToList();
 
+        var usersMissingNameOrUsername = users
+            .Where(u => string.IsNullOrEmpty(u.Name) || string.IsNullOrEmpty(u.Username))
+            .ToList();
+        var usersMissingCompanyName = users
+            .Where(u => string.IsNullOrEmpty(u.Company.Name))
+            .ToList();
+
+        LogInvalidUsers(duplicateUsers, usersMissingNameOrUsername, usersMissingCompanyName);
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
-        Logger.LogInformation($"Users count = {users.Count}");
-        Logger.LogInformation($"Users have duplicate ids = {hasDuplicateIds}");
-        Logger.LogInformation($"All users have unique name and username = {allHaveNameAndUsername}");
-        Logger.LogInformation($"All users have company name = {allHaveCompanyName}");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
             Assert.That(response.ErrorMessage, Is.Null);
             Assert.That(users, Has.Count.EqualTo(expectedUsersAmount));
-            Assert.That(hasDuplicateIds, Is.False);
-            Assert.That(allHaveNameAndUsername, Is.True);
-            Assert.That(allHaveCompanyName, Is.True);
+            Assert.That(duplicateUsers, Has.Count.Zero);
+            Assert.That(usersMissingNameOrUsername, Has.Count.Zero);
+            Assert.That(usersMissingCompanyName, Has.Count.Zero);
         }
     }
 
@@ -197,5 +225,26 @@ internal class ApiTests : BaseTest
         }
 
         return users;
+    }
+
+    private void LogInvalidUsers(List<User> duplicateUsers, List<User> usersMissingNameOrUsername, List<User> usersMissingCompanyName)
+    {
+        for (int i = 0; i < duplicateUsers.Count; i++)
+        {
+            var user = duplicateUsers[i];
+            Logger.LogError($"User has duplicate id: {user}");
+        }
+
+        for (int i = 0; i < usersMissingNameOrUsername.Count; i++)
+        {
+            var user = usersMissingNameOrUsername[i];
+            Logger.LogError($"User is missing name or username: {user}");
+        }
+
+        for (int i = 0; i < usersMissingCompanyName.Count; i++)
+        {
+            var user = usersMissingCompanyName[i];
+            Logger.LogError($"User is missing company name: {user}");
+        }
     }
 }
