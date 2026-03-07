@@ -31,49 +31,22 @@ internal class ApiTests : BaseTest
     /// Verifies that at least one user exists.
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if can't convert response to users list.</exception>
     [Test]
     [Category("API")]
     public async Task UsersExist_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
-        var requiredKeys = new string[] { "id", "name", "username", "email", "address", "phone", "website", "company" };
 
         var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
         LogResponseStatus(response);
         var responseContent = ValidateContent(response.Content);
 
-        var users = JArray.Parse(responseContent).Cast<JObject>().ToArray();
-
-        var usersMissingKeys = new List<Tuple<JObject, string>>();
-        foreach (var user in users)
-        {
-            var missingKeys = new List<string>();
-            foreach (var key in requiredKeys)
-            {
-                if (!user.ContainsKey(key))
-                {
-                    missingKeys.Add(key);
-                }
-            }
-
-            if (missingKeys.Count > 0)
-            {
-                usersMissingKeys.Add(new Tuple<JObject, string>(user, string.Join(',', missingKeys)));
-            }
-        }
-
-        for (int i = 0; i < usersMissingKeys.Count; i++)
-        {
-            var (user, keys) = usersMissingKeys[i];
-            Logger.LogError($"User is missing keys: {string.Join(',', keys)}\n" +
-                        $"User information:\n{user}");
-        }
+        var users = ValidateUsers(responseContent);
 
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
-            Assert.That(usersMissingKeys, Has.Count.Zero);
+            Assert.That(users, Is.Not.Empty);
         }
     }
 
@@ -115,7 +88,7 @@ internal class ApiTests : BaseTest
         LogResponseStatus(response);
 
         var responseContent = ValidateContent(response.Content);
-        var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
+        var users = ValidateUsers(responseContent);
 
         var duplicateUsers = users
             .GroupBy(u => u.Id)
@@ -134,7 +107,7 @@ internal class ApiTests : BaseTest
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
-            Assert.That(users, Has.Count.EqualTo(expectedUsersAmount));
+            Assert.That(users, Has.Length.EqualTo(expectedUsersAmount));
             Assert.That(duplicateUsers, Has.Count.Zero);
             Assert.That(usersMissingNameOrUsername, Has.Count.Zero);
             Assert.That(usersMissingCompanyName, Has.Count.Zero);
@@ -221,12 +194,22 @@ internal class ApiTests : BaseTest
         return content;
     }
 
-    private List<User> ValidateUsers(List<User>? users)
+    private User[] ValidateUsers(string responseContent)
     {
+        User[]? users;
+        try
+        {
+            users = JsonConvert.DeserializeObject<User[]>(responseContent);
+        }
+        catch (JsonSerializationException ex)
+        {
+            Logger.LogError(ex.Message);
+            throw;
+        }
+
         if (users == null)
         {
-            Logger.LogError($"Couldn't deserialize content to appropriate format.");
-            throw new InvalidOperationException($"Couldn't deserialize content to appropriate format.");
+            throw new InvalidOperationException($"Deserialization resulted in null. The input JSON may be invalid or empty.");
         }
 
         return users;

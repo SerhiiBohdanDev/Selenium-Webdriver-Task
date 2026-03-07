@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace SeleniumWebdriverTask.CoreLayer.API.Models;
 
@@ -13,49 +13,57 @@ public class User
     /// <summary>
     /// Gets or sets user's id.
     /// </summary>
-    [JsonPropertyName("id")]
+    [JsonRequired]
+    [JsonProperty("id")]
     public int Id { get; set; }
 
     /// <summary>
     /// Gets or sets user's name.
     /// </summary>
-    [JsonPropertyName("name")]
+    [JsonRequired]
+    [JsonProperty("name")]
     public required string Name { get; set; }
 
     /// <summary>
     /// Gets or sets user's username.
     /// </summary>
-    [JsonPropertyName("username")]
+    [JsonRequired]
+    [JsonProperty("username")]
     public required string Username { get; set; }
 
     /// <summary>
     /// Gets or sets user's email.
     /// </summary>
-    [JsonPropertyName("email")]
+    [JsonRequired]
+    [JsonProperty("email")]
     public string? Email { get; set; }
 
     /// <summary>
     /// Gets or sets user's address.
     /// </summary>
-    [JsonPropertyName("address")]
+    [JsonRequired]
+    [JsonProperty("address")]
     public Address Address { get; set; }
 
     /// <summary>
     /// Gets or sets user's phone.
     /// </summary>
-    [JsonPropertyName("phone")]
+    [JsonRequired]
+    [JsonProperty("phone")]
     public string? Phone { get; set; }
 
     /// <summary>
     /// Gets or sets user's website.
     /// </summary>
-    [JsonPropertyName("website")]
+    [JsonRequired]
+    [JsonProperty("website")]
     public string? Website { get; set; }
 
     /// <summary>
     /// Gets or sets user's company.
     /// </summary>
-    [JsonPropertyName("company")]
+    [JsonRequired]
+    [JsonProperty("company")]
     public Company Company { get; set; }
 
     /// <summary>
