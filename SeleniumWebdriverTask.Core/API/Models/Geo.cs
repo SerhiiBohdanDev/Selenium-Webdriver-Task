@@ -21,4 +21,10 @@ public struct Geo
     /// </summary>
     [JsonPropertyName("lng")]
     public string Longitude { get; set; }
+
+    /// <summary>
+    /// Converts struct to string.
+    /// </summary>
+    /// <returns>String representation of the object.</returns>
+    public override readonly string ToString() => $"Geo. Lattitude: {Lattitude}, Longitude: {Longitude}";
 }

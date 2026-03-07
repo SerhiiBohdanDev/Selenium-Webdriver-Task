@@ -39,4 +39,11 @@ public struct Address
     /// </summary>
     [JsonPropertyName("geo")]
     public Geo Geo { get; set; }
+
+    /// <summary>
+    /// Converts struct to string.
+    /// </summary>
+    /// <returns>String representation of the object.</returns>
+    public override readonly string ToString() => $"Address. " +
+        $"Street: {Street}, Suite: {Suite}, City: {City}, Zipcode: {Zipcode}, {Geo}";
 }

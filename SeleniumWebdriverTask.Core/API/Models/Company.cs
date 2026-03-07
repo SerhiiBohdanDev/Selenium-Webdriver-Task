@@ -27,4 +27,10 @@ public struct Company
     /// </summary>
     [JsonPropertyName("bs")]
     public string Bs { get; set; }
+
+    /// <summary>
+    /// Converts struct to string.
+    /// </summary>
+    /// <returns>String representation of the object.</returns>
+    public override readonly string ToString() => $"Company data. Name: {Name}, CatchPhrase: {CatchPhrase}, bs {Bs}";
 }

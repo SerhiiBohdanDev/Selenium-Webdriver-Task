@@ -57,4 +57,11 @@ public class User
     /// </summary>
     [JsonPropertyName("company")]
     public Company Company { get; set; }
+
+    /// <summary>
+    /// Converts struct to string.
+    /// </summary>
+    /// <returns>String representation of the object.</returns>
+    public override string ToString() => $"User. Id: {Id}, Name: {Name}, Username: {Username}, Email: {Email}," +
+        $"{Address}, Phone: {Phone}, Website: {Website}, {Company}";
 }
