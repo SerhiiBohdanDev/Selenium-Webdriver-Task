@@ -122,7 +122,6 @@ internal class ApiTests : BaseTest
             .ToList();
 
         LogInvalidUsers(duplicateUsers, usersMissingNameOrUsername, usersMissingCompanyName);
-        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
@@ -153,11 +152,13 @@ internal class ApiTests : BaseTest
 
         var response = await _client.CreateUserAsync(user, Configuration.UsersEndpoint);
         var responseContent = ValidateContent(response.Content);
-
         var userData = JObject.Parse(responseContent);
         var idExists = userData.ContainsKey("id");
-        Logger.LogInformation($"User created = {userData}");
-        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
+
+        if (response.StatusCode == expectedStatus)
+        {
+            Logger.LogInformation($"User created = {userData}");
+        }
 
         using (Assert.EnterMultipleScope())
         {
