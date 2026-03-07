@@ -40,6 +40,7 @@ internal class ApiTests : BaseTest
         var requiredKeys = new string[] { "id", "name", "username", "email", "address", "phone", "website", "company" };
 
         var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
+        LogResponseStatus(response);
         var responseContent = ValidateContent(response.Content);
 
         var users = JArray.Parse(responseContent).Cast<JObject>().ToArray();
@@ -88,6 +89,7 @@ internal class ApiTests : BaseTest
         var expectedContentType = "application/json";
 
         var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
+        LogResponseStatus(response);
 
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
         using (Assert.EnterMultipleScope())
@@ -110,6 +112,8 @@ internal class ApiTests : BaseTest
         var expectedUsersAmount = 10;
 
         var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
+        LogResponseStatus(response);
+
         var responseContent = ValidateContent(response.Content);
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
@@ -156,6 +160,8 @@ internal class ApiTests : BaseTest
             .Build();
 
         var response = await _client.CreateUserAsync(user, Configuration.UsersEndpoint);
+        LogResponseStatus(response);
+
         var responseContent = ValidateContent(response.Content);
         var userData = JObject.Parse(responseContent);
         var idExists = userData.ContainsKey("id");
@@ -183,19 +189,24 @@ internal class ApiTests : BaseTest
         var expectedStatus = HttpStatusCode.NotFound;
 
         var response = await _client.CallGetAsync(Configuration.InvalidEndpoint);
+        LogResponseStatus(response);
 
         AssertResponseIsValid(response, expectedStatus);
     }
 
     private void AssertResponseIsValid(RestResponse response, HttpStatusCode expectedStatus)
     {
-        Logger.LogInformation($"Response status = {response.StatusCode}");
-        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
             Assert.That(response.ErrorMessage, Is.Null);
         }
+    }
+
+    private void LogResponseStatus(RestResponse response)
+    {
+        Logger.LogInformation($"Response status = {response.StatusCode}");
+        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
     }
 
     private string ValidateContent(string? content)
