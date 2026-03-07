@@ -37,7 +37,7 @@ internal class ApiTests : BaseTest
     public async Task UsersExist_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
-        var response = ValidateResponse(await _client.GetUsersAsync(Configuration.UsersEndpoint));
+        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
         var responseContent = ValidateContent(response.Content);
 
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
@@ -62,7 +62,7 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedHeader = "application/json";
-        var response = ValidateResponse(await _client.GetUsersAsync(Configuration.UsersEndpoint));
+        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
 
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
@@ -85,7 +85,7 @@ internal class ApiTests : BaseTest
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
-        var response = ValidateResponse(await _client.GetUsersAsync(Configuration.UsersEndpoint));
+        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
         var responseContent = ValidateContent(response.Content);
 
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
@@ -153,7 +153,7 @@ internal class ApiTests : BaseTest
     public async Task InvalidEndpoint_GetEndpoint_Success()
     {
         var expectedStatus = HttpStatusCode.NotFound;
-        var response = ValidateResponse(await _client.GetInvalidEndpointAsync(Configuration.InvalidEndpoint));
+        var response = ValidateResponse(await _client.CallGetAsync(Configuration.InvalidEndpoint));
 
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
 

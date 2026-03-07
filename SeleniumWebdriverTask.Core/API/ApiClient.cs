@@ -30,11 +30,11 @@ public class ApiClient
     }
 
     /// <summary>
-    /// Sends request to get users information.
+    /// Sends GET request to endpoint.
     /// </summary>
-    /// <param name="endpoint">Endpoint containing users data.</param>
-    /// <returns>RequestResponse containing information about users.</returns>
-    public async Task<RestResponse> GetUsersAsync(string endpoint)
+    /// <param name="endpoint">Endpoint to send request to.</param>
+    /// <returns>RequestResponse.</returns>
+    public async Task<RestResponse> CallGetAsync(string endpoint)
     {
         var request = new RestRequest(endpoint, Method.Get);
         var response = await _client.GetAsync(request);
@@ -53,19 +53,6 @@ public class ApiClient
         var request = new RestRequest(endpoint, Method.Post);
         request.AddBody(new { user.Name, user.Username, });
         var response = await _client.PostAsync(request);
-
-        return response;
-    }
-
-    /// <summary>
-    /// Sends request to invalid endpoint.
-    /// </summary>
-    /// <param name="endpoint">Invalid endpoint.</param>
-    /// <returns>RestResponse with information about request state.</returns>
-    public async Task<RestResponse> GetInvalidEndpointAsync(string endpoint)
-    {
-        var request = new RestRequest(endpoint, Method.Get);
-        var response = await _client.GetAsync(request);
 
         return response;
     }
