@@ -42,7 +42,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [SetUp]
         public virtual void Setup()
         {
-            Logger.LogInformation("Starting test");
+            Logger.LogInformation($"Starting '{TestContext.CurrentContext.Test.FullName}'");
         }
 
         /// <summary>
