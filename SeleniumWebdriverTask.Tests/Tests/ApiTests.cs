@@ -119,7 +119,7 @@ internal class ApiTests : BaseTest
     public async Task ValidData_CreateUser_Success()
     {
         var expectedStatus = HttpStatusCode.Created;
-        var dateTime = DateTime.UtcNow.ToString("yyyy_M_dd_hh_mm_ss");
+        var dateTime = DateTime.UtcNow.ToString("yyyy_MM_dd_hh_mm_ss");
         var name = "Name_" + dateTime;
         var username = "Username_" + dateTime;
         var user =

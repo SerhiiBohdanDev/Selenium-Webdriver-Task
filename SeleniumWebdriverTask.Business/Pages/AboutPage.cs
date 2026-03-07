@@ -9,7 +9,7 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// </summary>
 public class AboutPage : BasePage
 {
-    private readonly By _downloadButton = By.XPath("//a[@download='']");
+    private readonly By _downloadButtonLocator = By.XPath("//a[@download='']");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AboutPage"/> class.
@@ -26,7 +26,7 @@ public class AboutPage : BasePage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ScrollToDownloadButton()
     {
-        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButton);
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButtonLocator);
         downloadLink
             .WaitUntilLinkIsReady()
             .ScrollToElement();
@@ -40,7 +40,7 @@ public class AboutPage : BasePage
     /// <returns>AboutPage instance.</returns>
     public AboutPage ClickDownloadButton()
     {
-        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButton);
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadButtonLocator);
         downloadLink
             .WaitUntilLinkIsReady()
             .JavascriptClick();

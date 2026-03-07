@@ -9,7 +9,7 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// </summary>
 public class CorporateResponsibilityPage : BasePage
 {
-    private readonly By _downloadLink = By.LinkText("Download Our ESG Quick Facts");
+    private readonly By _downloadLinkLocator = By.LinkText("Download Our ESG Quick Facts");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CorporateResponsibilityPage"/> class.
@@ -26,7 +26,7 @@ public class CorporateResponsibilityPage : BasePage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ScrollToDownloadLink()
     {
-        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLinkLocator);
         downloadLink
             .WaitUntilLinkIsReady()
             .ScrollToElement();
@@ -40,7 +40,7 @@ public class CorporateResponsibilityPage : BasePage
     /// <returns>Instance of CorporateResponsibilityPage.</returns>
     public CorporateResponsibilityPage ClickDownloadLink()
     {
-        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLink);
+        var downloadLink = DriverWrapper.FindElement<Link>(_downloadLinkLocator);
         downloadLink
             .WaitUntilLinkIsReady()
             .JavascriptClick();

@@ -9,7 +9,7 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// </summary>
 public class InsightBasePage : BasePage
 {
-    private readonly By _title = By.XPath("//*[@class='ai-report-page']//*[@class='layout-box']");
+    private readonly By _titleLocator = By.XPath("//*[@class='ai-report-page']//*[@class='layout-box']");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InsightBasePage"/> class.
@@ -26,7 +26,7 @@ public class InsightBasePage : BasePage
     /// <returns>Title of the article or empty string if title was null.</returns>
     public string GetTitle()
     {
-        var title = DriverWrapper.FindElement<TextElement>(_title);
+        var title = DriverWrapper.FindElement<TextElement>(_titleLocator);
         title.WaitUntilDisplayed();
         return title.Text ?? string.Empty;
     }
