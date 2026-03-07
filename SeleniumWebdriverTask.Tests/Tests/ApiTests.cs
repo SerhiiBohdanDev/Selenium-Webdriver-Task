@@ -39,7 +39,7 @@ internal class ApiTests : BaseTest
         var expectedStatus = HttpStatusCode.OK;
         var requiredKeys = new string[] { "id", "name", "username", "email", "address", "phone", "website", "company" };
 
-        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
+        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
         var responseContent = ValidateContent(response.Content);
 
         var users = JArray.Parse(responseContent).Cast<JObject>().ToArray();
@@ -64,11 +64,9 @@ internal class ApiTests : BaseTest
             }
         }
 
-        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
-            Assert.That(response.ErrorMessage, Is.Null);
+            AssertResponseIsValid(response, expectedStatus);
             Assert.That(usersMissingKeys, Is.Zero);
         }
     }
@@ -82,17 +80,15 @@ internal class ApiTests : BaseTest
     public async Task HeaderExists_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
-        var expectedHeader = "application/json";
+        var expectedContentType = "application/json";
 
-        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
+        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
 
-        Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
-            Assert.That(response.ContentType, Is.EqualTo(expectedHeader));
-            Assert.That(response.ErrorMessage, Is.Null);
+            AssertResponseIsValid(response, expectedStatus);
+            Assert.That(response.ContentType, Is.EqualTo(expectedContentType));
         }
     }
 
@@ -108,7 +104,7 @@ internal class ApiTests : BaseTest
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
 
-        var response = ValidateResponse(await _client.CallGetAsync(Configuration.UsersEndpoint));
+        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
         var responseContent = ValidateContent(response.Content);
         var users = ValidateUsers(JsonConvert.DeserializeObject<List<User>>(responseContent));
 
@@ -129,8 +125,7 @@ internal class ApiTests : BaseTest
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
-            Assert.That(response.ErrorMessage, Is.Null);
+            AssertResponseIsValid(response, expectedStatus);
             Assert.That(users, Has.Count.EqualTo(expectedUsersAmount));
             Assert.That(duplicateUsers, Has.Count.Zero);
             Assert.That(usersMissingNameOrUsername, Has.Count.Zero);
@@ -156,7 +151,7 @@ internal class ApiTests : BaseTest
             .WithUsername(username)
             .Build();
 
-        var response = ValidateResponse(await _client.CreateUserAsync(user, Configuration.UsersEndpoint));
+        var response = await _client.CreateUserAsync(user, Configuration.UsersEndpoint);
         var responseContent = ValidateContent(response.Content);
 
         var userData = JObject.Parse(responseContent);
@@ -166,8 +161,7 @@ internal class ApiTests : BaseTest
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
-            Assert.That(response.ErrorMessage, Is.Null);
+            AssertResponseIsValid(response, expectedStatus);
             Assert.That(idExists, Is.True);
         }
     }
@@ -181,27 +175,21 @@ internal class ApiTests : BaseTest
     public async Task InvalidEndpoint_GetEndpoint_Success()
     {
         var expectedStatus = HttpStatusCode.NotFound;
-        var response = ValidateResponse(await _client.CallGetAsync(Configuration.InvalidEndpoint));
 
+        var response = await _client.CallGetAsync(Configuration.InvalidEndpoint);
+
+        AssertResponseIsValid(response, expectedStatus);
+    }
+
+    private void AssertResponseIsValid(RestResponse response, HttpStatusCode expectedStatus)
+    {
+        Logger.LogInformation($"Response status = {response.StatusCode}");
         Logger.LogInformation($"ErrorMessage = '{response.ErrorMessage}'");
-
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
             Assert.That(response.ErrorMessage, Is.Null);
         }
-    }
-
-    private RestResponse ValidateResponse(RestResponse response)
-    {
-        if (response == null)
-        {
-            Logger.LogError("Response is null");
-            throw new InvalidOperationException($"Response is null");
-        }
-
-        Logger.LogInformation($"Response status = {response.StatusCode}");
-        return response;
     }
 
     private string ValidateContent(string? content)
