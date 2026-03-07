@@ -44,7 +44,7 @@ internal class ApiTests : BaseTest
 
         var users = JArray.Parse(responseContent).Cast<JObject>().ToArray();
 
-        var usersMissingKeys = 0;
+        var usersMissingKeys = new List<Tuple<JObject, string>>();
         foreach (var user in users)
         {
             var missingKeys = new List<string>();
@@ -58,16 +58,21 @@ internal class ApiTests : BaseTest
 
             if (missingKeys.Count > 0)
             {
-                usersMissingKeys++;
-                Logger.LogError($"User is missing keys: {string.Join(',', missingKeys)}\n" +
-                        $"User information:\n{user}");
+                usersMissingKeys.Add(new Tuple<JObject, string>(user, string.Join(',', missingKeys)));
             }
+        }
+
+        for (int i = 0; i < usersMissingKeys.Count; i++)
+        {
+            var (user, keys) = usersMissingKeys[i];
+            Logger.LogError($"User is missing keys: {string.Join(',', keys)}\n" +
+                        $"User information:\n{user}");
         }
 
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
-            Assert.That(usersMissingKeys, Is.Zero);
+            Assert.That(usersMissingKeys, Has.Count.Zero);
         }
     }
 
