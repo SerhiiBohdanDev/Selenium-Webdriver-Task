@@ -26,7 +26,7 @@ internal class MainPageSteps : CommonSteps
     /// Hovers over 'Services' link.
     /// </summary>
     [Given(@"I hover over 'Services' link")]
-    public void IHoverOverServicesLink()
+    public void HoverOverServicesLink()
     {
         _mainPage.HoverServicesLink();
     }
@@ -36,7 +36,7 @@ internal class MainPageSteps : CommonSteps
     /// </summary>
     /// <param name="articleName">Article name.</param>
     [When(@"I click on link to the '(.*)' article")]
-    public void IClickOnLinkToTheArticle(string articleName)
+    public void ClickOnLinkToTheArticle(string articleName)
     {
         _mainPage.ClickAiArticleLink(articleName);
     }
@@ -80,5 +80,46 @@ internal class MainPageSteps : CommonSteps
     public void ClickCorporateResponsibilityLink()
     {
         _mainPage.ClickCorporateResponsibility();
+    }
+
+    /// <summary>
+    /// Clicks magnifying glass.
+    /// </summary>
+    [Given(@"I click on magnifying glass on main page")]
+    public void ClickMagnifyingGlass()
+    {
+        _mainPage.ClickMagnifyingGlass();
+    }
+
+    /// <summary>
+    /// Enters term and clicks search.
+    /// </summary>
+    /// <param name="term">Term to search for.</param>
+    [When(@"I enter '(.*)' in the input field and click search")]
+    public void EnterTermAndClickSearch(string term)
+    {
+        _mainPage
+            .EnterSearchTerm(term)
+            .ClickFind();
+    }
+
+    /// <summary>
+    /// Enters term and clicks search.
+    /// </summary>
+    /// <param name="term">Term to search for.</param>
+    [Then(@"A list of results displayed containing '(.*)' in the title")]
+    public void CheckSearchResults(string term)
+    {
+        var titles = _mainPage.GetSearchResultTitles();
+
+        var allTitlesContainTerm = true;
+        List<string> titlesNotContainingTerm = [];
+        foreach (var title in titles.Where(title => !title.Contains(term, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            allTitlesContainTerm = false;
+            titlesNotContainingTerm.Add(title);
+        }
+
+        Assert.That(allTitlesContainTerm, Is.True);
     }
 }
