@@ -3,7 +3,6 @@
 
 using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
-using SeleniumWebdriverTask.TestLayer.Contexts;
 using TechTalk.SpecFlow;
 
 namespace SeleniumWebdriverTask.TestLayer.Steps;
@@ -31,7 +30,7 @@ internal class SearchPageSteps : CommonSteps
     /// <param name="languages">Language to search for.</param>
     /// <param name="location">Selected location.</param>
     [When(@"I input search '(.*)', '(.*)' and select remote option")]
-    public void BrowserNavigatesToSlideArticlePage(string[] languages, string location)
+    public void EnterSearchDataIntoForm(string[] languages, string location)
     {
         _searchPage
                 .WaitUntilCountryDetected()
