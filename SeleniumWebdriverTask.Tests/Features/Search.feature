@@ -13,3 +13,17 @@ Scenario: Searching terms on the main page
     |BLOCKCHAIN      |
     |Cloud           |
     |Automation      |
+
+Scenario: Searching language on the jobs page
+    Given I click join us link
+    When I input search '<language>', '<country>' and select remote option
+    Then The last job in the search results should contains the searched '<language>'
+
+    Examples:
+    | language        | country |
+    | javascript, js  | Armenia |
+    | javascript, js  | Georgia |
+    | NET             | Armenia |
+    | NET             | Georgia |
+    | python          | Armenia |
+    | python          | Georgia |

@@ -14,7 +14,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps common to all tests.
 /// </summary>
 [Binding]
-internal class CommonSteps
+internal abstract class CommonSteps
 {
     /// <summary>
     /// Gets or sets temporaty folder for downloaded files.

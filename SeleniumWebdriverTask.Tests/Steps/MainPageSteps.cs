@@ -122,4 +122,13 @@ internal class MainPageSteps : CommonSteps
 
         Assert.That(allTitlesContainTerm, Is.True);
     }
+
+    /// <summary>
+    /// Clicks join us link.
+    /// </summary>
+    [Given(@"I click join us link")]
+    public void ClickJoinUs()
+    {
+        _mainPage.ClickJoinUs();
+    }
 }

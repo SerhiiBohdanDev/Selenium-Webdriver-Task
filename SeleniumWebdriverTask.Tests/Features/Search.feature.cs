@@ -106,6 +106,44 @@ this.ScenarioInitialize(scenarioInfo);
             }
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Searching language on the jobs page")]
+        [NUnit.Framework.TestCaseAttribute("javascript, js", "Armenia", null)]
+        [NUnit.Framework.TestCaseAttribute("javascript, js", "Georgia", null)]
+        [NUnit.Framework.TestCaseAttribute("NET", "Armenia", null)]
+        [NUnit.Framework.TestCaseAttribute("NET", "Georgia", null)]
+        [NUnit.Framework.TestCaseAttribute("python", "Armenia", null)]
+        [NUnit.Framework.TestCaseAttribute("python", "Georgia", null)]
+        public void SearchingLanguageOnTheJobsPage(string language, string country, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("language", language);
+            argumentsOfScenario.Add("country", country);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Searching language on the jobs page", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 17
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 18
+    testRunner.Given("I click join us link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 19
+    testRunner.When(string.Format("I input search \'{0}\', \'{1}\' and select remote option", language, country), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 20
+    testRunner.Then(string.Format("The last job in the search results should contains the searched \'{0}\'", language), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore
