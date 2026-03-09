@@ -7,13 +7,30 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// </summary>
     internal class NavigationTests : BaseUiTest
     {
+        [TestCase("Generative AI")]
+        [TestCase("Responsible AI")]
+        public void CorrectTitle_NavigateToAiArticle_Success(string articleName)
+        {
+            new MainPage(Driver)
+                .ClickAiArticleLink(articleName);
+
+            var aiArticlePage = new AiArticlePage(Driver);
+            var title = aiArticlePage.GetArticleTitle();
+            var relatedExpertiseSectionDisplayed = aiArticlePage.IsRelatedExpertiseSectionDisplayed;
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(title, Is.EqualTo(articleName));
+                Assert.That(relatedExpertiseSectionDisplayed, Is.True);
+            }
+        }
+
         /// <summary>
         /// Verifies that slide text on the insights page is contained in the title of the article on that insight's page.
         /// </summary>
         [Test]
         public void CorrectTitle_CompareSlideTitles_Success()
         {
-            Logger.LogInformation($"Starting slide title comparison test.");
             new MainPage(Driver)
                 .ClickInsights();
 
@@ -35,9 +52,8 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
             {
                 Assert.That(pageTitle, Is.Not.Empty);
                 Assert.That(slideTitle, Is.Not.Empty);
+                Assert.That(pageTitle, Does.Contain(slideTitle));
             }
-
-            Assert.That(pageTitle, Does.Contain(slideTitle));
         }
 
         private static string FormatTitle(string title)

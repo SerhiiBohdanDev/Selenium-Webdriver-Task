@@ -34,6 +34,11 @@ public class WebElementWrapper
     }
 
     /// <summary>
+    /// Gets a value indicating whether or not element is displayed.
+    /// </summary>
+    public bool IsDisplayed => Element.Displayed;
+
+    /// <summary>
     /// Gets text content of the element by attribute.
     /// </summary>
     public string? TextContent => Element.GetAttribute("textContent");

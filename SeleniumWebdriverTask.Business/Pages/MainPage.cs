@@ -20,6 +20,7 @@ public class MainPage : BasePage
     private readonly By _aboutLocator = By.LinkText("About");
     private readonly By _insightsLocator = By.LinkText("Insights");
     private readonly By _corporateResponsibilityLocator = By.LinkText("Corporate Responsibility");
+    private readonly By _servicesLocator = By.LinkText("Services");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MainPage"/> class.
@@ -129,6 +130,20 @@ public class MainPage : BasePage
             .SafeClick();
 
         return this;
+    }
+
+    /// <summary>
+    /// Clicks a link to article about AI.
+    /// </summary>
+    /// <param name="articleName">Name of the article to find link by.</param>
+    public void ClickAiArticleLink(string articleName)
+    {
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRowLocator);
+        var servicesLink = topRow.FindElement<Link>(_servicesLocator);
+        servicesLink.Hover();
+        topRow
+            .FindElement<Link>(By.LinkText(articleName))
+            .SafeClick();
     }
 
     /// <summary>
