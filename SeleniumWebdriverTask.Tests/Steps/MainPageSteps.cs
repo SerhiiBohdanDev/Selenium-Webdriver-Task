@@ -68,8 +68,17 @@ internal class MainPageSteps : CommonSteps
     /// Clicks on insights link.
     /// </summary>
     [Given(@"I click 'Insights' link")]
-    public void IClickOnInsightsLink()
+    public void ClickOnInsightsLink()
     {
         _mainPage.ClickInsights();
+    }
+
+    /// <summary>
+    /// Clicks on corporate responsibility link.
+    /// </summary>
+    [Given(@"I click 'Corporate responsibility' link")]
+    public void ClickCorporateResponsibilityLink()
+    {
+        _mainPage.ClickCorporateResponsibility();
     }
 }

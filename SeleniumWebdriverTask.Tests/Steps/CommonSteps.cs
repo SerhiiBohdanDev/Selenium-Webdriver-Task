@@ -16,7 +16,10 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 [Binding]
 internal class CommonSteps
 {
-    private static string s_downloadFolderPath;
+    /// <summary>
+    /// Gets or sets temporaty folder for downloaded files.
+    /// </summary>
+    protected static string DownloadFolderPath { get; private set; }
 
     /// <summary>
     /// Gets the configuration.
@@ -60,21 +63,21 @@ internal class CommonSteps
 
         // have to add this for all tests because method is static
         // Create a unique download directory for each test run for best practice
-        s_downloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        Directory.CreateDirectory(s_downloadFolderPath);
-        Logger.LogInformation($"Createing temporary directory for file: {s_downloadFolderPath}");
+        DownloadFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(DownloadFolderPath);
+        Logger.LogInformation($"Createing temporary directory for file: {DownloadFolderPath}");
 
         var browserType = Configuration.BrowserType;
         var headless = Configuration.Headless;
         var options = WebDriverOptionsFactory.CreateOptions(browserType, headless);
 
         // have to add this for all tests because method is static
-        WebDriverOptionsFactory.AddDownloadOptions(options, s_downloadFolderPath);
+        WebDriverOptionsFactory.AddDownloadOptions(options, DownloadFolderPath);
 
         var driver = WebDriverFactory.CreateWebDriver(browserType, options);
 
         // have to add this for all tests because method is static
-        WebDriverFactory.SetupChromiumDriverDownloadSettings(driver, s_downloadFolderPath);
+        WebDriverFactory.SetupChromiumDriverDownloadSettings(driver, DownloadFolderPath);
 
         Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(Configuration.ExplicitWait));
 
@@ -98,8 +101,8 @@ internal class CommonSteps
             Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
         }
 
-        Logger.LogInformation($"Deleting directory: {s_downloadFolderPath}");
-        Directory.Delete(s_downloadFolderPath, true);
+        Logger.LogInformation($"Deleting directory: {DownloadFolderPath}");
+        Directory.Delete(DownloadFolderPath, true);
 
         Driver.Close();
     }
