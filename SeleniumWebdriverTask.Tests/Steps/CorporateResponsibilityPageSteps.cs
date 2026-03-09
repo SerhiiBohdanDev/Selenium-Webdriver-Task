@@ -42,6 +42,7 @@ internal class CorporateResponsibilityPageSteps : CommonSteps
     [Then(@"Browser successfully downloads the file '(.*)'")]
     public async Task BrowserDownloadsFile(string fileName)
     {
+        Logger.LogInformation($"File will be saved at: {DownloadFolderPath}");
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
         var isFileDownloaded = await DriverWrapper.WaitForFileToFinishChangingContentAsync(DownloadFolderPath, fileName, 1, cancellationTokenSource.Token);
         Assert.That(isFileDownloaded, Is.True);

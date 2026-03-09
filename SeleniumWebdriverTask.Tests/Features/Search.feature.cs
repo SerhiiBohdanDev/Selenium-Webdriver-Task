@@ -139,7 +139,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.When(string.Format("I input search \'{0}\', \'{1}\' and select remote option", language, country), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 20
-    testRunner.Then(string.Format("The last job in the search results should contains the searched \'{0}\'", language), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then(string.Format("The last job in the search results should contain the searched \'{0}\'", language), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

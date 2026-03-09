@@ -17,7 +17,7 @@ Scenario: Searching terms on the main page
 Scenario: Searching language on the jobs page
     Given I click join us link
     When I input search '<language>', '<country>' and select remote option
-    Then The last job in the search results should contains the searched '<language>'
+    Then The last job in the search results should contain the searched '<language>'
 
     Examples:
     | language        | country |

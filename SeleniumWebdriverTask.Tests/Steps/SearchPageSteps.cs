@@ -13,6 +13,8 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 [Binding]
 internal class SearchPageSteps : CommonSteps
 {
+    private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
+
     private readonly SearchJobsPage _searchPage;
 
     /// <summary>
@@ -32,6 +34,11 @@ internal class SearchPageSteps : CommonSteps
     [When(@"I input search '(.*)', '(.*)' and select remote option")]
     public void EnterSearchDataIntoForm(string[] languages, string location)
     {
+        var keywords = string.Join(',', languages);
+        Logger.LogInformation($"Starting job search, search language = {languages[0]}," +
+            $" keywords to find in description [{keywords}], " +
+            $"location = {location}");
+
         _searchPage
                 .WaitUntilCountryDetected()
                 .EnterLanguage(languages[0])
@@ -44,7 +51,7 @@ internal class SearchPageSteps : CommonSteps
     /// Checks that the last job in search results contains the language.
     /// </summary>
     /// <param name="languages">Languages array.</param>
-    [Then(@"The last job in the search results should contains the searched '(.*)'")]
+    [Then(@"The last job in the search results should contain the searched '(.*)'")]
     public void CheckLastJobInListContainginSearchKeyword(string[] languages)
     {
         // Waiting for firefox to load the page correctly.
@@ -69,6 +76,13 @@ internal class SearchPageSteps : CommonSteps
             }
         }
 
+        if (!isInformationContainsLanguage)
+        {
+            LogJobInformationError(languages);
+        }
+
+        LogJobInformation(jobInformation);
+
         Assert.That(isInformationContainsLanguage, Is.True);
     }
 
@@ -76,5 +90,16 @@ internal class SearchPageSteps : CommonSteps
     public string[] TransformToArrayOfString(string languages)
     {
         return languages.Split(",");
+    }
+
+    private static void LogJobInformation(string jobInformation)
+    {
+        Logger.LogInformation("Job information:\n" + jobInformation);
+    }
+
+    private static void LogJobInformationError(string[] languages)
+    {
+        var keywords = string.Join(',', languages);
+        Logger.LogError($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
     }
 }

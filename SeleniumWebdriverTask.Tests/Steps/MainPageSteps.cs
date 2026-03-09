@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
+using System.Text;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using TechTalk.SpecFlow;
 
@@ -12,6 +13,8 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 [Binding]
 internal class MainPageSteps : CommonSteps
 {
+    private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
+
     private readonly MainPage _mainPage;
 
     /// <summary>
@@ -98,6 +101,7 @@ internal class MainPageSteps : CommonSteps
     [When(@"I enter '(.*)' in the input field and click search")]
     public void EnterTermAndClickSearch(string term)
     {
+        Logger.LogInformation($"Starting main page search, searching for '{term}'");
         _mainPage
             .EnterSearchTerm(term)
             .ClickFind();
@@ -111,6 +115,7 @@ internal class MainPageSteps : CommonSteps
     public void CheckSearchResults(string term)
     {
         var titles = _mainPage.GetSearchResultTitles();
+        LogAllTitles(titles);
 
         var allTitlesContainTerm = true;
         List<string> titlesNotContainingTerm = [];
@@ -119,6 +124,8 @@ internal class MainPageSteps : CommonSteps
             allTitlesContainTerm = false;
             titlesNotContainingTerm.Add(title);
         }
+
+        LogTitlesNotContainingTerm(term, titlesNotContainingTerm);
 
         Assert.That(allTitlesContainTerm, Is.True);
     }
@@ -130,5 +137,35 @@ internal class MainPageSteps : CommonSteps
     public void ClickJoinUs()
     {
         _mainPage.ClickJoinUs();
+    }
+
+    private static void LogAllTitles(List<string> titles)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Found titles:");
+        for (var i = 0; i < titles.Count; i++)
+        {
+            builder.AppendLine(titles[i]);
+        }
+
+        Logger.LogInformation(builder.ToString());
+    }
+
+    private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
+    {
+        if (titlesThatDoNoContainTerm.Count == 0)
+        {
+            Logger.LogInformation($"All titles contained {term}");
+            return;
+        }
+
+        var builder = new StringBuilder();
+        builder.AppendLine($"{TitleMissingSearchTermMessage} [{term}]");
+        for (var i = 0; i < titlesThatDoNoContainTerm.Count; i++)
+        {
+            builder.AppendLine(titlesThatDoNoContainTerm[i]);
+        }
+
+        Logger.LogError(builder.ToString());
     }
 }

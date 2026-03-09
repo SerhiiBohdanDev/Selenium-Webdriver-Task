@@ -34,6 +34,7 @@ internal class InsightPageSteps : CommonSteps
     public void BrowserNavigatesToSlideArticlePage()
     {
         var pageTitle = FormatTitle(_insightPage.GetTitle());
+        LogComparedTitles(_articleData.Title, pageTitle);
         using (Assert.EnterMultipleScope())
         {
             Assert.That(pageTitle, Is.Not.Empty);
@@ -46,5 +47,21 @@ internal class InsightPageSteps : CommonSteps
     {
         // Trimming whitespace and removing non-breaking spaces.
         return title.Trim().Replace('\u00A0', ' ');
+    }
+
+    private static void LogComparedTitles(string slideTitle, string pageTitle)
+    {
+        if (pageTitle.Contains(slideTitle))
+        {
+            Logger.LogInformation($"Titles match \n" +
+                $"Slide title = '{slideTitle}'\n" +
+                $"Page title = '{pageTitle}'");
+        }
+        else
+        {
+            Logger.LogError($"Titles DO NOT match \n" +
+                $"Slide title = '{slideTitle}'\n" +
+                $"Page title = '{pageTitle}'");
+        }
     }
 }
