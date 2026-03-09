@@ -63,4 +63,13 @@ internal class MainPageSteps : CommonSteps
         var relatedExpertiseSectionDisplayed = aiArticlePage.IsRelatedExpertiseSectionDisplayed;
         Assert.That(relatedExpertiseSectionDisplayed, Is.True);
     }
+
+    /// <summary>
+    /// Clicks on insights link.
+    /// </summary>
+    [Given(@"I click 'Insights' link")]
+    public void IClickOnInsightsLink()
+    {
+        _mainPage.ClickInsights();
+    }
 }

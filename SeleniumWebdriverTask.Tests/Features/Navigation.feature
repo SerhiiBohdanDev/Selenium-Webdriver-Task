@@ -13,3 +13,9 @@ Scenario: Navigating to article about AI
     |article            |
     |Generative AI      |
     |Responsible AI     |
+
+
+Scenario: Navigating to correct slide article
+	Given I click 'Insights' link
+	When I click on the button to show next slide twice and click 'More info'
+	Then Browser navigates to the slide article page
