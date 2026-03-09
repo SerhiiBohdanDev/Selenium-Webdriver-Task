@@ -147,6 +147,28 @@ public class MainPage : BasePage
     }
 
     /// <summary>
+    /// Hovers over services link.
+    /// </summary>
+    public void HoverServicesLink()
+    {
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRowLocator);
+        var servicesLink = topRow.FindElement<Link>(_servicesLocator);
+        servicesLink.Hover();
+    }
+
+    /// <summary>
+    /// Clicks a link to article about AI.
+    /// </summary>
+    /// <param name="articleName">Name of the article to find link by.</param>
+    public void ClickAiArticle(string articleName)
+    {
+        var topRow = DriverWrapper.FindElement<WebElementWrapper>(_topNavRowLocator);
+        topRow
+            .FindElement<Link>(By.LinkText(articleName))
+            .SafeClick();
+    }
+
+    /// <summary>
     /// Gets the titles of search results.
     /// </summary>
     /// <returns>The titles of search results.</returns>

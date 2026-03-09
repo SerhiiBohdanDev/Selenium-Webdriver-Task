@@ -7,6 +7,10 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// </summary>
     internal class NavigationTests : BaseUiTest
     {
+        /// <summary>
+        /// Verifies that browser navigates to correct article about AI.
+        /// </summary>
+        /// <param name="articleName">Article name.</param>
         [TestCase("Generative AI")]
         [TestCase("Responsible AI")]
         public void CorrectTitle_NavigateToAiArticle_Success(string articleName)
