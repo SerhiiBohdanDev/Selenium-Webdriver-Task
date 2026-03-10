@@ -75,6 +75,9 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=API"
       working-directory: .
 
+    - name: List all screenshots
+      run: find . -name "*.png"
+  
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
       with:
