@@ -18,6 +18,8 @@ on:
             - Chrome
             - Firefox
             - Edge
+  schedule:
+    - cron: '0 14 * * *'
 
 jobs:  
   build:  
