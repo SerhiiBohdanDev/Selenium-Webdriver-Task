@@ -53,9 +53,9 @@ jobs:
       working-directory: .
 
     - name: Build 
-      run: dotnet build --no-restore 
+      run: dotnet build --configuration Release --no-restore 
       working-directory: .
 
     - name: Run tests 
-      run: dotnet test SeleniumWebdriverTask.Tests/SeleniumWebdriverTask.TestLayer.csproj --no-build --configuration Release --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal
       working-directory: .
