@@ -3,7 +3,7 @@
 /// <summary>
 /// A model class to be used for TestCaseSource in job search tests.
 /// </summary>
-internal class JobSearchModel
+public class JobSearchModel
 {
     /// <summary>
     /// Gets or sets an array of language names for the job search.

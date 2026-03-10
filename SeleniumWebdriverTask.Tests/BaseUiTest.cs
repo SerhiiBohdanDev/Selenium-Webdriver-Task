@@ -9,7 +9,7 @@ namespace SeleniumWebdriverTask.TestLayer
     /// <summary>
     /// A base class for tests using WebDriver.
     /// </summary>
-    internal abstract class BaseUiTest : BaseTest
+    public abstract class BaseUiTest : BaseTest
     {
         /// <summary>
         /// Gets the DriverWrapper.
