@@ -1,0 +1,61 @@
+name: Pipeline to run tests
+
+on:  
+  push:  
+    branches:  
+      - main 
+  pull_request: 
+    branches:  
+      - main 
+  workflow_dispatch:
+
+jobs:  
+  build:  
+    name: Build and tests 
+    runs-on: ubuntu-latest 
+    steps: 
+    - name: Checkout code 
+      uses: actions/checkout@v2 
+
+    - name: Setup .NET 
+      uses: actions/setup-dotnet@v1 
+      with:  
+        dotnet-version: '8.0.x' 
+ 
+    - name: Install Chrome dependencies 
+      run: | 
+        sudo apt-get update 
+        sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4 
+        sudo apt-get install -y google-chrome-stable 
+        google-chrome --version 
+        which google-chrome    
+
+    - name: Install Firefox and check version/path
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y firefox
+        firefox --version
+        which firefox
+
+    - name: Install Edge dependencies and Microsoft Edge
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
+        sudo apt-get update
+        sudo apt-get install -y microsoft-edge-stable
+        microsoft-edge --version
+        which microsoft-edge
+
+    - name: Restore dependencies 
+      run: dotnet restore 
+      working-directory: .
+
+    - name: Build 
+      run: dotnet build --no-restore 
+      working-directory: .
+
+    - name: Run tests 
+      run: dotnet test --no-build --configuration Release --verbosity normal
+      working-directory: .
