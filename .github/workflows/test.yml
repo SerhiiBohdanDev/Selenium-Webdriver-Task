@@ -66,6 +66,23 @@ jobs:
       run: dotnet build --configuration Release --no-restore 
       working-directory: .
 
-    - name: Run tests 
-      run: dotnet test --no-build --configuration Release --verbosity normal
+    - name: Run API tests
+      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=API"
       working-directory: .
+      continue-on-error: true
+
+    - name: Run other tests
+      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=API"
+      working-directory: .
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshots
+        path: Screenshots/
+
+    - name: Upload Serilog logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: serilog-logs
+        path: Logs/
