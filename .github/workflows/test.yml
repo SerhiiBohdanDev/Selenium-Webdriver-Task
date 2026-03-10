@@ -77,6 +77,9 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=API"
       working-directory: .
 
+    - name: List all files
+      run: find . -type f
+    
     - name: List all screenshots
       run: find . -name "*.png"
   
