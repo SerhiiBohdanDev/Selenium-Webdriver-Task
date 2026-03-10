@@ -30,7 +30,7 @@ jobs:
         google-chrome --version 
         which google-chrome    
 
-    - name: Install Firefox and check version/path
+    - name: Install Firefox
       run: |
         sudo apt-get update
         sudo apt-get install -y firefox
@@ -40,7 +40,7 @@ jobs:
     - name: Install Edge dependencies and Microsoft Edge
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+        sudo apt-get install -y wget unzip xvfb libxi6
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
         sudo apt-get update
