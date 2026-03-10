@@ -53,7 +53,7 @@ jobs:
       working-directory: .
 
     - name: Build 
-      run: dotnet build --no-restore 
+      run: dotnet build --configuration Release --no-restore 
       working-directory: .
 
     - name: Run tests 
