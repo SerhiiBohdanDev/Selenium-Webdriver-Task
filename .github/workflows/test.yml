@@ -8,6 +8,16 @@ on:
     branches:  
       - main 
   workflow_dispatch:
+    inputs:
+        browser:
+          description: 'Select browser for tests'
+          required: true
+          default: 'Chrome'
+          type: choice
+          options:
+            - Chrome
+            - Firefox
+            - Edge
 
 jobs:  
   build:  
