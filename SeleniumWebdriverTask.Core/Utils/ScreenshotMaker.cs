@@ -12,9 +12,11 @@ namespace SeleniumWebdriverTask.CoreLayer.Utils;
 /// </summary>
 public static class ScreenshotMaker
 {
+    private const string ScreenshotsFolder = "Screenshots";
+
     private static string NewScreenshotName
     {
-        get { return "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".png"; }
+        get { return "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".png"; }
     }
 
     /// <summary>
@@ -25,7 +27,9 @@ public static class ScreenshotMaker
     /// <exception cref="NotSupportedException">Thrown if type of IWebDiver is not supported.</exception>
     public static string TakeFullPageScreenshot(IWebDriver driver)
     {
-        var screenshotPath = Path.Combine(Environment.CurrentDirectory, $"Display_{NewScreenshotName}");
+        var screenshotsFolder = Path.Combine(Environment.CurrentDirectory, ScreenshotsFolder);
+        var screenshotPath = Path.Combine(screenshotsFolder, NewScreenshotName);
+        Directory.CreateDirectory(screenshotsFolder);
         if (driver is FirefoxDriver firefoxDriver)
         {
             firefoxDriver.GetFullPageScreenshot().SaveAsFile(screenshotPath);
