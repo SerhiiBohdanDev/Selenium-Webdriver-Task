@@ -41,7 +41,7 @@ jobs:
       run: echo "BROWSER_TYPE=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
         
     - name: Install Chrome dependencies 
-      if: ${{ github.event.inputs.browser == 'Chrome' }}
+      if: ${{ env.BROWSER_TYPE == 'Chrome' }}
       run: | 
         sudo apt-get update 
         sudo apt-get install -y wget unzip xvfb libxi6
@@ -50,7 +50,7 @@ jobs:
         which google-chrome    
 
     - name: Install Firefox
-      if: ${{ github.event.inputs.browser == 'Firefox' }}
+      if: ${{ env.BROWSER_TYPE == 'Firefox' }}
       run: |
         sudo apt-get update
         sudo apt-get install -y firefox
@@ -58,7 +58,7 @@ jobs:
         which firefox
 
     - name: Install Edge dependencies and Microsoft Edge
-      if: ${{ github.event.inputs.browser == 'Edge' }}
+      if: ${{ env.BROWSER_TYPE == 'Edge' }}
       run: |
         sudo apt-get update
         sudo apt-get install -y wget unzip xvfb libxi6
