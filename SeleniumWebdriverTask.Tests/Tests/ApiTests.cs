@@ -14,7 +14,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests;
 /// <summary>
 /// Class containing tests related to API testing.
 /// </summary>
-internal class ApiTests : BaseTest
+public class ApiTests : BaseTest
 {
     private ApiClient _client;
 

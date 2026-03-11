@@ -31,6 +31,7 @@ public static class WebDriverOptionsFactory
                     options.AddArgument("start-maximized");
                     if (headless)
                     {
+                        options.AddArgument("--no-sandbox");
                         options.AddArgument("--headless=new");
                         options.AddArgument("--window-size=1920,1080");
                         options.AddArgument("--disable-blink-features=AutomationControlled");
@@ -39,6 +40,7 @@ public static class WebDriverOptionsFactory
                         options.AddExcludedArgument("enable-automation");
                         options.AddAdditionalOption("useAutomationExtension", false);
                         options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+                        options.AddArgument("--disable-dev-shm-usage");
                     }
 
                     return options;
@@ -50,6 +52,7 @@ public static class WebDriverOptionsFactory
                     options.AddArgument("start-maximized");
                     if (headless)
                     {
+                        options.AddArgument("--no-sandbox");
                         options.AddArgument("--headless=new");
                         options.AddArgument("--window-size=1920,1080");
                         options.AddArgument("--disable-blink-features=AutomationControlled");
@@ -58,6 +61,7 @@ public static class WebDriverOptionsFactory
                         options.AddExcludedArgument("enable-automation");
                         options.AddAdditionalOption("useAutomationExtension", false);
                         options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+                        options.AddArgument("--disable-dev-shm-usage");
                     }
 
                     return options;

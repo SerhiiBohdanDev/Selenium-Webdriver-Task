@@ -5,7 +5,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// <summary>
     /// Tests related to correctly navigating to pages.
     /// </summary>
-    internal class NavigationTests : BaseUiTest
+    public class NavigationTests : BaseUiTest
     {
         /// <summary>
         /// Verifies that browser navigates to correct article about AI.

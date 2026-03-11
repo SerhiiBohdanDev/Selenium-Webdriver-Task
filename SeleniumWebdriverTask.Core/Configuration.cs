@@ -11,9 +11,9 @@ namespace SeleniumWebdriverTask.CoreLayer;
 public class Configuration
 {
     /// <summary>
-    /// Gets type of browser.
+    /// Gets or sets type of browser.
     /// </summary>
-    public required BrowserType BrowserType { get; init; }
+    public required BrowserType BrowserType { get; set; }
 
     /// <summary>
     /// Gets application main url.
@@ -21,9 +21,9 @@ public class Configuration
     public required string ApplicationUrl { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether browser is in headless mode.
+    /// Gets or sets a value indicating whether browser is in headless mode.
     /// </summary>
-    public required bool Headless { get; init; }
+    public required bool Headless { get; set; }
 
     /// <summary>
     /// Gets explicit wait duration in seconds.
