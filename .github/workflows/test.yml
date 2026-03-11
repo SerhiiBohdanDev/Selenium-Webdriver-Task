@@ -15,6 +15,10 @@ on:
             - Chrome
             - Firefox
             - Edge
+        skipBddTests:
+          type: boolean
+          description: 'Skip running BDD tests?'
+          default: false
   schedule:
     - cron: '0 14 * * *'
 
@@ -62,11 +66,20 @@ jobs:
       working-directory: .
       continue-on-error: true
       
-    - name: Run UI tests
+    - name: Run NUnit UI tests
       env:
         BROWSER_TYPE: ${{ github.event.inputs.browser }}
         HEADLESS: 'true'
-      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=API"
+      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=NUnitUiTests"
+      working-directory: .
+      continue-on-error: true
+      
+    - name: Run BDD UI tests
+      if: ${{ inputs.skipBddTests == 'false' }}
+      env:
+        BROWSER_TYPE: ${{ github.event.inputs.browser }}
+        HEADLESS: 'true'
+      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=BddUiTests"
       working-directory: .
       continue-on-error: true
   
