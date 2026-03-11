@@ -1,4 +1,4 @@
-﻿@BddUiTest
+﻿@BddUiTests
 Feature: Download
 
 As an EPAM website user  

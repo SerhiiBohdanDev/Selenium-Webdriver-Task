@@ -1,4 +1,4 @@
-﻿@BddUiTest
+﻿@BddUiTests
 Feature: Navigation
 
 As an EPAM website user  
