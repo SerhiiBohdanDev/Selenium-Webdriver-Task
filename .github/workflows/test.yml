@@ -78,7 +78,7 @@ jobs:
       continue-on-error: true
       
     - name: Run BDD UI tests
-      if: ${{ inputs.skipBddTests == 'false' }}
+      if: ${{ github.event.inputs.skipBddTests == 'false' }}
       env:
         BROWSER_TYPE: ${{ github.event.inputs.browser }}
         HEADLESS: 'true'
