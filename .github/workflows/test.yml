@@ -56,6 +56,12 @@ jobs:
         sudo apt-get install -y firefox
         firefox --version
         which firefox
+        
+        sudo apt-get install -y wget
+        wget https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-linux64.tar.gz
+        tar -xzf geckodriver-linux64.tar.gz
+        sudo mv geckodriver /usr/local/bin/
+        geckodriver --version
 
     - name: Install Edge dependencies and Microsoft Edge
       if: ${{ env.BROWSER_TYPE == 'Edge' }}
