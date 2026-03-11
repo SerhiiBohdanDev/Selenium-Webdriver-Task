@@ -40,8 +40,11 @@ jobs:
     - name: Set browser from workflow_dispatch input
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: echo "BROWSER_TYPE=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
+      
+    - name: Log is skipping BDD tests
+      run: echo "$Skipping BDD tests = {{ github.event.inputs.skipBddTests }}" >> $GITHUB_ENV
         
-    - name: Install Chrome dependencies 
+    - name: Install Chrome
       if: ${{ env.BROWSER_TYPE == 'Chrome' }}
       uses: browser-actions/setup-chrome@v2
 
@@ -49,7 +52,7 @@ jobs:
       if: ${{ env.BROWSER_TYPE == 'Firefox' }}
       uses: browser-actions/setup-firefox@v1
 
-    - name: Install Edge dependencies and Microsoft Edge
+    - name: Install Edge
       if: ${{ env.BROWSER_TYPE == 'Edge' }}
       uses: browser-actions/setup-edge@v1
 
