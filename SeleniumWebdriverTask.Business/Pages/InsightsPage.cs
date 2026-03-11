@@ -9,9 +9,9 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// </summary>
 public class InsightsPage : BasePage
 {
-    private readonly By _nextSlideButtonLocator = By.XPath("//*[@class='slider-ui-23   media-content ']//button[@class='slider__right-arrow slider-navigation-arrow']");
-    private readonly By _slideTitleLocator = By.XPath("//*[@class='slider-ui-23   media-content ']//*[contains(@class,'active')]//span[@class='font-size-60']");
-    private readonly By _readMoreLinkLocator = By.XPath("//*[@class='slider-ui-23   media-content ']//*[contains(@class,'active')]//a");
+    private readonly By _nextSlideButtonLocator = By.XPath("//*[contains(@class,'media-content')]//button[contains(@class,'slider__right-arrow')]");
+    private readonly By _slideTitleLocator = By.XPath("//*[contains(@class,'media-content')]//*[contains(@class,'active')]//*[@class='text']");
+    private readonly By _readMoreLinkLocator = By.XPath("//*[contains(@class,'media-content')]//*[contains(@class,'active')]//a");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InsightsPage"/> class.
