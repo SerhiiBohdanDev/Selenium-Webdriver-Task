@@ -72,11 +72,17 @@ jobs:
       working-directory: .
 
     - name: Run API tests
+      env:
+        BROWSER_TYPE: ${{ github.event.inputs.browser }}
+        HEADLESS: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=API"
       working-directory: .
       continue-on-error: true
       
     - name: Run other tests
+      env:
+        BROWSER_TYPE: ${{ github.event.inputs.browser }}
+        HEADLESS: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=API"
       working-directory: .
       continue-on-error: true
