@@ -51,19 +51,9 @@ jobs:
 
     - name: Install Firefox
       if: ${{ env.BROWSER_TYPE == 'Firefox' }}
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y firefox
-        firefox --version
-        which firefox
-        
-        sudo apt-get install -y wget
-        GECKODRIVER_VERSION=$(curl --silent "https://api.github.com/repos/mozilla/geckodriver/releases/latest" | grep '"tag_name":' | head -n 1 | cut -d '"' -f 4)
-        echo "Latest geckodriver version: $GECKODRIVER_VERSION"
-        wget "https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-linux64.tar.gz"
-        tar -xzf geckodriver-linux64.tar.gz
-        sudo mv geckodriver /usr/local/bin/
-        geckodriver --version
+      uses: browser-actions/setup-firefox@v1
+      with:
+        firefox-version: 'latest'
 
     - name: Install Edge dependencies and Microsoft Edge
       if: ${{ env.BROWSER_TYPE == 'Edge' }}
