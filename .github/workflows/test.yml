@@ -1,9 +1,6 @@
 name: Pipeline to run tests
 
 on:  
-  push:  
-    branches:  
-      - main 
   pull_request: 
     branches:  
       - main 
@@ -26,7 +23,7 @@ jobs:
     name: Build and test 
     runs-on: ubuntu-latest 
     env:
-      BROWSER_TYPE: Chrome   # Default for push/pull_request
+      BROWSER_TYPE: Chrome   # Default for pull_request/scheduled
     steps: 
     - name: Checkout code 
       uses: actions/checkout@v6 
@@ -61,14 +58,11 @@ jobs:
       working-directory: .
 
     - name: Run API tests
-      env:
-        BROWSER_TYPE: ${{ github.event.inputs.browser }}
-        HEADLESS: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=API"
       working-directory: .
       continue-on-error: true
       
-    - name: Run other tests
+    - name: Run UI tests
       env:
         BROWSER_TYPE: ${{ github.event.inputs.browser }}
         HEADLESS: 'true'
