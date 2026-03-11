@@ -42,7 +42,7 @@ jobs:
       run: echo "BROWSER_TYPE=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
       
     - name: Log is skipping BDD tests
-      run: echo "$Skipping BDD tests = {{ github.event.inputs.skipBddTests }}" >> $GITHUB_ENV
+      run: echo "${{ github.event.inputs.skipBddTests }}"
         
     - name: Install Chrome
       if: ${{ env.BROWSER_TYPE == 'Chrome' }}
