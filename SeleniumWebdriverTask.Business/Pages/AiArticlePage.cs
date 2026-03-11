@@ -9,12 +9,10 @@ namespace SeleniumWebdriverTask.BusinessLayer.Pages;
 /// </summary>
 public class AiArticlePage : BasePage
 {
-    private const string RelatedExpertiseSectionTitle = "Our Related Expertise";
-
     private readonly By _articleTitleLocator = By.XPath("//*[@class='column-control']//*[@class='rte-text-gradient']");
 
     // text on the page contains &nbsp character, so using contains to find
-    private readonly By _relatedExpertiseSectionLocator = By.XPath($"//*[contains(text(), '{RelatedExpertiseSectionTitle}')]");
+    private readonly By _relatedExpertiseSectionLocator = By.XPath($"//*[contains(text(), 'Our Related Expertise')]");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AiArticlePage"/> class.
