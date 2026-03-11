@@ -14,6 +14,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests;
 /// <summary>
 /// Class containing tests related to API testing.
 /// </summary>
+[Category("API")]
 public class ApiTests : BaseTest
 {
     private ApiClient _client;
@@ -32,7 +33,6 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    [Category("API")]
     public async Task UsersExist_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
@@ -55,7 +55,6 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    [Category("API")]
     public async Task HeaderExists_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
@@ -78,7 +77,6 @@ public class ApiTests : BaseTest
     /// <returns>A task object that can be awaited.</returns>
     /// <exception cref="InvalidOperationException">Thrown if can't convert response to users list.</exception>
     [Test]
-    [Category("API")]
     public async Task UsersAreUnique_GetUsers_Success()
     {
         var expectedStatus = HttpStatusCode.OK;
@@ -119,7 +117,6 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    [Category("API")]
     public async Task ValidData_CreateUser_Success()
     {
         var expectedStatus = HttpStatusCode.Created;
@@ -156,7 +153,6 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    [Category("API")]
     public async Task InvalidEndpoint_GetEndpoint_Success()
     {
         var expectedStatus = HttpStatusCode.NotFound;

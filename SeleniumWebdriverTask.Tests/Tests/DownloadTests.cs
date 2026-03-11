@@ -7,6 +7,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// <summary>
     /// Class to contain tests related to downloading a file.
     /// </summary>
+    [Category("NunitUiTests")]
     public class DownloadTests : BaseUiTest
     {
         private string _downloadFolderPath;

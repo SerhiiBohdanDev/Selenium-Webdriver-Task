@@ -1,4 +1,5 @@
-﻿Feature: Search
+﻿@BddUiTest
+Feature: Search
 
 As an EPAM website user  
 I want to be able to use search

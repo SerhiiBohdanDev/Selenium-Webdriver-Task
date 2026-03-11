@@ -1,4 +1,5 @@
-﻿Feature: Download
+﻿@BddUiTest
+Feature: Download
 
 As an EPAM website user  
 I want to be able to download files

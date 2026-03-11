@@ -1,4 +1,5 @@
-﻿Feature: Navigation
+﻿@BddUiTest
+Feature: Navigation
 
 As an EPAM website user  
 I want to be able to navigate to correct pages
