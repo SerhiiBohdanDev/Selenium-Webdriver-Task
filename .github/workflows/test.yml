@@ -29,10 +29,10 @@ jobs:
       BROWSER_TYPE: Chrome   # Default for push/pull_request
     steps: 
     - name: Checkout code 
-      uses: actions/checkout@v2 
+      uses: actions/checkout@v6 
 
     - name: Setup .NET 
-      uses: actions/setup-dotnet@v1 
+      uses: actions/setup-dotnet@v5 
       with:  
         dotnet-version: '8.0.x' 
         
@@ -42,7 +42,7 @@ jobs:
         
     - name: Install Chrome dependencies 
       if: ${{ env.BROWSER_TYPE == 'Chrome' }}
-      uses: browser-actions/setup-chrome@v1
+      uses: browser-actions/setup-chrome@v2
 
     - name: Install Firefox
       if: ${{ env.BROWSER_TYPE == 'Firefox' }}
@@ -77,13 +77,13 @@ jobs:
       continue-on-error: true
   
     - name: Upload screenshots
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: screenshots
         path: '**/Screenshots/*.png'
 
     - name: Upload Serilog logs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: serilog-logs
         path: '**/Logs/log.txt'
