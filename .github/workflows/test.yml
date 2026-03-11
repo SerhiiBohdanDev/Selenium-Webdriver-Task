@@ -42,30 +42,15 @@ jobs:
         
     - name: Install Chrome dependencies 
       if: ${{ env.BROWSER_TYPE == 'Chrome' }}
-      run: | 
-        sudo apt-get update 
-        sudo apt-get install -y wget unzip xvfb libxi6
-        sudo apt-get install -y google-chrome-stable 
-        google-chrome --version 
-        which google-chrome    
+      uses: browser-actions/setup-chrome@v1
 
     - name: Install Firefox
       if: ${{ env.BROWSER_TYPE == 'Firefox' }}
       uses: browser-actions/setup-firefox@v1
-      with:
-        firefox-version: 'latest'
 
     - name: Install Edge dependencies and Microsoft Edge
       if: ${{ env.BROWSER_TYPE == 'Edge' }}
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget unzip xvfb libxi6
-        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-        sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
-        sudo apt-get update
-        sudo apt-get install -y microsoft-edge-stable
-        microsoft-edge --version
-        which microsoft-edge
+      uses: browser-actions/setup-edge@v1
 
     - name: Restore dependencies 
       run: dotnet restore 
