@@ -58,7 +58,8 @@ jobs:
         which firefox
         
         sudo apt-get install -y wget
-        wget https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-linux64.tar.gz
+        GECKODRIVER_VERSION=$(curl --silent "https://api.github.com/repos/mozilla/geckodriver/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        wget "https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-linux64.tar.gz"
         tar -xzf geckodriver-linux64.tar.gz
         sudo mv geckodriver /usr/local/bin/
         geckodriver --version
