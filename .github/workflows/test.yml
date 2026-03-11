@@ -25,6 +25,8 @@ jobs:
   build:  
     name: Build and test 
     runs-on: ubuntu-latest 
+    env:
+      BROWSER_TYPE: Chrome   # Default for push/pull_request
     steps: 
     - name: Checkout code 
       uses: actions/checkout@v2 
@@ -33,7 +35,11 @@ jobs:
       uses: actions/setup-dotnet@v1 
       with:  
         dotnet-version: '8.0.x' 
- 
+        
+    - name: Set browser from workflow_dispatch input
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: echo "BROWSER_TYPE=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
+        
     - name: Install Chrome dependencies 
       if: ${{ github.event.inputs.browser == 'Chrome' }}
       run: | 
