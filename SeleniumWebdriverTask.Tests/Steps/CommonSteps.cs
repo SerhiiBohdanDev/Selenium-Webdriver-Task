@@ -17,7 +17,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 internal abstract class CommonSteps
 {
     /// <summary>
-    /// Gets or sets temporaty folder for downloaded files.
+    /// Gets temporaty folder for downloaded files.
     /// </summary>
     protected static string DownloadFolderPath { get; private set; }
 
