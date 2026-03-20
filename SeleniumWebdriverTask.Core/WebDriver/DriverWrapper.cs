@@ -11,8 +11,6 @@ namespace SeleniumWebdriverTask.CoreLayer.WebDriver;
 /// </summary>
 public class DriverWrapper
 {
-    private System.Drawing.Size _headlessWindowSize = new System.Drawing.Size(1920, 1080);
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverWrapper"/> class.
     /// </summary>
@@ -121,20 +119,9 @@ public class DriverWrapper
     }
 
     /// <summary>
-    /// Maximizes browser window or sets it to a certain size in headless mode.
+    /// Maximizes browser window.
     /// </summary>
-    /// <param name="headless">Is driver in headless mode.</param>
-    public void Maximize(bool headless)
-    {
-        if (headless)
-        {
-            WebDriver.Manage().Window.Size = _headlessWindowSize;
-        }
-        else
-        {
-            WebDriver.Manage().Window.Maximize();
-        }
-    }
+    public void Maximize() => WebDriver.Manage().Window.Maximize();
 
     /// <summary>
     /// Waits until condition becomes true or time runs out.

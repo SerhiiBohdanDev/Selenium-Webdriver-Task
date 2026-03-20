@@ -81,8 +81,12 @@ internal abstract class CommonSteps
 
         Driver = new DriverWrapper(driver, TimeSpan.FromSeconds(Configuration.ExplicitWait));
 
-        // Because firefox does not have argument for options.AddArgument("start-maximized"), so we maximize manually.
-        Driver.Maximize(headless);
+        // maximization in headless mode resets screen size to default 800x600
+        if (!headless)
+        {
+            Driver.Maximize();
+        }
+
         Driver.GoToUrl(Configuration.ApplicationUrl);
     }
 

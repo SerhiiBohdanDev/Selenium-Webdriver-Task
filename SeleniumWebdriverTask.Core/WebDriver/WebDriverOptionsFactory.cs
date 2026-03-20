@@ -26,64 +26,72 @@ public static class WebDriverOptionsFactory
         switch (browserType)
         {
             case BrowserType.Chrome:
+            {
+                var options = new ChromeOptions();
+                options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+                options.AddArgument("start-maximized");
+                options.AddArgument("--disable-blink-features=AutomationControlled");
+                options.AddExcludedArgument("enable-automation");
+                if (headless)
                 {
-                    var options = new ChromeOptions();
-                    options.AddArgument("start-maximized");
-                    if (headless)
-                    {
-                        options.AddArgument("--no-sandbox");
-                        options.AddArgument("--headless=new");
-                        options.AddArgument("--window-size=1920,1080");
-                        options.AddArgument("--disable-blink-features=AutomationControlled");
-                        options.AddArgument("--disable-gpu");
-                        options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-                        options.AddExcludedArgument("enable-automation");
-                        options.AddAdditionalOption("useAutomationExtension", false);
-                        options.SetLoggingPreference(LogType.Browser, LogLevel.All);
-                        options.AddArgument("--disable-dev-shm-usage");
-                    }
+                    options.AddArgument("--headless=new");
+                    options.AddArgument("--window-size=1920,1080");
+                    options.AddAdditionalOption("useAutomationExtension", false);
 
-                    return options;
+                    // helps avoid rendering issues in headless mode
+                    options.AddArgument("--disable-gpu");
+
+                    // useful for docker containers
+                    options.AddArgument("--no-sandbox");
+                    options.AddArgument("--disable-dev-shm-usage");
                 }
+
+                return options;
+            }
 
             case BrowserType.Edge:
+            {
+                var options = new EdgeOptions();
+                options.SetLoggingPreference(LogType.Browser, LogLevel.All);
+                options.AddArgument("start-maximized");
+                options.AddArgument("--disable-blink-features=AutomationControlled");
+                options.AddExcludedArgument("enable-automation");
+                if (headless)
                 {
-                    var options = new EdgeOptions();
-                    options.AddArgument("start-maximized");
-                    if (headless)
-                    {
-                        options.AddArgument("--no-sandbox");
-                        options.AddArgument("--headless=new");
-                        options.AddArgument("--window-size=1920,1080");
-                        options.AddArgument("--disable-blink-features=AutomationControlled");
-                        options.AddArgument("--disable-gpu");
-                        options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-                        options.AddExcludedArgument("enable-automation");
-                        options.AddAdditionalOption("useAutomationExtension", false);
-                        options.SetLoggingPreference(LogType.Browser, LogLevel.All);
-                        options.AddArgument("--disable-dev-shm-usage");
-                    }
+                    options.AddArgument("--headless=new");
+                    options.AddArgument("--window-size=1920,1080");
+                    options.AddAdditionalOption("useAutomationExtension", false);
 
-                    return options;
+                    // helps avoid rendering issues in headless mode
+                    options.AddArgument("--disable-gpu");
+
+                    // useful for docker containers
+                    options.AddArgument("--no-sandbox");
+                    options.AddArgument("--disable-dev-shm-usage");
                 }
+
+                return options;
+            }
 
             case BrowserType.Firefox:
-                {
-                    var options = new FirefoxOptions();
-                    if (headless)
-                    {
-                        options.AddArgument("-headless");
-                        options.AddArgument("--width=1920");
-                        options.AddArgument("--height=1080");
-                        options.SetPreference("dom.webdriver.enabled", false);
-                        options.SetPreference("useAutomationExtension", false); // May not have effect in recent versions
-                        options.SetPreference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-                        options.SetPreference("layers.acceleration.disabled", true);
-                        options.LogLevel = FirefoxDriverLogLevel.Trace;
-                    }
+            {
+                var options = new FirefoxOptions();
+                options.LogLevel = FirefoxDriverLogLevel.Trace;
 
-                    return options;
+                // helps mask that browser is automated
+                options.SetPreference("dom.webdriver.enabled", false);
+                if (headless)
+                {
+                    options.AddArgument("-headless");
+                    options.AddArgument("--width=1920");
+                    options.AddArgument("--height=1080");
+
+                    // helps avoid rendering issues in headless mode
+                    options.SetPreference("layers.acceleration.disabled", true);
                 }
+
+                return options;
+            }
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(browserType), browserType, null);
