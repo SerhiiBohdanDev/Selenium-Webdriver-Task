@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
-using SeleniumWebdriverTask.TestLayer.Models;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests
 {
@@ -103,12 +102,12 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         {
             var cases = new JobSearchModel[]
             {
-                new() { Language = ["JavaScript", "js"], Location = "Georgia" },
-                new() { Language = ["JavaScript", "js"], Location = "Armenia" },
-                new() { Language = ["NET"], Location = "Georgia" },
-                new() { Language = ["NET"], Location = "Armenia" },
-                new() { Language = ["Python"], Location = "Georgia" },
-                new() { Language = ["Python"], Location = "Armenia" },
+                new(["JavaScript", "js"], "Georgia"),
+                new(["JavaScript", "js"], "Armenia"),
+                new(["NET"], "Georgia"),
+                new(["NET"], "Armenia"),
+                new(["Python"], "Georgia"),
+                new(["Python"], "Armenia"),
             };
 
             foreach (var model in cases)
@@ -158,5 +157,10 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
             var keywords = string.Join(',', languages);
             Logger.LogError($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
         }
+
+        /// <summary>
+        /// A model class to be used for TestCaseSource in job search tests.
+        /// </summary>
+        public record JobSearchModel(string[] Language, string Location);
     }
 }
