@@ -33,7 +33,7 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    public async Task UsersExist_GetUsers_Success()
+    public async Task UsersExist_GetUsers_UsersArrayIsNotEmpty()
     {
         var expectedStatus = HttpStatusCode.OK;
 
@@ -55,7 +55,7 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    public async Task HeaderExists_GetUsers_Success()
+    public async Task HeaderExists_GetUsers_HeaderHasCorrectType()
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedContentType = "application/json";
@@ -77,7 +77,7 @@ public class ApiTests : BaseTest
     /// <returns>A task object that can be awaited.</returns>
     /// <exception cref="InvalidOperationException">Thrown if can't convert response to users list.</exception>
     [Test]
-    public async Task UsersAreUnique_GetUsers_Success()
+    public async Task UsersAreUnique_GetUsers_AllUsersAreUnique()
     {
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
@@ -117,7 +117,7 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    public async Task ValidData_CreateUser_Success()
+    public async Task ValidData_CreateUser_UserIsCreated()
     {
         var expectedStatus = HttpStatusCode.Created;
         var dateTime = DateTime.UtcNow.ToString("yyyy_MM_dd_hh_mm_ss");
@@ -153,7 +153,7 @@ public class ApiTests : BaseTest
     /// </summary>
     /// <returns>A task object that can be awaited.</returns>
     [Test]
-    public async Task InvalidEndpoint_GetEndpoint_Success()
+    public async Task InvalidEndpoint_GetEndpoint_Returns404()
     {
         var expectedStatus = HttpStatusCode.NotFound;
 

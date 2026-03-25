@@ -31,7 +31,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         /// <param name="fileName">Name of the file.</param>
         /// <returns>A task object that can be awaited.</returns>
         [TestCase("EPAM_ESG_Quick_Facts.pdf")]
-        public async Task EPAMQuickFacts_DownloadFile_Success(string fileName)
+        public async Task EPAMQuickFacts_DownloadFile_FileDownloaded(string fileName)
         {
             Logger.LogInformation($"Starting download test for file '{fileName}'");
             new MainPage(Driver)

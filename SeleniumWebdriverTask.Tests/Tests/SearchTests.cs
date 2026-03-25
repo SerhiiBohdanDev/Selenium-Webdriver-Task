@@ -18,7 +18,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         /// </summary>
         /// <param name="model">Model class containing information about search.</param>
         [TestCaseSource(nameof(JobsSearchData))]
-        public void ValidKeyword_SearchLastJob_Success(JobSearchModel model)
+        public void ValidKeyword_SearchLastJob_LastJobInSearchResultsContainsKeyword(JobSearchModel model)
         {
             var keywords = string.Join(',', model.Language);
             Logger.LogInformation($"Starting job search, search language = {model.Language[0]}," +
@@ -74,7 +74,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         [TestCase("BLOCKCHAIN")]
         [TestCase("Cloud")]
         [TestCase("Automation")]
-        public void ValidTerm_GeneralSearchInTitle_Success(string term)
+        public void ValidTerm_GeneralSearchInTitle_AllTitlesContainSearchTerm(string term)
         {
             Logger.LogInformation($"Starting main page search, searching for '{term}'");
             var mainPage = new MainPage(Driver)

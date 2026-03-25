@@ -14,7 +14,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         /// <param name="articleName">Article name.</param>
         [TestCase("Generative AI")]
         [TestCase("Responsible AI")]
-        public void CorrectTitle_NavigateToAiArticle_Success(string articleName)
+        public void CorrectTitle_NavigateToAiArticle_TitleIsCorrect(string articleName)
         {
             new MainPage(Driver)
                 .ClickAiArticleLink(articleName);
@@ -34,7 +34,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
         /// Verifies that slide text on the insights page is contained in the title of the article on that insight's page.
         /// </summary>
         [Test]
-        public void CorrectTitle_CompareSlideTitles_Success()
+        public void CorrectTitle_CompareSlideTitles_ArticleTitleMatchesSlideTitle()
         {
             new MainPage(Driver)
                 .ClickInsights();
