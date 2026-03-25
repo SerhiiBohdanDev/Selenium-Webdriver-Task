@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework.Internal;
 using RestSharp;
 using SeleniumWebdriverTask.CoreLayer.API;
+using SeleniumWebdriverTask.CoreLayer.API.Builders;
 using SeleniumWebdriverTask.CoreLayer.API.Models;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests;
@@ -35,14 +36,20 @@ public class ApiTests : BaseTest
     [Test]
     public async Task UsersExist_GetUsers_UsersArrayIsNotEmpty()
     {
+        // Arrange
         var expectedStatus = HttpStatusCode.OK;
 
-        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
+        // Act
+        var request =
+            new RestRequestBuilder(Configuration.UsersEndpoint)
+            .Build();
+        var response = await _client.ExecuteAsync(request);
+
         LogResponseStatus(response);
         var responseContent = ValidateContent(response.Content);
-
         var users = ValidateUsers(responseContent);
 
+        // Assert
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
@@ -57,13 +64,20 @@ public class ApiTests : BaseTest
     [Test]
     public async Task HeaderExists_GetUsers_HeaderHasCorrectType()
     {
+        // Arrange
         var expectedStatus = HttpStatusCode.OK;
         var expectedContentType = "application/json";
 
-        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
-        LogResponseStatus(response);
+        // Act
+        var request =
+            new RestRequestBuilder(Configuration.UsersEndpoint)
+            .Build();
+        var response = await _client.ExecuteAsync(request);
 
+        LogResponseStatus(response);
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
+
+        // Assert
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
@@ -79,10 +93,16 @@ public class ApiTests : BaseTest
     [Test]
     public async Task UsersAreUnique_GetUsers_AllUsersAreUnique()
     {
+        // Arrange
         var expectedStatus = HttpStatusCode.OK;
         var expectedUsersAmount = 10;
 
-        var response = await _client.CallGetAsync(Configuration.UsersEndpoint);
+        // Act
+        var request =
+            new RestRequestBuilder(Configuration.UsersEndpoint)
+            .Build();
+
+        var response = await _client.ExecuteAsync(request);
         LogResponseStatus(response);
 
         var responseContent = ValidateContent(response.Content);
@@ -102,6 +122,8 @@ public class ApiTests : BaseTest
             .ToList();
 
         LogInvalidUsers(duplicateUsers, usersMissingNameOrUsername, usersMissingCompanyName);
+
+        // Assert
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
@@ -119,7 +141,10 @@ public class ApiTests : BaseTest
     [Test]
     public async Task ValidData_CreateUser_UserIsCreated()
     {
+        // Arrange
         var expectedStatus = HttpStatusCode.Created;
+
+        // Act
         var dateTime = DateTime.UtcNow.ToString("yyyy_MM_dd_hh_mm_ss");
         var name = "Name_" + dateTime;
         var username = "Username_" + dateTime;
@@ -129,7 +154,12 @@ public class ApiTests : BaseTest
             .WithUsername(username)
             .Build();
 
-        var response = await _client.CreateUserAsync(user, Configuration.UsersEndpoint);
+        var request =
+            new RestRequestBuilder(Configuration.UsersEndpoint, Method.Post)
+            .AddJsonBody(user)
+            .Build();
+
+        var response = await _client.ExecuteAsync(request);
         LogResponseStatus(response);
 
         var responseContent = ValidateContent(response.Content);
@@ -141,6 +171,7 @@ public class ApiTests : BaseTest
             Logger.LogInformation($"User created = {userData}");
         }
 
+        // Assert
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
@@ -155,11 +186,18 @@ public class ApiTests : BaseTest
     [Test]
     public async Task InvalidEndpoint_GetEndpoint_Returns404()
     {
+        // Arrange
         var expectedStatus = HttpStatusCode.NotFound;
 
-        var response = await _client.CallGetAsync(Configuration.InvalidEndpoint);
+        // Act
+        var request =
+            new RestRequestBuilder(Configuration.InvalidEndpoint)
+            .Build();
+
+        var response = await _client.ExecuteAsync(request);
         LogResponseStatus(response);
 
+        // Assert
         AssertResponseIsValid(response, expectedStatus);
     }
 

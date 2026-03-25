@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using RestSharp;
 using RestSharp.Serializers.Json;
-using SeleniumWebdriverTask.CoreLayer.API.Models;
 
 namespace SeleniumWebdriverTask.CoreLayer.API;
 
@@ -30,30 +29,13 @@ public class ApiClient
     }
 
     /// <summary>
-    /// Sends GET request to endpoint.
+    /// Executes the request asynchronously, authenticating if needed.
     /// </summary>
-    /// <param name="endpoint">Endpoint to send request to.</param>
-    /// <returns>RequestResponse.</returns>
-    public async Task<RestResponse> CallGetAsync(string endpoint)
+    /// <param name="request">Request to be executed.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation with RestResponse data.</returns>
+    public async Task<RestResponse> ExecuteAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
-        var request = new RestRequest(endpoint, Method.Get);
-        var response = await _client.GetAsync(request);
-
-        return response;
-    }
-
-    /// <summary>
-    /// Sends request to create a user.
-    /// </summary>
-    /// <param name="user">Instance of User object.</param>
-    /// <param name="endpoint">Endpoint containing users data.</param>
-    /// <returns>RestRequest with information about request state and user data.</returns>
-    public async Task<RestResponse> CreateUserAsync(User user, string endpoint)
-    {
-        var request = new RestRequest(endpoint, Method.Post);
-        request.AddBody(new { user.Name, user.Username, });
-        var response = await _client.PostAsync(request);
-
-        return response;
+        return await _client.ExecuteAsync(request, cancellationToken);
     }
 }

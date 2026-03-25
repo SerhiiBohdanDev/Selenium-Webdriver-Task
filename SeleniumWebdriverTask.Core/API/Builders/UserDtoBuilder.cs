@@ -3,7 +3,7 @@
 
 using SeleniumWebdriverTask.CoreLayer.API.Models;
 
-namespace SeleniumWebdriverTask.CoreLayer.API;
+namespace SeleniumWebdriverTask.CoreLayer.API.Builders;
 
 /// <summary>
 /// Class allowing fluent building of a user object.
