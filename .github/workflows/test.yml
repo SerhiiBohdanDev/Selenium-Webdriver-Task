@@ -20,7 +20,7 @@ on:
           description: 'Skip running BDD tests?'
           default: false
   schedule:
-    - cron: '0 14 * * *'
+    - cron: '0 1 1 * *'
 
 jobs:  
   build:  
