@@ -39,7 +39,7 @@ jobs:
         
     - name: Set browser from workflow_dispatch input
       if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: echo "BrowserType=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
+      run: echo "Configuration__BrowserType=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
     
     - name: Log selected browser
       run: echo $Configuration__BrowserType
