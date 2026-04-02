@@ -27,7 +27,7 @@ jobs:
     name: Build and test 
     runs-on: ubuntu-latest 
     env:
-      BrowserType: Chrome   # Default for pull_request/scheduled
+      Configuration__BrowserType: Chrome   # Default for pull_request/scheduled
     steps: 
     - name: Checkout code 
       uses: actions/checkout@v6 
@@ -45,15 +45,15 @@ jobs:
       run: echo "${{ github.event.inputs.skipBddTests }}"
         
     - name: Install Chrome
-      if: ${{ env.BrowserType == 'Chrome' }}
+      if: ${{ env.Configuration__BrowserType == 'Chrome' }}
       uses: browser-actions/setup-chrome@v2
 
     - name: Install Firefox
-      if: ${{ env.BrowserType == 'Firefox' }}
+      if: ${{ env.Configuration__BrowserType == 'Firefox' }}
       uses: browser-actions/setup-firefox@v1
 
     - name: Install Edge
-      if: ${{ env.BrowserType == 'Edge' }}
+      if: ${{ env.Configuration__BrowserType == 'Edge' }}
       uses: browser-actions/setup-edge@v1
 
     - name: Restore dependencies 
@@ -71,8 +71,8 @@ jobs:
       
     - name: Run NUnit UI tests
       env:
-        BrowserType: ${{ github.event.inputs.browser }}
-        Headless: 'true'
+        Configuration__BrowserType: ${{ github.event.inputs.browser }}
+        Configuration__Headless: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=NUnitUiTests"
       working-directory: .
       continue-on-error: true
@@ -80,8 +80,8 @@ jobs:
     - name: Run BDD UI tests
       if: ${{ github.event.inputs.skipBddTests == 'false' }}
       env:
-        BrowserType: ${{ github.event.inputs.browser }}
-        Headless: 'true'
+        Configuration__BrowserType: ${{ github.event.inputs.browser }}
+        Configuration__Headless: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=BddUiTests"
       working-directory: .
       continue-on-error: true
