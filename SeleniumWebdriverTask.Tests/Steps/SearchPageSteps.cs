@@ -86,6 +86,11 @@ internal class SearchPageSteps : CommonSteps
         Assert.That(isInformationContainsLanguage, Is.True);
     }
 
+    /// <summary>
+    /// Helper method that allows using string[] for parameters in steps.
+    /// </summary>
+    /// <param name="languages">Languages.</param>
+    /// <returns>Array of languages.</returns>
     [StepArgumentTransformation]
     public string[] TransformToArrayOfString(string languages)
     {

@@ -41,7 +41,7 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: echo "Configuration__BrowserType=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
     
-    - name: Log selected browser
+    - name: Confirm correct browser was selected
       run: echo $Configuration__BrowserType
       
     - name: Log is skipping BDD tests
