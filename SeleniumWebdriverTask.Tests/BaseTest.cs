@@ -25,6 +25,7 @@ namespace SeleniumWebdriverTask.TestLayer
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
         {
+            Console.WriteLine("RunBeforeAnyTests");
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

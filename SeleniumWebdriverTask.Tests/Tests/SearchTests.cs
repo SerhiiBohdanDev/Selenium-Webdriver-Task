@@ -113,7 +113,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
             foreach (var model in cases)
             {
                 yield return new TestCaseData(model)
-                    .SetName($"ValidKeyword_SearchLastJob_Success(\"{model.Language[0]}\", \"{model.Location}\")");
+                    .SetName($"ValidTerm_GeneralSearchInTitle_AllTitlesContainSearchTerm(\"{model.Language[0]}\", \"{model.Location}\")");
             }
         }
 
