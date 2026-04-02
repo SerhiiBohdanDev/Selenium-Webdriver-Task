@@ -47,6 +47,7 @@ namespace SeleniumWebdriverTask.TestLayer
         public virtual void Setup()
         {
             Logger.LogInformation($"Starting '{TestContext.CurrentContext.Test.FullName}'");
+            Logger.LogInformation($"Setup method. Setup browser: {Configuration.BrowserType}, Headless: {Configuration.Headless}");
         }
 
         /// <summary>
