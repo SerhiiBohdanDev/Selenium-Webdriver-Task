@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
 using System.Net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework.Internal;
 using RestSharp;
 using SeleniumWebdriverTask.CoreLayer.API;
-using SeleniumWebdriverTask.CoreLayer.API.Builders;
 using SeleniumWebdriverTask.CoreLayer.API.Models;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests;
@@ -26,7 +24,7 @@ public class ApiTests : BaseTest
     public override void Setup()
     {
         base.Setup();
-        _client = new(Configuration.ApiTestsBaseUrl);
+        _client = new(Configuration.ApiEndpoints);
     }
 
     /// <summary>
@@ -40,19 +38,16 @@ public class ApiTests : BaseTest
         var expectedStatus = HttpStatusCode.OK;
 
         // Act
-        var request =
-            new RestRequestBuilder(Configuration.UsersEndpoint)
-            .Build();
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.GetUsers();
 
         LogResponseStatus(response);
-        var responseContent = ValidateContent(response.Content);
-        var users = ValidateUsers(responseContent);
+        var users = response.Data;
 
         // Assert
         using (Assert.EnterMultipleScope())
         {
             AssertResponseIsValid(response, expectedStatus);
+            Assert.That(users, Is.Not.Null);
             Assert.That(users, Is.Not.Empty);
         }
     }
@@ -66,13 +61,10 @@ public class ApiTests : BaseTest
     {
         // Arrange
         var expectedStatus = HttpStatusCode.OK;
-        var expectedContentType = "application/json";
+        var expectedContentType = "application/json; charset=utf-8";
 
         // Act
-        var request =
-            new RestRequestBuilder(Configuration.UsersEndpoint)
-            .Build();
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.GetUsers();
 
         LogResponseStatus(response);
         Logger.LogInformation($"Received ContentType = {response.ContentType}");
@@ -98,15 +90,14 @@ public class ApiTests : BaseTest
         var expectedUsersAmount = 10;
 
         // Act
-        var request =
-            new RestRequestBuilder(Configuration.UsersEndpoint)
-            .Build();
-
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.GetUsers();
         LogResponseStatus(response);
 
-        var responseContent = ValidateContent(response.Content);
-        var users = ValidateUsers(responseContent);
+        var users = response.Data;
+        if (!response.IsSuccessStatusCode || users == null)
+        {
+            throw new InvalidOperationException($"Could not get users. Code {response.StatusCode}, Data:{response.Data}, Error:{response.ErrorMessage}");
+        }
 
         var duplicateUsers = users
             .GroupBy(u => u.Id)
@@ -148,18 +139,8 @@ public class ApiTests : BaseTest
         var dateTime = DateTime.UtcNow.ToString("yyyy_MM_dd_hh_mm_ss");
         var name = "Name_" + dateTime;
         var username = "Username_" + dateTime;
-        var user =
-            new UserDtoBuilder()
-            .WithName(name)
-            .WithUsername(username)
-            .Build();
 
-        var request =
-            new RestRequestBuilder(Configuration.UsersEndpoint, Method.Post)
-            .AddJsonBody(user)
-            .Build();
-
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.CreateUser(name, username);
         LogResponseStatus(response);
 
         var responseContent = ValidateContent(response.Content);
@@ -190,11 +171,7 @@ public class ApiTests : BaseTest
         var expectedStatus = HttpStatusCode.NotFound;
 
         // Act
-        var request =
-            new RestRequestBuilder(Configuration.InvalidEndpoint)
-            .Build();
-
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.AccessInvalidEndpoint();
         LogResponseStatus(response);
 
         // Assert
@@ -226,27 +203,6 @@ public class ApiTests : BaseTest
 
         Logger.LogInformation($"Response content = {content}");
         return content;
-    }
-
-    private User[] ValidateUsers(string responseContent)
-    {
-        User[]? users;
-        try
-        {
-            users = JsonConvert.DeserializeObject<User[]>(responseContent);
-        }
-        catch (JsonSerializationException ex)
-        {
-            Logger.LogError(ex.Message);
-            throw;
-        }
-
-        if (users == null)
-        {
-            throw new InvalidOperationException($"Deserialization resulted in null. The input JSON may be invalid or empty.");
-        }
-
-        return users;
     }
 
     private void LogInvalidUsers(List<User> duplicateUsers, List<User> usersMissingNameOrUsername, List<User> usersMissingCompanyName)

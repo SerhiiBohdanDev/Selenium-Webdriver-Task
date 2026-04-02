@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
 using Microsoft.Extensions.Configuration;
-using SeleniumWebdriverTask.CoreLayer;
+using SeleniumWebdriverTask.CoreLayer.Configurations;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;

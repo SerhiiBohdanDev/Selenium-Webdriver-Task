@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using SeleniumWebdriverTask.CoreLayer;
+using SeleniumWebdriverTask.CoreLayer.Configurations;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 
 namespace SeleniumWebdriverTask.TestLayer
@@ -25,7 +25,6 @@ namespace SeleniumWebdriverTask.TestLayer
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
         {
-            Console.WriteLine("RunBeforeAnyTests");
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -47,7 +46,6 @@ namespace SeleniumWebdriverTask.TestLayer
         public virtual void Setup()
         {
             Logger.LogInformation($"Starting '{TestContext.CurrentContext.Test.FullName}'");
-            Logger.LogInformation($"Setup method. Setup browser: {Configuration.BrowserType}, Headless: {Configuration.Headless}");
         }
 
         /// <summary>

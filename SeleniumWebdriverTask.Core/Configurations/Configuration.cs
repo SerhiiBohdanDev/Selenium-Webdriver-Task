@@ -3,7 +3,7 @@
 
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace SeleniumWebdriverTask.CoreLayer;
+namespace SeleniumWebdriverTask.CoreLayer.Configurations;
 
 /// <summary>
 /// A model class to use with json configuration.
@@ -44,4 +44,9 @@ public class Configuration
     /// Gets endpoint for invalid page.
     /// </summary>
     public required string InvalidEndpoint { get; init; }
+
+    /// <summary>
+    /// Gets endpoints for API calls.
+    /// </summary>
+    public required ApiEndpoints ApiEndpoints { get; init; }
 }
