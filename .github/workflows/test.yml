@@ -27,7 +27,7 @@ jobs:
     name: Build and test 
     runs-on: ubuntu-latest 
     env:
-      BrowserType: Chrome   # Default for pull_request/scheduled
+      BROWSER_TYPE: Chrome   # Default for pull_request/scheduled
     steps: 
     - name: Checkout code 
       uses: actions/checkout@v6 
@@ -39,21 +39,21 @@ jobs:
         
     - name: Set browser from workflow_dispatch input
       if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: echo "BrowserType=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
+      run: echo "BROWSER_TYPE=${{ github.event.inputs.browser }}" >> $GITHUB_ENV
       
     - name: Log is skipping BDD tests
       run: echo "${{ github.event.inputs.skipBddTests }}"
         
     - name: Install Chrome
-      if: ${{ env.BrowserType == 'Chrome' }}
+      if: ${{ env.BROWSER_TYPE == 'Chrome' }}
       uses: browser-actions/setup-chrome@v2
 
     - name: Install Firefox
-      if: ${{ env.BrowserType == 'Firefox' }}
+      if: ${{ env.BROWSER_TYPE == 'Firefox' }}
       uses: browser-actions/setup-firefox@v1
 
     - name: Install Edge
-      if: ${{ env.BrowserType == 'Edge' }}
+      if: ${{ env.BROWSER_TYPE == 'Edge' }}
       uses: browser-actions/setup-edge@v1
 
     - name: Restore dependencies 
@@ -71,8 +71,8 @@ jobs:
       
     - name: Run NUnit UI tests
       env:
-        BrowserType: ${{ github.event.inputs.browser }}
-        Headless: 'true'
+        BROWSER_TYPE: ${{ github.event.inputs.browser }}
+        HEADLESS: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=NUnitUiTests"
       working-directory: .
       continue-on-error: true
@@ -80,8 +80,8 @@ jobs:
     - name: Run BDD UI tests
       if: ${{ github.event.inputs.skipBddTests == 'false' }}
       env:
-        BrowserType: ${{ github.event.inputs.browser }}
-        Headless: 'true'
+        BROWSER_TYPE: ${{ github.event.inputs.browser }}
+        HEADLESS: 'true'
       run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=BddUiTests"
       working-directory: .
       continue-on-error: true
