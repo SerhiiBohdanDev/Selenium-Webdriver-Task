@@ -16,6 +16,8 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 [Binding]
 internal abstract class CommonSteps
 {
+    // Suppressing because BeforeTestRun and BeforeScenario attributes are not 'recognized' by analyzer which triggers the warning.
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     /// <summary>
     /// Gets temporaty folder for downloaded files.
     /// </summary>
@@ -35,6 +37,7 @@ internal abstract class CommonSteps
     /// Gets the DriverWrapper.
     /// </summary>
     protected static DriverWrapper Driver { get; private set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// Runs once before any tests.
