@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
