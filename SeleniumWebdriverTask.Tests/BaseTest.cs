@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SeleniumWebdriverTask.CoreLayer;
 using SeleniumWebdriverTask.CoreLayer.Logging;
-using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
 namespace SeleniumWebdriverTask.TestLayer
 {
@@ -29,21 +28,11 @@ namespace SeleniumWebdriverTask.TestLayer
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables()
                 .Build();
 
             var configuration = config.GetSection("Configuration").Get<Configuration>();
             ArgumentNullException.ThrowIfNull(configuration);
-            var browserType = Environment.GetEnvironmentVariable("BROWSER_TYPE");
-            if (Enum.TryParse(browserType, true, out BrowserType result))
-            {
-                configuration.BrowserType = result;
-            }
-
-            var headless = Environment.GetEnvironmentVariable("HEADLESS");
-            if (bool.TryParse(headless, out var isHeadless))
-            {
-                configuration.Headless = isHeadless;
-            }
 
             Configuration = configuration;
             Logger = new Logger(config);
