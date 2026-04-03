@@ -38,6 +38,9 @@ public static class WebDriverOptionsFactory
                     options.AddArgument("--window-size=1920,1080");
                     options.AddAdditionalOption("useAutomationExtension", false);
 
+                    // running headless tests locally without this triggers the captcha
+                    options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+
                     // helps avoid rendering issues in headless mode
                     options.AddArgument("--disable-gpu");
 
@@ -61,6 +64,9 @@ public static class WebDriverOptionsFactory
                     options.AddArgument("--headless=new");
                     options.AddArgument("--window-size=1920,1080");
                     options.AddAdditionalOption("useAutomationExtension", false);
+
+                    // running headless tests locally without this triggers the captcha
+                    options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
                     // helps avoid rendering issues in headless mode
                     options.AddArgument("--disable-gpu");
