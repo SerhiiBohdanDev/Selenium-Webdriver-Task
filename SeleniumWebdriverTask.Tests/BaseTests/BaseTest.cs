@@ -25,6 +25,10 @@ namespace SeleniumWebdriverTask.TestLayer.BaseTests
         [OneTimeSetUp]
         public void RunBeforeAnyTests()
         {
+            // BDD [BeforeTestRun] is executed even when none of the BDD tests are run
+            // This is to prevent accessing the same log file and locking it.
+            Environment.SetEnvironmentVariable("LOG_NAME", "NUnit");
+
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

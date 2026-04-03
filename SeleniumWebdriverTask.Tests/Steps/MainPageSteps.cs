@@ -12,7 +12,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to main page.
 /// </summary>
 [Binding]
-internal class MainPageSteps : BaseUiTest
+internal class MainPageSteps : CommonSteps
 {
     private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
 

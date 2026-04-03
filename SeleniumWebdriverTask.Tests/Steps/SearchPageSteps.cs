@@ -12,7 +12,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-internal class SearchPageSteps : BaseBddUiTest
+internal class SearchPageSteps : CommonSteps
 {
     private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
 
