@@ -50,7 +50,7 @@ namespace SeleniumWebdriverTask.TestLayer.BaseTests
             var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
             if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
-                var testName = TestContext.CurrentContext.Test.MethodName;
+                var testName = TestContext.CurrentContext.Test.MethodName ?? "Screenshot";
                 var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver, testName);
                 Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
             }
