@@ -21,14 +21,14 @@ namespace SeleniumWebdriverTask.TestLayer.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Navigation")]
-    [NUnit.Framework.CategoryAttribute("BddUiTests")]
+    [NUnit.Framework.CategoryAttribute("BddUi")]
     public partial class NavigationFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "BddUiTests"};
+                "BddUi"};
         
 #line 1 "Navigation.feature"
 #line hidden

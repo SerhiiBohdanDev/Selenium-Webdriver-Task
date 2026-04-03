@@ -1,4 +1,4 @@
-﻿@BddUiTests
+﻿@BddUi
 Feature: Search
 
 As an EPAM website user  

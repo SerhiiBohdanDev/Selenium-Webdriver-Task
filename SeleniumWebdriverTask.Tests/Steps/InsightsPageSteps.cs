@@ -12,7 +12,6 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-[Category("BddUI")]
 internal class InsightsPageSteps : BaseUiTest
 {
     private readonly InsightsPage _insightsPage;
