@@ -104,11 +104,12 @@ internal abstract class CommonSteps
     public static void Teardown()
     {
         var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
-        Logger.LogInformation("Finishing test");
+        Logger.LogInformation($"Finishing '{TestContext.CurrentContext.Test.FullName}'");
         Logger.LogInformation($"Test status: {testStatus}");
         if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
-            var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver);
+            var testName = TestContext.CurrentContext.Test.FullName;
+            var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver, testName);
             Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
         }
 

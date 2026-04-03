@@ -14,21 +14,17 @@ public static class ScreenshotMaker
 {
     private const string ScreenshotsFolder = "Screenshots";
 
-    private static string NewScreenshotName
-    {
-        get { return "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".png"; }
-    }
-
     /// <summary>
     /// Takes full page screenshot of a web page.
     /// </summary>
     /// <param name="driver">Instance of IWebDriver.</param>
+    /// <param name="testName">Name of test.</param>
     /// <returns>Path where screenshot is saved.</returns>
     /// <exception cref="NotSupportedException">Thrown if type of IWebDiver is not supported.</exception>
-    public static string TakeFullPageScreenshot(IWebDriver driver)
+    public static string TakeFullPageScreenshot(IWebDriver driver, string testName)
     {
         var screenshotsFolder = Path.Combine(Environment.CurrentDirectory, ScreenshotsFolder);
-        var screenshotPath = Path.Combine(screenshotsFolder, NewScreenshotName);
+        var screenshotPath = Path.Combine(screenshotsFolder, GetScreenshotName(testName));
         Directory.CreateDirectory(screenshotsFolder);
         if (driver is FirefoxDriver firefoxDriver)
         {
@@ -80,5 +76,10 @@ public static class ScreenshotMaker
         }
 
         return screenshotPath;
+    }
+
+    private static string GetScreenshotName(string testName)
+    {
+        return testName + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff") + ".png";
     }
 }

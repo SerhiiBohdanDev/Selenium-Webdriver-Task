@@ -59,7 +59,7 @@ namespace SeleniumWebdriverTask.TestLayer.BaseTests
         public virtual void Teardown()
         {
             var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
-            Logger.LogInformation("Finishing test");
+            Logger.LogInformation($"Finishing '{TestContext.CurrentContext.Test.FullName}'");
             Logger.LogInformation($"Test status: {testStatus}");
         }
     }
