@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
+using SeleniumWebdriverTask.TestLayer.BaseTests;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Test related to searching functionality.
     /// </summary>
-    [Category("UI")]
     public class SearchTests : BaseUiTest
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";

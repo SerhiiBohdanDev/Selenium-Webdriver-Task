@@ -1,13 +1,13 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.TestLayer.BaseTests;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Class to contain tests related to downloading a file.
     /// </summary>
-    [Category("UI")]
     public class DownloadTests : BaseDownloadTest
     {
         /// <summary>

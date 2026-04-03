@@ -3,11 +3,12 @@ using SeleniumWebdriverTask.CoreLayer.Logging;
 using SeleniumWebdriverTask.CoreLayer.Utils;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.BaseTests
 {
     /// <summary>
     /// A base class for tests using WebDriver.
     /// </summary>
+    [Category("UI")]
     public abstract class BaseUiTest : BaseTest
     {
         /// <summary>

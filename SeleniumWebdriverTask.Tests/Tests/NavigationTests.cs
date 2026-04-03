@@ -1,11 +1,11 @@
 ﻿using SeleniumWebdriverTask.BusinessLayer.Pages;
+using SeleniumWebdriverTask.TestLayer.BaseTests;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests
 {
     /// <summary>
     /// Tests related to correctly navigating to pages.
     /// </summary>
-    [Category("UI")]
     public class NavigationTests : BaseUiTest
     {
         /// <summary>

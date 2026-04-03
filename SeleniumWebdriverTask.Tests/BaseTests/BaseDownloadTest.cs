@@ -1,12 +1,12 @@
 ﻿using OpenQA.Selenium;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.BaseTests
 {
     /// <summary>
     /// Base class to setup downloading files.
     /// </summary>
-    public class BaseDownloadTest : BaseUiTest
+    public abstract class BaseDownloadTest : BaseUiTest
     {
         /// <summary>
         /// Gets the path to folder where files will be downloaded.

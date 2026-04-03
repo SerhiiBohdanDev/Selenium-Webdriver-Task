@@ -3,6 +3,7 @@
 
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
+using SeleniumWebdriverTask.TestLayer.BaseTests;
 using TechTalk.SpecFlow;
 
 namespace SeleniumWebdriverTask.TestLayer.Steps;
@@ -11,6 +12,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
+[Category("BddUI")]
 internal class CorporateResponsibilityPageSteps : BaseDownloadTest
 {
     private readonly CorporateResponsibilityPage _corporateResponsibilityPage;

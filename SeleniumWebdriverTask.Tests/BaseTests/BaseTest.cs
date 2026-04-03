@@ -2,7 +2,7 @@
 using SeleniumWebdriverTask.CoreLayer.Configurations;
 using SeleniumWebdriverTask.CoreLayer.Logging;
 
-namespace SeleniumWebdriverTask.TestLayer
+namespace SeleniumWebdriverTask.TestLayer.BaseTests
 {
     /// <summary>
     /// A base class for classes containing tests.
