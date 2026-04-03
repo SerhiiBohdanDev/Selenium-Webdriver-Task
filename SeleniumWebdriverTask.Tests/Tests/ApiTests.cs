@@ -7,6 +7,7 @@ using NUnit.Framework.Internal;
 using RestSharp;
 using SeleniumWebdriverTask.CoreLayer.API;
 using SeleniumWebdriverTask.CoreLayer.API.Models;
+using SeleniumWebdriverTask.TestLayer.BaseTests;
 
 namespace SeleniumWebdriverTask.TestLayer.Tests;
 
