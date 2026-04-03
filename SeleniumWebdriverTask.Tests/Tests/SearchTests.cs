@@ -7,7 +7,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// <summary>
     /// Test related to searching functionality.
     /// </summary>
-    [Category("NUnitUiTests")]
+    [Category("UI")]
     public class SearchTests : BaseUiTest
     {
         private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";

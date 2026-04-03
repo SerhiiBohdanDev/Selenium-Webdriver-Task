@@ -5,7 +5,7 @@ namespace SeleniumWebdriverTask.TestLayer.Tests
     /// <summary>
     /// Tests related to correctly navigating to pages.
     /// </summary>
-    [Category("NunitUiTests")]
+    [Category("UI")]
     public class NavigationTests : BaseUiTest
     {
         /// <summary>

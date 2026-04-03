@@ -76,7 +76,7 @@ jobs:
       env:
         Configuration__BrowserType: ${{ github.event.inputs.browser }}
         Configuration__Headless: 'true'
-      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=NUnitUiTests"
+      run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=UI"
       working-directory: .
       continue-on-error: true
       
