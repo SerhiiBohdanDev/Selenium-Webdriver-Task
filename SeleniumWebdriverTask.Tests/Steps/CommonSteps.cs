@@ -108,7 +108,7 @@ internal abstract class CommonSteps
         Logger.LogInformation($"Test status: {testStatus}");
         if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
-            var testName = TestContext.CurrentContext.Test.FullName;
+            var testName = TestContext.CurrentContext.Test.MethodName;
             var screenshotLocation = ScreenshotMaker.TakeFullPageScreenshot(Driver.WebDriver, testName);
             Logger.LogError($"Error screenshot location:\n {screenshotLocation}");
         }
