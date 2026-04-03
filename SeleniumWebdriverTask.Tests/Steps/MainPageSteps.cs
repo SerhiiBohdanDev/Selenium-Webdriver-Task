@@ -11,7 +11,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to main page.
 /// </summary>
 [Binding]
-internal class MainPageSteps : CommonSteps
+internal class MainPageSteps : BaseUiTest
 {
     private const string TitleMissingSearchTermMessage = "Following titles are missing the following search term:";
 
@@ -139,7 +139,7 @@ internal class MainPageSteps : CommonSteps
         _mainPage.ClickJoinUs();
     }
 
-    private static void LogAllTitles(List<string> titles)
+    private void LogAllTitles(List<string> titles)
     {
         var builder = new StringBuilder();
         builder.AppendLine($"Found titles:");
@@ -151,7 +151,7 @@ internal class MainPageSteps : CommonSteps
         Logger.LogInformation(builder.ToString());
     }
 
-    private static void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
+    private void LogTitlesNotContainingTerm(string term, List<string> titlesThatDoNoContainTerm)
     {
         if (titlesThatDoNoContainTerm.Count == 0)
         {

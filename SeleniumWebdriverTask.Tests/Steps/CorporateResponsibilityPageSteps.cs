@@ -11,7 +11,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-internal class CorporateResponsibilityPageSteps : CommonSteps
+internal class CorporateResponsibilityPageSteps : BaseDownloadTest
 {
     private readonly CorporateResponsibilityPage _corporateResponsibilityPage;
 

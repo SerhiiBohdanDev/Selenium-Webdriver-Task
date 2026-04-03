@@ -11,7 +11,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-internal class InsightsPageSteps : CommonSteps
+internal class InsightsPageSteps : BaseUiTest
 {
     private readonly InsightsPage _insightsPage;
     private readonly ArticleData _articleData;

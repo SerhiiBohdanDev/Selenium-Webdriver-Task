@@ -11,7 +11,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-internal class InsightPageSteps : CommonSteps
+internal class InsightPageSteps : BaseUiTest
 {
     private readonly InsightBasePage _insightPage;
     private readonly ArticleData _articleData;
@@ -49,7 +49,7 @@ internal class InsightPageSteps : CommonSteps
         return title.Trim().Replace('\u00A0', ' ');
     }
 
-    private static void LogComparedTitles(string slideTitle, string pageTitle)
+    private void LogComparedTitles(string slideTitle, string pageTitle)
     {
         if (pageTitle.Contains(slideTitle))
         {

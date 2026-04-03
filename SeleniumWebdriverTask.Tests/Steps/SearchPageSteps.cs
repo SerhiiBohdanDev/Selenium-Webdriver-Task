@@ -11,7 +11,7 @@ namespace SeleniumWebdriverTask.TestLayer.Steps;
 /// Steps related to insights page.
 /// </summary>
 [Binding]
-internal class SearchPageSteps : CommonSteps
+internal class SearchPageSteps : BaseUiTest
 {
     private const string JobDescriptionMissingKeywordMessage = "Job description is missing the following keyword(s):";
 
@@ -97,12 +97,12 @@ internal class SearchPageSteps : CommonSteps
         return languages.Split(",");
     }
 
-    private static void LogJobInformation(string jobInformation)
+    private void LogJobInformation(string jobInformation)
     {
         Logger.LogInformation("Job information:\n" + jobInformation);
     }
 
-    private static void LogJobInformationError(string[] languages)
+    private void LogJobInformationError(string[] languages)
     {
         var keywords = string.Join(',', languages);
         Logger.LogError($"{JobDescriptionMissingKeywordMessage} [{keywords}]");
