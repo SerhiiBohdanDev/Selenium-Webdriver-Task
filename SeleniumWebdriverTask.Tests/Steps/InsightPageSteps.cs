@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.:suggestion
 
 using SeleniumWebdriverTask.BusinessLayer.Pages;
-using SeleniumWebdriverTask.TestLayer.BaseTests;
 using SeleniumWebdriverTask.TestLayer.Contexts;
 using TechTalk.SpecFlow;
 

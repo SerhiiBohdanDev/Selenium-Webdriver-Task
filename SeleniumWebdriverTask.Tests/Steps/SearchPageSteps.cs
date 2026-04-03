@@ -3,7 +3,6 @@
 
 using System.Text.RegularExpressions;
 using SeleniumWebdriverTask.BusinessLayer.Pages;
-using SeleniumWebdriverTask.TestLayer.BaseTests;
 using TechTalk.SpecFlow;
 
 namespace SeleniumWebdriverTask.TestLayer.Steps;

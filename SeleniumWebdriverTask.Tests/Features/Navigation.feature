@@ -1,4 +1,4 @@
-﻿@BddUi
+﻿@BddUI
 Feature: Navigation
 
 As an EPAM website user  

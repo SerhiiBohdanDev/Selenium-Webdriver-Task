@@ -21,14 +21,14 @@ namespace SeleniumWebdriverTask.TestLayer.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Download")]
-    [NUnit.Framework.CategoryAttribute("BddUi")]
+    [NUnit.Framework.CategoryAttribute("BddUI")]
     public partial class DownloadFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "BddUi"};
+                "BddUI"};
         
 #line 1 "Download.feature"
 #line hidden

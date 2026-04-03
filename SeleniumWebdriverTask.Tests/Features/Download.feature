@@ -1,4 +1,4 @@
-﻿@BddUi
+﻿@BddUI
 Feature: Download
 
 As an EPAM website user  

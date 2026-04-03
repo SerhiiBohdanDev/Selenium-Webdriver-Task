@@ -3,7 +3,6 @@
 
 using SeleniumWebdriverTask.BusinessLayer.Pages;
 using SeleniumWebdriverTask.CoreLayer.WebDriver;
-using SeleniumWebdriverTask.TestLayer.BaseTests;
 using TechTalk.SpecFlow;
 
 namespace SeleniumWebdriverTask.TestLayer.Steps;
